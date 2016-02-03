@@ -86,13 +86,14 @@ namespace SimulationVéhicule
             if (TempsÉcouléDepuisMAJ >= IntervalleMAJ)
             {
 
-                if (GestionInput.EstEnfoncée(Keys.LeftShift) || GestionInput.EstEnfoncée(Keys.RightShift))
-                {
-                    GérerAccélération();
-                    GérerDéplacement();
-                    GérerRotation();
-                    CréerPointDeVue();
-                }
+                //if (GestionInput.EstEnfoncée(Keys.LeftShift) || GestionInput.EstEnfoncée(Keys.RightShift))
+                //{
+                //    GérerAccélération();
+                //    GérerDéplacement();
+                //    GérerRotation();
+                //    CréerPointDeVue();
+                //}
+                CréerPointDeVue();
                 TempsÉcouléDepuisMAJ = 0;
             }
             base.Update(gameTime);
