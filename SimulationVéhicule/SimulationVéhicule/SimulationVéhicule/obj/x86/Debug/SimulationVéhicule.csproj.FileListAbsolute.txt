@@ -47,3 +47,7 @@ C:\Users\élie\Desktop\SimulationVehicule-master\SimulationVéhicule - Copy\Simu
 C:\Users\élie\Desktop\SimulationVehicule-master\SimulationVéhicule - Copy\SimulationVéhicule\SimulationVéhicule\obj\x86\Debug\Microsoft.Xna.Framework.RuntimeProfile.txt
 C:\Users\élie\Desktop\SimulationVehicule-master\SimulationVéhicule - Copy\SimulationVéhicule\SimulationVéhicule\obj\x86\Debug\SimulationVéhicule.exe
 C:\Users\élie\Desktop\SimulationVehicule-master\SimulationVéhicule - Copy\SimulationVéhicule\SimulationVéhicule\obj\x86\Debug\SimulationVéhicule.pdb
+C:\Users\201448706\Documents\GitHub\SimulationVoiture\SimulationVéhicule\SimulationVéhicule\SimulationVéhicule\obj\x86\Debug\SimulationVéhicule.csprojResolveAssemblyReference.cache
+C:\Users\201448706\Documents\GitHub\SimulationVoiture\SimulationVéhicule\SimulationVéhicule\SimulationVéhicule\obj\x86\Debug\Microsoft.Xna.Framework.RuntimeProfile.txt
+C:\Users\201448706\Documents\GitHub\SimulationVoiture\SimulationVéhicule\SimulationVéhicule\SimulationVéhicule\obj\x86\Debug\SimulationVéhicule.exe
+C:\Users\201448706\Documents\GitHub\SimulationVoiture\SimulationVéhicule\SimulationVéhicule\SimulationVéhicule\obj\x86\Debug\SimulationVéhicule.pdb

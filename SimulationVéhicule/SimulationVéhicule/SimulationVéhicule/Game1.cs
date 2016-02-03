@@ -13,6 +13,7 @@ namespace SimulationVéhicule
 {
     public class Game1 : Microsoft.Xna.Framework.Game
     {
+        const int DIMENSION_TERRAIN = 256;
         const float INTERVALLE_CALCUL_FPS = 1f;
         const float INTERVALLE_MAJ_STANDARD = 1f / 60f;
 
@@ -51,10 +52,11 @@ namespace SimulationVéhicule
             GestionInput = new InputManager(this);
             CaméraJeu = new CaméraSubjective(this, positionCaméra, cibleCaméra, Vector3.Up, INTERVALLE_MAJ_STANDARD);
 
+            Components.Add(new Carte(this, 1f, Vector3.Zero, Vector3.Zero, new Vector3(DIMENSION_TERRAIN, 25, DIMENSION_TERRAIN), "Carte", "DétailsTerrain", 5, INTERVALLE_MAJ_STANDARD));
             Components.Add(GestionInput);
             Components.Add(CaméraJeu);
             Components.Add(new Afficheur3D(this));
-            
+
             Services.AddService(typeof(RessourcesManager<SpriteFont>), GestionnaireDeFonts);
             Services.AddService(typeof(RessourcesManager<Texture2D>), GestionnaireDeTextures);
             Services.AddService(typeof(RessourcesManager<Model>), GestionnaireDeModèles);
