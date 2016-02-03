@@ -53,10 +53,10 @@
       <Processor>ModelProcessor</Processor>
       <Options>None</Options>
       <Output>C:\Users\élie\Documents\GitHub\SimulationVoiture\SimulationVéhicule\SimulationVéhicule\SimulationVéhicule\bin\x86\Debug\Content\Models\MustangGT500.xnb</Output>
-      <Time>2016-02-01T16:58:16.1530334-05:00</Time>
+      <Time>2016-02-03T16:43:56.8674559-05:00</Time>
       <Dependency>
         <Key>obj\x86\Debug\Models\MustangGT500_0.xml</Key>
-        <Value>2016-02-02T20:16:51.6010783-05:00</Value>
+        <Value>2016-02-03T16:44:01.2422975-05:00</Value>
       </Dependency>
       <Request>C:\Users\élie\Documents\GitHub\SimulationVoiture\SimulationVéhicule\SimulationVéhicule\SimulationVéhicule\bin\x86\Debug\Content\Models\_Corroga_0.xnb</Request>
       <Request>C:\Users\élie\Documents\GitHub\SimulationVoiture\SimulationVéhicule\SimulationVéhicule\SimulationVéhicule\bin\x86\Debug\Content\Models\_Pool_03_0.xnb</Request>
@@ -69,7 +69,7 @@
       <Importer>FbxImporter</Importer>
       <Options>IntermediateFile, DontCacheImportedData</Options>
       <Output>obj\x86\Debug\Models\MustangGT500_0.xml</Output>
-      <Time>2016-02-01T16:58:16.1530334-05:00</Time>
+      <Time>2016-02-03T16:43:56.8674559-05:00</Time>
     </Item>
     <Item>
       <Source>Models\_Corroga.jpg</Source>

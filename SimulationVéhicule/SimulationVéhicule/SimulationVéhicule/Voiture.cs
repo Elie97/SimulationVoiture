@@ -15,6 +15,7 @@ namespace SimulationVéhicule
         const float ACCÉLÉRATION_RECULONS = -2.0f;// Temps en seconde pour atteindre 100 km/h
         const float MASSE_VOITURE = 1000.0f;// En Kilogramme
         const float ACCÉLÉRATION_FREIN = 4.0f;// Km/h Valeur pas correcte
+        const float ROTATION_MAXIMALE_ROUE = (float)Math.PI / 5f;
 
 
         string NomModèle { get; set; }
@@ -38,6 +39,9 @@ namespace SimulationVéhicule
         int CPT { get; set; }
 
         int Déplacement { get; set; }
+        int PositionInitialeSouris { get; set; }
+        int PositionFinaleSouris { get; set; }
+        float RotationMaximaleDéplacement { get; set; }
 
         public Voiture(Game jeu, String nomModèle, float échelleInitiale, Vector3 rotationInitiale, Vector3 positionInitiale, float intervalleMAJ)
             : base(jeu)
@@ -86,7 +90,7 @@ namespace SimulationVéhicule
         {
             foreach (ModelMesh maille in Modèle.Meshes)
             {
-                Game.Window.Title = GestionInput.GetPositionSouris().ToString() + " Déplacement : " + Déplacement.ToString() + " CPT : " + CPT.ToString();
+                Game.Window.Title = Rotation.Y.ToString();
                 Matrix mondeLocal = TransformationsModèle[maille.ParentBone.Index] * GetMonde();
                 foreach (ModelMeshPart portionDeMaillage in maille.MeshParts)
                 {
@@ -112,11 +116,11 @@ namespace SimulationVéhicule
             {
                 if (GestionInput.EstEnfoncée(Keys.W))
                 {
-                    if (GestionInput.EstEnfoncée(Keys.Up))
+                    if (GestionInput.EstEnfoncée(Keys.E))
                     {
                         Accélération(true);
                     }
-                    else if (GestionInput.EstEnfoncée(Keys.Down))
+                    else if (GestionInput.EstEnfoncée(Keys.D))
                     {
                         Accélération(false);
                     }
@@ -124,7 +128,7 @@ namespace SimulationVéhicule
                 }
                 else
                 {
-                    Décélération();
+                    Décélération();//marche pas ?
                 }
 
                 if (GestionInput.EstEnfoncée(Keys.Tab))
@@ -133,7 +137,7 @@ namespace SimulationVéhicule
                 }
 
                 GetDéplacementSouris();
-
+                GestionRotationVoiture();
                 CalculerMonde();
                 TempsÉcouléDepuisMAJ = 0;
             }
@@ -221,33 +225,50 @@ namespace SimulationVéhicule
 
         void GetDéplacementSouris()
         {
-            int positionInitiale = 0;
-            int positionFinale = 0;
-            positionInitiale = GestionInput.GetPositionSouris().X;
+            PositionInitialeSouris = Game.Window.ClientBounds.Width / 2;
             if (GestionInput.EstAncienClicGauche())
             {
-                //positionInitiale = GestionInput.GetPositionSouris().X;
-                //if (GestionInput.EstAncienClicGauche())
-                //{
-                    //positionFinale = GestionInput.GetPositionSouris().X;
-                //}
-                CPT++;
+                PositionFinaleSouris = GestionInput.GetPositionSouris().X;
             }
             else
             {
-                positionFinale = GestionInput.GetPositionSouris().X;
-                CPT = 0;
+                Mouse.SetPosition(Game.Window.ClientBounds.Width / 2, Game.Window.ClientBounds.Height / 2);
+                PositionFinaleSouris = Game.Window.ClientBounds.Width / 2;
             }
+            Déplacement = PositionFinaleSouris - PositionInitialeSouris;
+        }
 
-            if (CPT == 0)
+        void GetAngleRotation()
+        {
+            RotationMaximaleDéplacement = 0;
+            if (Déplacement >= 250)//Déplacement maximal pour une rotation
             {
-                positionFinale = GestionInput.GetPositionSouris().X;
+                RotationMaximaleDéplacement = ROTATION_MAXIMALE_ROUE;
             }
             else
             {
-                positionFinale = positionInitiale;
+
             }
-            Déplacement = positionFinale;
+        }
+
+        void GestionRotationVoiture()
+        {
+            if (Déplacement > 0)
+            {
+                Rotation = new Vector3(Rotation.X, (Déplacement / 100f), Rotation.Z);
+                if (Rotation.Y >= ROTATION_MAXIMALE_ROUE)
+                {
+                    Rotation = new Vector3(Rotation.X, ROTATION_MAXIMALE_ROUE, Rotation.Z);
+                }
+            }
+            else if (Déplacement < 0)
+            {
+                Rotation = new Vector3(Rotation.X, (Déplacement / 100f), Rotation.Z);
+                if (Rotation.Y <= -ROTATION_MAXIMALE_ROUE)
+                {
+                    Rotation = new Vector3(Rotation.X, -ROTATION_MAXIMALE_ROUE, Rotation.Z);
+                }
+            }
         }
     }
 }
