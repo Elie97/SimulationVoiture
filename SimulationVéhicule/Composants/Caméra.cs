@@ -15,7 +15,7 @@ namespace SimulationVéhicule
         // Propriétés relatives au "Point de vue"
         public Vector3 Position { get; set; }
         public Vector3 Cible { get; set; }
-        public Vector3 OrientationVerticale { get; protected set; }
+        public Vector3 OrientationVerticale { get; set; }
 
         // Propriétés relatives au "Volume de visualisation"
         protected float AngleOuvertureObjectif { get; set; }

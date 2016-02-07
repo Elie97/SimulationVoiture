@@ -2,28 +2,31 @@
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
+using Microsoft.Xna.Framework.Audio;
+using Microsoft.Xna.Framework.Content;
 
 
 namespace SimulationVéhicule
 {
     public class Voiture : Microsoft.Xna.Framework.DrawableGameComponent
     {
-        const float DÉCÉLÉRATION = 0.005f;// en décimètre
+        const float DÉCÉLÉRATION = 0.02f;// en décimètre
         const float VITESSE_MAX = 100.0f;// Km/H
         const float VITESSE_MAX_RECULONS = -30.0f;// Km/H
         const float ACCÉLÉRATION = 4.0f;// Temps en seconde pour atteindre 100 km/h
         const float ACCÉLÉRATION_RECULONS = -2.0f;// Temps en seconde pour atteindre 100 km/h
         const float MASSE_VOITURE = 1000.0f;// En Kilogramme
-        const float ACCÉLÉRATION_FREIN = 4.0f;// Km/h Valeur pas correcte
-        const float ROTATION_MAXIMALE_ROUE = (float)Math.PI / 5f;
+        const float ACCÉLÉRATION_FREIN = 3.0f;// Km/h Valeur pas correcte
+        const float ROTATION_MAXIMALE_ROUE = (float)Math.PI / 80f;
 
 
         string NomModèle { get; set; }
         RessourcesManager<Model> GestionnaireDeModèles { get; set; }
+        RessourcesManager<SoundEffect> GestionnaireDeSon { get; set; }
         Caméra CaméraJeu { get; set; }
         protected float Échelle { get; set; }
         protected float ÉchelleInitiale { get; set; }
-        protected Vector3 Rotation { get; set; }
+        public Vector3 Rotation { get; set; }
         protected Vector3 RotationInitiale { get; set; }
         public Vector3 Position { get; set; }
         protected Model Modèle { get; private set; }
@@ -35,6 +38,7 @@ namespace SimulationVéhicule
         bool D1Actif { get; set; }
         bool D2Actif { get; set; }
         bool D3Actif { get; set; }
+        bool EnAvant { get; set; }
         public float Vitesse { get; set; }
         int CPT { get; set; }
 
@@ -42,6 +46,12 @@ namespace SimulationVéhicule
         int PositionInitialeSouris { get; set; }
         int PositionFinaleSouris { get; set; }
         float RotationMaximaleDéplacement { get; set; }
+        float Temps { get; set; }
+
+        float FacteurEngine { get; set; }
+
+        SoundEffectInstance SoundAcceleration { get; set; }
+        SoundEffectInstance SoundBrake { get; set; }
 
         public Voiture(Game jeu, String nomModèle, float échelleInitiale, Vector3 rotationInitiale, Vector3 positionInitiale, float intervalleMAJ)
             : base(jeu)
@@ -61,10 +71,12 @@ namespace SimulationVéhicule
             D1Actif = false;
             D2Actif = false;
             D3Actif = false;
+            EnAvant = true;
             Vitesse = 0;
             CPT = 0;
             Déplacement = 0;
-            Mouse.SetPosition(Game.Window.ClientBounds.Width / 2, Game.Window.ClientBounds.Height / 2);
+            Temps = 0;
+            FacteurEngine = -0.5f;
             base.Initialize();
         }
 
@@ -80,17 +92,20 @@ namespace SimulationVéhicule
         {
             CaméraJeu = Game.Services.GetService(typeof(Caméra)) as Caméra;
             GestionnaireDeModèles = Game.Services.GetService(typeof(RessourcesManager<Model>)) as RessourcesManager<Model>;
+            GestionnaireDeSon = Game.Services.GetService(typeof(RessourcesManager<SoundEffect>)) as RessourcesManager<SoundEffect>;
             Modèle = GestionnaireDeModèles.Find(NomModèle);
             TransformationsModèle = new Matrix[Modèle.Bones.Count];
             Modèle.CopyAbsoluteBoneTransformsTo(TransformationsModèle);
             GestionInput = Game.Services.GetService(typeof(InputManager)) as InputManager;
+            SoundAcceleration = GestionnaireDeSon.Find("acceleration").CreateInstance();
+            SoundBrake = GestionnaireDeSon.Find("brakeEffect").CreateInstance();
         }
 
         public override void Draw(GameTime gameTime)
         {
             foreach (ModelMesh maille in Modèle.Meshes)
             {
-                Game.Window.Title = Rotation.Y.ToString();
+                Game.Window.Title = ((int)PixelToKMH(Vitesse)).ToString();
                 Matrix mondeLocal = TransformationsModèle[maille.ParentBone.Index] * GetMonde();
                 foreach (ModelMeshPart portionDeMaillage in maille.MeshParts)
                 {
@@ -106,38 +121,52 @@ namespace SimulationVéhicule
 
         public override void Update(GameTime gameTime)
         {
-            D1Actif = GestionToucheActive(Keys.D1, D1Actif);
-            D2Actif = GestionToucheActive(Keys.D2, D2Actif);
-            D3Actif = GestionToucheActive(Keys.D3, D3Actif);
-            Mouse.SetPosition(GestionInput.GetPositionSouris().X, Game.Window.ClientBounds.Height / 2);
-
             TempsÉcouléDepuisMAJ += (float)gameTime.ElapsedGameTime.TotalSeconds;
             if (TempsÉcouléDepuisMAJ >= IntervalleMAJ)
             {
-                if (GestionInput.EstEnfoncée(Keys.W))
+                if (GestionInput.EstEnfoncée(Keys.W) && Vitesse >= 0)
                 {
                     if (GestionInput.EstEnfoncée(Keys.E))
                     {
-                        Accélération(true);
+                        EnAvant = true;
+                        Accélération(EnAvant);
                     }
-                    else if (GestionInput.EstEnfoncée(Keys.D))
+                    Avance();
+                }
+                else if (GestionInput.EstEnfoncée(Keys.S) && Vitesse <= 0)
+                {
+                    if (GestionInput.EstEnfoncée(Keys.E))
                     {
-                        Accélération(false);
+                        EnAvant = false;
+                        Accélération(EnAvant);
                     }
-                    Avance();   
+                    Avance();
                 }
                 else
                 {
-                    Décélération();//marche pas ?
+                    Décélération(EnAvant);
+                    Avance();
                 }
-
+                if (Vitesse != 0)
+                {
+                    GestionRotationVoiture();   
+                }
                 if (GestionInput.EstEnfoncée(Keys.Tab))
                 {
                     Freinage();
                 }
 
-                GetDéplacementSouris();
-                GestionRotationVoiture();
+                if (Position.Y <= 0)
+                {
+                    Temps = 0;
+                    Position = new Vector3(Position.X, 0, Position.Z);
+                }
+                else
+                {
+                    GetHauteur();
+                }
+
+                PitchAndSound();
                 CalculerMonde();
                 TempsÉcouléDepuisMAJ = 0;
             }
@@ -160,24 +189,38 @@ namespace SimulationVéhicule
 
         public void Avance()
         {
-            Position = new Vector3(Position.X, Position.Y, Position.Z + Vitesse);
+            Position = new Vector3(Position.X + (Vitesse * (float)Math.Sin(Rotation.Y)), Position.Y, Position.Z + (Vitesse * (float)Math.Cos(Rotation.Y)));
         }
 
-        void Décélération()
+        void Décélération(bool négative)
         {
-            if (Vitesse > 0)
+            if (négative)
             {
-                Vitesse -= DÉCÉLÉRATION;
+                if (Vitesse > 0)
+                {
+                    Vitesse -= DÉCÉLÉRATION;
+                }
+                else
+                {
+                    Vitesse = 0;
+                }   
             }
             else
             {
-                Vitesse = 0;
+                if (Vitesse < 0)
+                {
+                    Vitesse += DÉCÉLÉRATION;
+                }
+                else
+                {
+                    Vitesse = 0;
+                }
             }
         }
 
         void Accélération(bool positive)
         {
-            if (positive == true)
+            if (positive)
             {
                 if (Vitesse < KMHtoPixel(VITESSE_MAX))
                 {
@@ -218,97 +261,87 @@ namespace SimulationVéhicule
             return (kmh / 3.6f) / 6;
         }
 
-        float PixelToKMH(float pixel)
+        public float PixelToKMH(float pixel)
         {
             return (pixel * 6) * 3.6f;
         }
 
-        void GetDéplacementSouris()
-        {
-            PositionInitialeSouris = Game.Window.ClientBounds.Width / 2;
-            if (GestionInput.EstAncienClicGauche())
-            {
-                PositionFinaleSouris = GestionInput.GetPositionSouris().X;
-            }
-            else
-            {
-                Mouse.SetPosition(Game.Window.ClientBounds.Width / 2, Game.Window.ClientBounds.Height / 2);
-                PositionFinaleSouris = Game.Window.ClientBounds.Width / 2;
-            }
-            Déplacement = PositionFinaleSouris - PositionInitialeSouris;
-        }
-
-        void GetAngleRotation()
-        {
-            RotationMaximaleDéplacement = 0;
-            if (Déplacement >= 250)//Déplacement maximal pour une rotation
-            {
-                RotationMaximaleDéplacement = ROTATION_MAXIMALE_ROUE;
-            }
-            else
-            {
-
-            }
-        }
-
         void GestionRotationVoiture()
         {
-            if (Déplacement > 0)
+            float rotation = 0;
+            if (Vitesse >= KMHtoPixel(Math.Abs(VITESSE_MAX_RECULONS)))
             {
-                Rotation = new Vector3(Rotation.X, (Déplacement / 100f), Rotation.Z);
-                if (Rotation.Y >= ROTATION_MAXIMALE_ROUE)
+                rotation = ROTATION_MAXIMALE_ROUE;
+            }
+            else
+            {
+                rotation = ROTATION_MAXIMALE_ROUE * (Vitesse / KMHtoPixel(Math.Abs(VITESSE_MAX_RECULONS)));
+            }
+
+            if ((Rotation.Y + rotation) >= (Math.PI * 2))
+            {
+                rotation -= (float)Math.PI * 2;
+            }
+            else if((Rotation.Y - rotation) <= (Math.PI * -2))
+            {
+                rotation -= (float)Math.PI * 2;
+            }
+
+            if (GestionInput.EstEnfoncée(Keys.Left))
+            {
+                Rotation = new Vector3(Rotation.X, Rotation.Y + rotation, Rotation.Z);
+            }
+            if (GestionInput.EstEnfoncée(Keys.Right))
+            {
+                Rotation = new Vector3(Rotation.X, Rotation.Y - rotation, Rotation.Z);
+            }
+        }
+
+        void GetHauteur()
+        {
+            Temps++; // 1/60s
+            float g = 98.1f / (60f * 60f);
+            float vitesse = g * Temps;
+            Position = new Vector3(Position.X, Position.Y - vitesse, Position.Z);
+        }
+
+        void PitchAndSound()
+        {
+            SoundAcceleration.Play();
+            SoundAcceleration.Volume = 0.5f;
+            if (!GestionInput.EstEnfoncée(Keys.Tab))
+            {
+                if (SoundBrake.Volume - 0.05f >= 0)
                 {
-                    Rotation = new Vector3(Rotation.X, ROTATION_MAXIMALE_ROUE, Rotation.Z);
+                    SoundBrake.Volume = SoundBrake.Volume - 0.05f;   
+                }
+                if (Vitesse >= KMHtoPixel(0) && Vitesse < KMHtoPixel(30))
+                {
+                    SoundAcceleration.Pitch = (Math.Abs(PixelToKMH(Vitesse)) / 100f) - 0.1f;
+                }
+                else if (Vitesse >= KMHtoPixel(30) && Vitesse < KMHtoPixel(60))
+                {
+                    SoundAcceleration.Pitch = (Math.Abs(PixelToKMH(Vitesse)) / 100f) - 0.3f;
+                }
+                else if (Vitesse >= KMHtoPixel(60))
+                {
+                    SoundAcceleration.Pitch = (Math.Abs(PixelToKMH(Vitesse)) / 100f) - 0.5f;
                 }
             }
-            else if (Déplacement < 0)
+            else
             {
-                Rotation = new Vector3(Rotation.X, (Déplacement / 100f), Rotation.Z);
-                if (Rotation.Y <= -ROTATION_MAXIMALE_ROUE)
+                SoundAcceleration.Pitch = (Math.Abs(PixelToKMH(Vitesse)) / 100f) - 0.1f;
+                if (Vitesse >= KMHtoPixel(60))
                 {
-                    Rotation = new Vector3(Rotation.X, -ROTATION_MAXIMALE_ROUE, Rotation.Z);
+                    SoundBrake.Play();
+                    SoundBrake.Volume = 1.0f;
                 }
+            }
+
+            if (Vitesse == 0)
+            {
+                SoundAcceleration.Volume = 0.5f;
             }
         }
     }
 }
-
-
-                //if (D2Actif)
-                //{
-                //    Rotation = new Vector3(Rotation.X + 0.05f, Rotation.Y, Rotation.Z);//Pas cette valeur, check msg colnet ;)
-                //}
-                //if (D1Actif)
-                //{
-                //    Rotation = new Vector3(Rotation.X, Rotation.Y + 0.05f, Rotation.Z);
-                //}
-                //if (D3Actif)
-                //{
-                //    Rotation = new Vector3(Rotation.X, Rotation.Y, Rotation.Z + 0.05f);
-                //}
-
-                //if (GestionInput.EstEnfoncée(Keys.Space))
-                //{
-                //    Rotation = RotationInitiale;
-                //}
-                //if (GestionInput.EstEnfoncée(Keys.Add))
-                //{
-                //    Échelle += 0.01f;
-                //}
-                //if (GestionInput.EstEnfoncée(Keys.Subtract))
-                //{
-                //    Échelle -= 0.01f;
-                //    if (Échelle <= 0)
-                //    {
-                //        Échelle = ÉchelleInitiale;
-                //    }
-                //}
-                // GestionVitesse();
-                //if (GestionInput.EstEnfoncée(Keys.W))
-                //{
-                //    Avance();
-                //}
-                //if (GestionInput.EstEnfoncée(Keys.S))
-                //{
-                //    Recule();
-                //}

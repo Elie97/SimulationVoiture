@@ -14,8 +14,8 @@ namespace SimulationVéhicule
         const float DELTA_ROULIS = MathHelper.Pi / 180; // 1 degré à la fois
         const float RAYON_COLLISION = 1f;
 
-        Vector3 Direction { get; set; }
-        Vector3 Latéral { get; set; }
+        public Vector3 Direction { get; set; }
+        public Vector3 Latéral { get; set; }
         float VitesseTranslation { get; set; }
         float VitesseRotation { get; set; }
         float IntervalleMAJ { get; set; }
@@ -85,7 +85,6 @@ namespace SimulationVéhicule
             GestionClavier();
             if (TempsÉcouléDepuisMAJ >= IntervalleMAJ)
             {
-
                 //if (GestionInput.EstEnfoncée(Keys.LeftShift) || GestionInput.EstEnfoncée(Keys.RightShift))
                 //{
                 //    GérerAccélération();

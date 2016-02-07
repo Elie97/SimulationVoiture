@@ -151,6 +151,33 @@
       <Output>C:\Users\élie\Documents\GitHub\SimulationVoiture\SimulationVéhicule\SimulationVéhicule\SimulationVéhicule\bin\x86\Debug\Content\Models\_Pool_01_0.xnb</Output>
       <Time>2016-02-01T16:58:16.0528137-05:00</Time>
     </Item>
+    <Item>
+      <Source>Sounds\acceleration.wav</Source>
+      <Name>Sounds\acceleration</Name>
+      <Importer>WavImporter</Importer>
+      <Processor>SoundEffectProcessor</Processor>
+      <Options>None</Options>
+      <Output>C:\Users\élie\Documents\GitHub\SimulationVoiture\SimulationVéhicule\SimulationVéhicule\SimulationVéhicule\bin\x86\Debug\Content\Sounds\acceleration.xnb</Output>
+      <Time>2016-02-07T14:11:51.9838754-05:00</Time>
+    </Item>
+    <Item>
+      <Source>Sounds\EngineSound.wav</Source>
+      <Name>Sounds\EngineSound</Name>
+      <Importer>WavImporter</Importer>
+      <Processor>SoundEffectProcessor</Processor>
+      <Options>None</Options>
+      <Output>C:\Users\élie\Documents\GitHub\SimulationVoiture\SimulationVéhicule\SimulationVéhicule\SimulationVéhicule\bin\x86\Debug\Content\Sounds\EngineSound.xnb</Output>
+      <Time>2016-02-07T14:16:52.502997-05:00</Time>
+    </Item>
+    <Item>
+      <Source>Sounds\brakeEffect.wav</Source>
+      <Name>Sounds\brakeEffect</Name>
+      <Importer>WavImporter</Importer>
+      <Processor>SoundEffectProcessor</Processor>
+      <Options>None</Options>
+      <Output>C:\Users\élie\Documents\GitHub\SimulationVoiture\SimulationVéhicule\SimulationVéhicule\SimulationVéhicule\bin\x86\Debug\Content\Sounds\brakeEffect.xnb</Output>
+      <Time>2016-02-07T14:48:01.6015703-05:00</Time>
+    </Item>
     <BuildSuccessful>true</BuildSuccessful>
     <Settings>
       <TargetPlatform>Windows</TargetPlatform>
