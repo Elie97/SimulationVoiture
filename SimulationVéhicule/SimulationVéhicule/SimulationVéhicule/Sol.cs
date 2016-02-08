@@ -14,15 +14,17 @@ namespace SimulationVéhicule
 {
     public class Sol : PrimitiveDeBase
     {
-        VertexPositionColor[] Sommets { get; set; }
+        public VertexPositionColor[] Sommets { get; set; }
         Vector3 Étendue { get; set; }
-        Vector3 Charpente { get; set; }
+        public Vector3 Charpente { get; set; }
         Vector3 Origine { get; set; }
         Vector3 Delta { get; set; }
         Vector3[] PtsSommets { get; set; }
         int Hauteur { get; set; }
         int Largeur { get; set; }
         Color Couleur { get; set; }
+
+        int HauteurMax { get; set; }
 
         BasicEffect EffetDeBase { get; set; }
         RessourcesManager<Texture2D> GestionnaireDeTextures { get; set; }

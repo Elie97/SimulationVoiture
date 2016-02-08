@@ -8,7 +8,7 @@
       <Processor>TextureProcessor</Processor>
       <Options>None</Options>
       <Output>C:\Users\201448183\Documents\GitHub\SimulationVoiture\SimulationVéhicule\SimulationVéhicule\SimulationVéhicule\bin\x86\Debug\Content\Models\_Corroga.xnb</Output>
-      <Time>2016-02-03T09:49:23.9848506-05:00</Time>
+      <Time>2016-02-08T12:47:39.87749-05:00</Time>
     </Item>
     <Item>
       <Source>Models\_Pool_01.jpg</Source>
@@ -17,7 +17,7 @@
       <Processor>TextureProcessor</Processor>
       <Options>None</Options>
       <Output>C:\Users\201448183\Documents\GitHub\SimulationVoiture\SimulationVéhicule\SimulationVéhicule\SimulationVéhicule\bin\x86\Debug\Content\Models\_Pool_01.xnb</Output>
-      <Time>2016-02-03T09:49:23.986849-05:00</Time>
+      <Time>2016-02-08T12:47:39.880493-05:00</Time>
     </Item>
     <Item>
       <Source>Models\_Pool_02.jpg</Source>
@@ -26,7 +26,7 @@
       <Processor>TextureProcessor</Processor>
       <Options>None</Options>
       <Output>C:\Users\201448183\Documents\GitHub\SimulationVoiture\SimulationVéhicule\SimulationVéhicule\SimulationVéhicule\bin\x86\Debug\Content\Models\_Pool_02.xnb</Output>
-      <Time>2016-02-03T09:49:23.9898466-05:00</Time>
+      <Time>2016-02-08T12:47:39.884497-05:00</Time>
     </Item>
     <Item>
       <Source>Models\_Pool_03.jpg</Source>
@@ -35,7 +35,7 @@
       <Processor>TextureProcessor</Processor>
       <Options>None</Options>
       <Output>C:\Users\201448183\Documents\GitHub\SimulationVoiture\SimulationVéhicule\SimulationVéhicule\SimulationVéhicule\bin\x86\Debug\Content\Models\_Pool_03.xnb</Output>
-      <Time>2016-02-03T09:49:23.9928442-05:00</Time>
+      <Time>2016-02-08T12:47:39.8875-05:00</Time>
     </Item>
     <Item>
       <Source>Models\_Pool_Wa.jpg</Source>
@@ -44,7 +44,7 @@
       <Processor>TextureProcessor</Processor>
       <Options>None</Options>
       <Output>C:\Users\201448183\Documents\GitHub\SimulationVoiture\SimulationVéhicule\SimulationVéhicule\SimulationVéhicule\bin\x86\Debug\Content\Models\_Pool_Wa.xnb</Output>
-      <Time>2016-02-03T09:49:23.9958418-05:00</Time>
+      <Time>2016-02-08T12:47:39.892505-05:00</Time>
     </Item>
     <Item>
       <Source>Models\MustangGT500.FBX</Source>
@@ -53,10 +53,10 @@
       <Processor>ModelProcessor</Processor>
       <Options>None</Options>
       <Output>C:\Users\201448183\Documents\GitHub\SimulationVoiture\SimulationVéhicule\SimulationVéhicule\SimulationVéhicule\bin\x86\Debug\Content\Models\MustangGT500.xnb</Output>
-      <Time>2016-02-03T09:49:23.981853-05:00</Time>
+      <Time>2016-02-08T12:48:50.4661642-05:00</Time>
       <Dependency>
         <Key>obj\x86\Debug\Models\MustangGT500_0.xml</Key>
-        <Value>2016-02-03T09:56:23.7174174-05:00</Value>
+        <Value>2016-02-08T12:50:56.587326-05:00</Value>
       </Dependency>
       <Request>C:\Users\201448183\Documents\GitHub\SimulationVoiture\SimulationVéhicule\SimulationVéhicule\SimulationVéhicule\bin\x86\Debug\Content\Models\_Corroga_0.xnb</Request>
       <Request>C:\Users\201448183\Documents\GitHub\SimulationVoiture\SimulationVéhicule\SimulationVéhicule\SimulationVéhicule\bin\x86\Debug\Content\Models\_Pool_03_0.xnb</Request>
@@ -65,11 +65,38 @@
       <Request>C:\Users\201448183\Documents\GitHub\SimulationVoiture\SimulationVéhicule\SimulationVéhicule\SimulationVéhicule\bin\x86\Debug\Content\Models\_Pool_01_0.xnb</Request>
     </Item>
     <Item>
+      <Source>Sounds\acceleration.wav</Source>
+      <Name>Sounds\acceleration</Name>
+      <Importer>WavImporter</Importer>
+      <Processor>SoundEffectProcessor</Processor>
+      <Options>None</Options>
+      <Output>C:\Users\201448183\Documents\GitHub\SimulationVoiture\SimulationVéhicule\SimulationVéhicule\SimulationVéhicule\bin\x86\Debug\Content\Sounds\acceleration.xnb</Output>
+      <Time>2016-02-08T12:48:50.7194172-05:00</Time>
+    </Item>
+    <Item>
+      <Source>Sounds\EngineSound.wav</Source>
+      <Name>Sounds\EngineSound</Name>
+      <Importer>WavImporter</Importer>
+      <Processor>SoundEffectProcessor</Processor>
+      <Options>None</Options>
+      <Output>C:\Users\201448183\Documents\GitHub\SimulationVoiture\SimulationVéhicule\SimulationVéhicule\SimulationVéhicule\bin\x86\Debug\Content\Sounds\EngineSound.xnb</Output>
+      <Time>2016-02-08T12:48:50.7034012-05:00</Time>
+    </Item>
+    <Item>
+      <Source>Sounds\brakeEffect.wav</Source>
+      <Name>Sounds\brakeEffect</Name>
+      <Importer>WavImporter</Importer>
+      <Processor>SoundEffectProcessor</Processor>
+      <Options>None</Options>
+      <Output>C:\Users\201448183\Documents\GitHub\SimulationVoiture\SimulationVéhicule\SimulationVéhicule\SimulationVéhicule\bin\x86\Debug\Content\Sounds\brakeEffect.xnb</Output>
+      <Time>2016-02-08T12:48:50.7354332-05:00</Time>
+    </Item>
+    <Item>
       <Source>Models\MustangGT500.FBX</Source>
       <Importer>FbxImporter</Importer>
       <Options>IntermediateFile, DontCacheImportedData</Options>
       <Output>obj\x86\Debug\Models\MustangGT500_0.xml</Output>
-      <Time>2016-02-03T09:49:23.981853-05:00</Time>
+      <Time>2016-02-08T12:48:50.4661642-05:00</Time>
     </Item>
     <Item>
       <Source>Models\_Corroga.jpg</Source>
@@ -85,7 +112,7 @@
       </Parameters>
       <Options>None</Options>
       <Output>C:\Users\201448183\Documents\GitHub\SimulationVoiture\SimulationVéhicule\SimulationVéhicule\SimulationVéhicule\bin\x86\Debug\Content\Models\_Corroga_0.xnb</Output>
-      <Time>2016-02-03T09:49:23.9848506-05:00</Time>
+      <Time>2016-02-08T12:47:39.87749-05:00</Time>
     </Item>
     <Item>
       <Source>Models\_Pool_03.jpg</Source>
@@ -101,7 +128,7 @@
       </Parameters>
       <Options>None</Options>
       <Output>C:\Users\201448183\Documents\GitHub\SimulationVoiture\SimulationVéhicule\SimulationVéhicule\SimulationVéhicule\bin\x86\Debug\Content\Models\_Pool_03_0.xnb</Output>
-      <Time>2016-02-03T09:49:23.9928442-05:00</Time>
+      <Time>2016-02-08T12:47:39.8875-05:00</Time>
     </Item>
     <Item>
       <Source>Models\_Pool_02.jpg</Source>
@@ -117,7 +144,7 @@
       </Parameters>
       <Options>None</Options>
       <Output>C:\Users\201448183\Documents\GitHub\SimulationVoiture\SimulationVéhicule\SimulationVéhicule\SimulationVéhicule\bin\x86\Debug\Content\Models\_Pool_02_0.xnb</Output>
-      <Time>2016-02-03T09:49:23.9898466-05:00</Time>
+      <Time>2016-02-08T12:47:39.884497-05:00</Time>
     </Item>
     <Item>
       <Source>Models\_Pool_Wa.jpg</Source>
@@ -133,7 +160,7 @@
       </Parameters>
       <Options>None</Options>
       <Output>C:\Users\201448183\Documents\GitHub\SimulationVoiture\SimulationVéhicule\SimulationVéhicule\SimulationVéhicule\bin\x86\Debug\Content\Models\_Pool_Wa_0.xnb</Output>
-      <Time>2016-02-03T09:49:23.9958418-05:00</Time>
+      <Time>2016-02-08T12:47:39.892505-05:00</Time>
     </Item>
     <Item>
       <Source>Models\_Pool_01.jpg</Source>
@@ -149,7 +176,7 @@
       </Parameters>
       <Options>None</Options>
       <Output>C:\Users\201448183\Documents\GitHub\SimulationVoiture\SimulationVéhicule\SimulationVéhicule\SimulationVéhicule\bin\x86\Debug\Content\Models\_Pool_01_0.xnb</Output>
-      <Time>2016-02-03T09:49:23.986849-05:00</Time>
+      <Time>2016-02-08T12:47:39.880493-05:00</Time>
     </Item>
     <BuildSuccessful>true</BuildSuccessful>
     <Settings>
@@ -190,7 +217,7 @@
       </Assembly>
       <Assembly>
         <Key>C:\windows\Microsoft.Net\assembly\GAC_32\Microsoft.Xna.Framework.Content.Pipeline\v4.0_4.0.0.0__842cf8be1de50553\Microsoft.Xna.Framework.Content.Pipeline.dll</Key>
-        <Value>2016-01-11T11:55:00.3162531-05:00</Value>
+        <Value>2016-01-11T11:00:11.8030505-05:00</Value>
       </Assembly>
     </Assemblies>
   </Asset>

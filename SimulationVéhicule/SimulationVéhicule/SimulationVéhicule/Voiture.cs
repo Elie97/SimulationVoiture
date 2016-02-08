@@ -29,7 +29,7 @@ namespace SimulationVéhicule
         public Vector3 Rotation { get; set; }
         protected Vector3 RotationInitiale { get; set; }
         public Vector3 Position { get; set; }
-        protected Model Modèle { get; private set; }
+        public Model Modèle { get; private set; }
         protected Matrix[] TransformationsModèle { get; private set; }
         protected Matrix Monde { get; set; }
         float IntervalleMAJ { get; set; }
@@ -53,7 +53,17 @@ namespace SimulationVéhicule
         SoundEffectInstance SoundAcceleration { get; set; }
         SoundEffectInstance SoundBrake { get; set; }
 
-        public Voiture(Game jeu, String nomModèle, float échelleInitiale, Vector3 rotationInitiale, Vector3 positionInitiale, float intervalleMAJ)
+        bool User { get; set; }
+
+        public bool EnContactVoiture { get; set; }
+
+
+        BoundingBox BoxVoiture { get; set; }
+
+
+
+
+        public Voiture(Game jeu, String nomModèle, float échelleInitiale, Vector3 rotationInitiale, Vector3 positionInitiale, float intervalleMAJ, bool user)
             : base(jeu)
         {
             NomModèle = nomModèle;
@@ -63,6 +73,7 @@ namespace SimulationVéhicule
             Rotation = rotationInitiale;
             RotationInitiale = rotationInitiale;
             IntervalleMAJ = intervalleMAJ;
+            User = user;
         }
 
         public override void Initialize()
@@ -76,7 +87,12 @@ namespace SimulationVéhicule
             CPT = 0;
             Déplacement = 0;
             Temps = 0;
+            EnContactVoiture = false;
             FacteurEngine = -0.5f;
+
+            //http://timjones.tw/blog/archive/2010/12/10/drawing-an-xna-model-bounding-box
+
+
             base.Initialize();
         }
 
@@ -105,7 +121,7 @@ namespace SimulationVéhicule
         {
             foreach (ModelMesh maille in Modèle.Meshes)
             {
-                Game.Window.Title = ((int)PixelToKMH(Vitesse)).ToString();
+                //Game.Window.Title = ((int)PixelToKMH(Vitesse)).ToString();
                 Matrix mondeLocal = TransformationsModèle[maille.ParentBone.Index] * GetMonde();
                 foreach (ModelMeshPart portionDeMaillage in maille.MeshParts)
                 {
@@ -124,49 +140,52 @@ namespace SimulationVéhicule
             TempsÉcouléDepuisMAJ += (float)gameTime.ElapsedGameTime.TotalSeconds;
             if (TempsÉcouléDepuisMAJ >= IntervalleMAJ)
             {
-                if (GestionInput.EstEnfoncée(Keys.W) && Vitesse >= 0)
+                if (User)
                 {
-                    if (GestionInput.EstEnfoncée(Keys.E))
+                    if (GestionInput.EstEnfoncée(Keys.W) && Vitesse >= 0)
                     {
-                        EnAvant = true;
-                        Accélération(EnAvant);
+                        if (GestionInput.EstEnfoncée(Keys.E))
+                        {
+                            EnAvant = true;
+                            Accélération(EnAvant);
+                        }
+                        Avance();
                     }
-                    Avance();
-                }
-                else if (GestionInput.EstEnfoncée(Keys.S) && Vitesse <= 0)
-                {
-                    if (GestionInput.EstEnfoncée(Keys.E))
+                    else if (GestionInput.EstEnfoncée(Keys.S) && Vitesse <= 0)
                     {
-                        EnAvant = false;
-                        Accélération(EnAvant);
+                        if (GestionInput.EstEnfoncée(Keys.E))
+                        {
+                            EnAvant = false;
+                            Accélération(EnAvant);
+                        }
+                        Avance();
                     }
-                    Avance();
-                }
-                else
-                {
-                    Décélération(EnAvant);
-                    Avance();
-                }
-                if (Vitesse != 0)
-                {
-                    GestionRotationVoiture();   
-                }
-                if (GestionInput.EstEnfoncée(Keys.Tab))
-                {
-                    Freinage();
-                }
+                    else
+                    {
+                        Décélération(EnAvant);
+                        Avance();
+                    }
+                    if (Vitesse != 0)
+                    {
+                        GestionRotationVoiture();
+                    }
+                    if (GestionInput.EstEnfoncée(Keys.Tab))
+                    {
+                        Freinage();
+                    }
 
-                if (Position.Y <= 0)
-                {
-                    Temps = 0;
-                    Position = new Vector3(Position.X, 0, Position.Z);
-                }
-                else
-                {
-                    GetHauteur();
-                }
+                    if (Position.Y <= 0)
+                    {
+                        Temps = 0;
+                        Position = new Vector3(Position.X, 0, Position.Z);
+                    }
+                    else
+                    {
+                        GetHauteur();
+                    }
 
-                PitchAndSound();
+                    PitchAndSound();
+                }
                 CalculerMonde();
                 TempsÉcouléDepuisMAJ = 0;
             }
@@ -341,6 +360,26 @@ namespace SimulationVéhicule
             if (Vitesse == 0)
             {
                 SoundAcceleration.Volume = 0.5f;
+            }
+        }
+
+        public void GestionCollisionVoiture(Voiture voiture)
+        {
+            for (int i = 0; i < Modèle.Meshes.Count; i++)
+            {
+                BoundingSphere bordureUtilisateur = Modèle.Meshes[i].BoundingSphere;
+                bordureUtilisateur.Center += Position;
+
+                for (int j = 0; j < voiture.Modèle.Meshes.Count; j++)
+                {
+                    BoundingSphere bordureAutre = voiture.Modèle.Meshes[j].BoundingSphere;
+                    bordureAutre.Center += voiture.Position;
+
+                    if (bordureUtilisateur.Intersects(bordureAutre))
+                    {
+                        EnContactVoiture = true;
+                    }
+                }
             }
         }
     }

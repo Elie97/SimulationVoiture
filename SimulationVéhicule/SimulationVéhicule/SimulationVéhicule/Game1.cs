@@ -31,10 +31,13 @@ namespace SimulationVéhicule
         CaméraSubjective CaméraJeu { get; set; }
 
         Voiture Mustang { get; set; }
+        Voiture AI { get; set; }
 
         Vector3 PositionCaméra { get; set; }
         float CibleYCaméra { get; set; }
         int VueArrière { get; set; }
+
+        float TempsÉcouléDepuisMAJ { get; set; }
 
         public InputManager GestionInput { get; private set; }
 
@@ -48,7 +51,9 @@ namespace SimulationVéhicule
         }
         protected override void Initialize()
         {
-            Mustang = new Voiture(this, "MustangGT500", 0.0088f, new Vector3(0, 0, 0), new Vector3(0, 0, -5000), INTERVALLE_MAJ_STANDARD);
+            Mustang = new Voiture(this, "MustangGT500", 0.0088f, new Vector3(0, 0, 0), new Vector3(0, 0, -5000), INTERVALLE_MAJ_STANDARD, true);
+            AI = new Voiture(this, "MustangGT500", 0.0088f, new Vector3(0, 0, 0), new Vector3(0, 0, -4000), INTERVALLE_MAJ_STANDARD, false);
+            TempsÉcouléDepuisMAJ = 0;
 
             CibleYCaméra = 0;
             VueArrière = 1;
@@ -69,7 +74,7 @@ namespace SimulationVéhicule
             Components.Add(GestionInput);
             Components.Add(CaméraJeu);
             Components.Add(new Afficheur3D(this));
-            Components.Add(new Sol(this, 1f, Vector3.Zero, new Vector3(0, 500, 0), new Vector3(1, 0, 1), new Vector3(100, 0, 10000), 1.0f, Color.White));
+            //Components.Add(new Sol(this, 1f, Vector3.Zero, new Vector3(0, 500, 0), new Vector3(1, 0, 1), new Vector3(100, 0, 10000), 1.0f, Color.White));
             Components.Add(new Sol(this, 1f, Vector3.Zero, new Vector3(0, 0, -5000), new Vector3(1, 0, 1), new Vector3(10000, 0, 100), 1.0f, Color.Blue));
             //Components.Add(new Sol(this, 1f, Vector3.Zero, new Vector3(0, 0, 20 * MÈTRE), new Vector3(1, 0, 1), new Vector3(KILOMÈTRE, 0, 20 * MÈTRE), 1.0f, Color.Green));
             //Components.Add(new Sol(this, 1f, Vector3.Zero, new Vector3(0, 0, 30 * MÈTRE), new Vector3(1, 0, 1), new Vector3(KILOMÈTRE, 0, 20 * MÈTRE), 1.0f, Color.Yellow));
@@ -79,6 +84,7 @@ namespace SimulationVéhicule
             //Components.Add(new Sol(this, 1f, Vector3.Zero, new Vector3(0, 0, 70 * MÈTRE), new Vector3(1, 0, 1), new Vector3(KILOMÈTRE, 0, 20 * MÈTRE), 1.0f, Color.Brown));
             //Components.Add(new Sol(this, 1f, Vector3.Zero, new Vector3(0, 0, 80 * MÈTRE), new Vector3(1, 0, 1), new Vector3(KILOMÈTRE, 0, 20 * MÈTRE), 1.0f, Color.Red));
             Components.Add(Mustang);
+            Components.Add(AI);
 
             Services.AddService(typeof(RessourcesManager<SpriteFont>), GestionnaireDeFonts);
             Services.AddService(typeof(RessourcesManager<Texture2D>), GestionnaireDeTextures);
@@ -103,7 +109,7 @@ namespace SimulationVéhicule
         protected override void Draw(GameTime gameTime)
         {
             GraphicsDevice.Clear(Color.SkyBlue);
-            //Window.Title = Mustang.Position.ToString();
+            Window.Title = GestionCollisionVoiture(Mustang, AI).ToString();
             base.Draw(gameTime);
         }
 
@@ -113,7 +119,6 @@ namespace SimulationVéhicule
             {
                 Exit();
             }
-
             Vector3 arrièreRapproché = new Vector3(0, 20, -70);
             Vector3 arrièreMoyen = new Vector3(0, 25, -80);
             Vector3 arrièreLoin = new Vector3(0, 30, -90);
@@ -171,6 +176,27 @@ namespace SimulationVéhicule
                 angle += 2 * (float)Math.PI;
 	        }
             return angle;
+        }
+
+        public bool GestionCollisionVoiture(Voiture voiture, Voiture voiture2)
+        {
+            for (int i = 0; i < voiture.Modèle.Meshes.Count; i++)
+            {
+                BoundingSphere bordureUtilisateur = voiture.Modèle.Meshes[i].BoundingSphere;
+                bordureUtilisateur.Center += voiture.Position;
+
+                for (int j = 0; j < voiture2.Modèle.Meshes.Count; j++)
+                {
+                    BoundingSphere bordureAutre = voiture2.Modèle.Meshes[j].BoundingSphere;
+                    bordureAutre.Center += voiture.Position;
+
+                    if (bordureUtilisateur.Intersects(bordureAutre))
+                    {
+                        return true;
+                    }
+                }
+            }
+            return false;
         }
     }
 }
