@@ -51,8 +51,10 @@ namespace SimulationVéhicule
         }
         protected override void Initialize()
         {
+            DebugShapeRenderer.Initialize(GraphicsDevice);
+
             Mustang = new Voiture(this, "MustangGT500", 0.0088f, new Vector3(0, 0, 0), new Vector3(0, 0, -5000), INTERVALLE_MAJ_STANDARD, true);
-            AI = new Voiture(this, "MustangGT500", 0.0088f, new Vector3(0, 0, 0), new Vector3(0, 0, -4000), INTERVALLE_MAJ_STANDARD, false);
+            AI = new Voiture(this, "MustangGT500", 0.0088f, new Vector3(0, 0, 0), new Vector3(0, 0, -4500), INTERVALLE_MAJ_STANDARD, false);
             TempsÉcouléDepuisMAJ = 0;
 
             CibleYCaméra = 0;
@@ -74,6 +76,7 @@ namespace SimulationVéhicule
             Components.Add(GestionInput);
             Components.Add(CaméraJeu);
             Components.Add(new Afficheur3D(this));
+            Components.Add(new AfficheurFPS(this, INTERVALLE_CALCUL_FPS));
             //Components.Add(new Sol(this, 1f, Vector3.Zero, new Vector3(0, 500, 0), new Vector3(1, 0, 1), new Vector3(100, 0, 10000), 1.0f, Color.White));
             Components.Add(new Sol(this, 1f, Vector3.Zero, new Vector3(0, 0, -5000), new Vector3(1, 0, 1), new Vector3(10000, 0, 100), 1.0f, Color.Blue));
             //Components.Add(new Sol(this, 1f, Vector3.Zero, new Vector3(0, 0, 20 * MÈTRE), new Vector3(1, 0, 1), new Vector3(KILOMÈTRE, 0, 20 * MÈTRE), 1.0f, Color.Green));
@@ -103,14 +106,24 @@ namespace SimulationVéhicule
             GérerClavier();
             CaméraJeu.Direction = new Vector3(VueArrière * (float)Math.Sin(Mustang.Rotation.Y), CibleYCaméra, VueArrière * (float)Math.Cos(Mustang.Rotation.Y));
             CaméraJeu.Position = new Vector3((PositionCaméra.Z * (float)Math.Sin(Mustang.Rotation.Y)) + Mustang.Position.X, (PositionCaméra.Y) + Mustang.Position.Y, (PositionCaméra.Z * (float)Math.Cos(Mustang.Rotation.Y)) + Mustang.Position.Z);
+            //boucle de temps
+            TempsÉcouléDepuisMAJ += (float)gameTime.ElapsedGameTime.TotalSeconds;
+            if (TempsÉcouléDepuisMAJ >= INTERVALLE_MAJ_STANDARD)
+            {
+                Mustang.GestionCollisionVoiture(AI);
+                TempsÉcouléDepuisMAJ = 0;
+            }
             base.Update(gameTime);
         }
 
         protected override void Draw(GameTime gameTime)
         {
             GraphicsDevice.Clear(Color.SkyBlue);
-            Window.Title = GestionCollisionVoiture(Mustang, AI).ToString();
+            GestionSprites.Begin();
+            //Window.Title =AI.Vitesse + " - " + Mustang.GestionCollisionVoiture(AI).ToString(); 
+            DebugShapeRenderer.Draw(gameTime, CaméraJeu.Vue, CaméraJeu.Projection);
             base.Draw(gameTime);
+            GestionSprites.End();
         }
 
         private void GérerClavier()
@@ -166,37 +179,16 @@ namespace SimulationVéhicule
 
         float GetAngle(float angle)
         {
-            angle = angle / (float)(2*Math.PI);
+            angle = angle / (float)(2 * Math.PI);
             if (angle >= 2 * Math.PI)
             {
                 angle -= 2 * (float)Math.PI;
             }
             if (angle <= -2 * Math.PI)
-	        {
-                angle += 2 * (float)Math.PI;
-	        }
-            return angle;
-        }
-
-        public bool GestionCollisionVoiture(Voiture voiture, Voiture voiture2)
-        {
-            for (int i = 0; i < voiture.Modèle.Meshes.Count; i++)
             {
-                BoundingSphere bordureUtilisateur = voiture.Modèle.Meshes[i].BoundingSphere;
-                bordureUtilisateur.Center += voiture.Position;
-
-                for (int j = 0; j < voiture2.Modèle.Meshes.Count; j++)
-                {
-                    BoundingSphere bordureAutre = voiture2.Modèle.Meshes[j].BoundingSphere;
-                    bordureAutre.Center += voiture.Position;
-
-                    if (bordureUtilisateur.Intersects(bordureAutre))
-                    {
-                        return true;
-                    }
-                }
+                angle += 2 * (float)Math.PI;
             }
-            return false;
+            return angle;
         }
     }
 }
