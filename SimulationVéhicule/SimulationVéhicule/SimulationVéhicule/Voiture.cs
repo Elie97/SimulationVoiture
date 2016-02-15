@@ -145,7 +145,14 @@ namespace SimulationVéhicule
                 }
                 maille.Draw();
             }
-            DebugShapeRenderer.AddBoundingBox(BoxVoiture, Color.Red);
+           // DebugShapeRenderer.AddBoundingBox(BoxVoiture, Color.Red);
+            DebugShapeRenderer.AddBoundingBox(BoundingBox.CreateFromSphere(SphereVoitureAvant), Color.Green);
+            DebugShapeRenderer.AddBoundingBox(BoundingBox.CreateFromSphere(SphereVoitureMillieu), Color.Red);
+            DebugShapeRenderer.AddBoundingBox(BoundingBox.CreateFromSphere(SphereVoitureArrière), Color.Yellow);
+            //DebugShapeRenderer.AddBoundingSphere((SphereVoitureAvant), Color.Green);
+            //DebugShapeRenderer.AddBoundingSphere((SphereVoitureMillieu), Color.Red);
+            //DebugShapeRenderer.AddBoundingSphere((SphereVoitureArrière), Color.Yellow);
+
 
 
         }
@@ -390,8 +397,10 @@ namespace SimulationVéhicule
             }
         }
 
-        public bool GestionCollisionVoiture(Voiture voiture)
+        public bool GestionCollisionVoiture2(Voiture voiture)
         {
+            //voiture.Vitesse = KMHtoPixel(10.0f);
+            //voiture.Avance();
             bool enCollision = false;
             bool avance = true;
             bool translation = false;
@@ -405,46 +414,62 @@ namespace SimulationVéhicule
                 enCollision = voiture.BoxVoiture.Intersects(BoxVoiture);
                 if (CollisionPrête)
                 {
-                    if (Collision == 0 && Vitesse >= KMHtoPixel(30.0f))
+                    if (Math.Abs(Math.Cos(deltaRotation)) >= 0.1f && Math.Abs(Math.Cos(deltaRotation)) <= 0.9f)
                     {
-                        translation = false;
-                        voiture.Position = new Vector3(voiture.Position.X, voiture.Position.Y, voiture.Position.Z + (2 * (float)Math.Cos(voiture.Rotation.Y)));
-                        voiture.Vitesse = Vitesse * 0.6f;
-                        voiture.Avance();
-                        Vitesse -= KMHtoPixel(50.0f);
-                    }
-                    else if (Collision == 6 && Vitesse >= KMHtoPixel(30.0f))
-                    {
-                        translation = false;
-                        voiture.Position = new Vector3(voiture.Position.X, voiture.Position.Y, voiture.Position.Z - (2 * (float)Math.Cos(voiture.Rotation.Y)));
-                        voiture.Vitesse = -1 * Math.Abs(Vitesse * 0.6f);
-                        voiture.Avance();
-                        Vitesse -= KMHtoPixel(50.0f);
-                    }
-                    else if (Collision == 3 && Vitesse >= KMHtoPixel(15.0f))
-                    {
-                        if (PixelToKMH(Vitesse) >= 40.0f)
+                        if (deltaRotation >= 0)
                         {
-                            Vitesse /= 2f;
+                            voiture.Rotation = new Vector3(voiture.Rotation.X, voiture.Rotation.Y - (1 * Vitesse / 10f), voiture.Rotation.Z);
                         }
-                        //voiture.Rotation = new Vector3(voiture.Rotation.X, Rotation.Y - MathHelper.PiOver2, voiture.Rotation.Z);
-                        Vitesse -= KMHtoPixel(2.0f);
-                        voiture.Position = new Vector3(Position.X + (deltaPosition.X * 1.1f * (float)Math.Cos(voiture.Rotation.Y)), voiture.Position.Y, voiture.Position.Z + (deltaPosition.Y * 1.1f * (float)Math.Sin(voiture.Rotation.Y)));
-                    }
-                    else if (Collision == 9 && Vitesse >= KMHtoPixel(15.0f))
-                    {
-                        if (PixelToKMH(Vitesse) >= 40.0f)
+                        else
                         {
-                            Vitesse /= 2f;
+                            voiture.Rotation = new Vector3(voiture.Rotation.X, voiture.Rotation.Y - (-1 * Vitesse / 10f), voiture.Rotation.Z);
                         }
-                        //voiture.Rotation = new Vector3(voiture.Rotation.X, Rotation.Y - MathHelper.PiOver2, voiture.Rotation.Z);
-                        Vitesse -= KMHtoPixel(2.0f);
-                        voiture.Position = new Vector3(Position.X + (deltaPosition.X * 1.1f * (float)Math.Cos(voiture.Rotation.Y)), voiture.Position.Y, voiture.Position.Z + (deltaPosition.Y * 1.1f * (float)Math.Sin(voiture.Rotation.Y)));
                     }
-                    else
-                    {
-                        Vitesse = 0;
-                    }
+                    //Transfert d'énergie
+                    Vitesse -= KMHtoPixel(2.0f);
+                    //if (Collision == 0 && Vitesse >= KMHtoPixel(30.0f))
+                    //{
+                    //    translation = false;
+                    //    voiture.Position = new Vector3(voiture.Position.X, voiture.Position.Y, voiture.Position.Z + (2 * (float)Math.Cos(voiture.Rotation.Y)));
+                    //    voiture.Vitesse = Vitesse * 0.6f;
+                    //    voiture.Avance();
+                    //    Vitesse -= KMHtoPixel(50.0f);
+                    //}
+                    //else if (Collision == 6 && Vitesse >= KMHtoPixel(30.0f))
+                    //{
+                    //    translation = false;
+                    //    voiture.Position = new Vector3(voiture.Position.X, voiture.Position.Y, voiture.Position.Z - (2 * (float)Math.Cos(voiture.Rotation.Y)));
+                    //    voiture.Vitesse = -1 * Math.Abs(Vitesse * 0.6f);
+                    //    voiture.Avance();
+                    //    Vitesse -= KMHtoPixel(50.0f);
+                    //}
+                    //else if (Collision == 3 && Vitesse >= KMHtoPixel(15.0f))
+                    //{
+                    //    if (PixelToKMH(Vitesse) >= 40.0f)
+                    //    {
+                    //        Vitesse /= 2f;
+                    //    }
+                    //    Vitesse -= KMHtoPixel(2.0f);
+                    //    voiture.Position = new Vector3(Position.X + (deltaPosition.X * 1.1f * (float)Math.Cos(voiture.Rotation.Y)), voiture.Position.Y, voiture.Position.Z + (deltaPosition.Y * 1.1f * (float)Math.Sin(voiture.Rotation.Y)));
+                    //}
+                    //else if (Collision == 9 && Vitesse >= KMHtoPixel(15.0f))
+                    //{
+                    //    if (PixelToKMH(Vitesse) >= 40.0f)
+                    //    {
+                    //        Vitesse /= 2f;
+                    //    }
+                    //    Vitesse -= KMHtoPixel(2.0f);
+                    //    voiture.Position = new Vector3(Position.X + (deltaPosition.X * 1.1f * (float)Math.Cos(voiture.Rotation.Y)), voiture.Position.Y, voiture.Position.Z + (deltaPosition.Y * 1.1f * (float)Math.Sin(voiture.Rotation.Y)));
+                    //}
+                    //else if(Collision == 2)
+                    //{
+                    //    Vitesse -= KMHtoPixel(2.0f);
+                    //    voiture.Rotation = new Vector3(voiture.Rotation.X, voiture.Rotation.Y - ((float)Math.Cos(PixelToKMH(Vitesse) / VITESSE_MAX)), voiture.Rotation.Z);
+                    //}
+                    //else
+                    //{
+                    //    Vitesse = 0;
+                    //}
                 }
                 CollisionPrête = true;
             }
@@ -458,15 +483,50 @@ namespace SimulationVéhicule
             }
 
             //Game.Window.Title = Position.ToString() + " - " + collision.ToString() + " - " + PixelToKMH(Vitesse) + " - " + translation.ToString(); 
-            Game.Window.Title = PixelToKMH(Vitesse).ToString() + " - " + deltaPosition.ToString() + " - " + enCollision + " - " + Collision.ToString();
+            Game.Window.Title = deltaPosition.ToString() + " - " + Collision.ToString() + " - " + Math.Cos(deltaRotation).ToString();
             return AvanceCollision;
+        }
+
+        public bool GestionCollisionVoiture(Voiture voiture)
+        {
+            bool enCollisionAvant = false;
+            bool enCollisionMilieu = false;
+            bool enCollisionArrière = false;
+            float deltaRotation = NormalizeRotation(Rotation.Y) - NormalizeRotation(voiture.Rotation.Y);
+            enCollisionArrière = SphereVoitureAvant.Intersects(voiture.SphereVoitureArrière);
+            if (enCollisionArrière)
+            {
+                enCollisionArrière = voiture.BoxVoiture.Intersects(BoxVoiture);
+                if (CollisionPrête)
+                {
+                    //if (Math.Abs(deltaRotation) >= 0.1 && Math.Abs(deltaRotation) <= 0.9)
+                    //{
+                        voiture.Rotation = new Vector3(voiture.Rotation.X, voiture.Rotation.Y - (deltaRotation / 60f) * Vitesse, voiture.Rotation.Z);
+                    //}
+                    //Transfert d'énergie
+                    //voiture.Position = new Vector3(0,0,0);
+                    voiture.Position = new Vector3(voiture.Position.X, voiture.Position.Y, voiture.Position.Z + (2 * (float)Math.Cos(voiture.Rotation.Y)));
+                    voiture.Vitesse = Vitesse * 0.6f;
+                    voiture.Avance();
+                    //Vitesse -= KMHtoPixel(50.0f);
+                    //Vitesse -= KMHtoPixel(2.0f);
+                }
+                CollisionPrête = true;
+            }
+            else
+            {
+                voiture.Décélération(AvanceCollision);//devrait être la décélération naturelle de l'auto
+                voiture.Avance();//Same ^^
+            }
+            Game.Window.Title = enCollisionArrière.ToString() + " : " + (Math.Cos(deltaRotation)).ToString();
+            return true;
         }
 
         void CreateBoundingBox()
         {
-            SphereVoitureAvant = new BoundingSphere(new Vector3(Position.X, Position.Y + 12, Position.Z), 11f);
-            SphereVoitureMillieu = new BoundingSphere(new Vector3(Position.X + (15 * (float)Math.Sin(-Rotation.Y)), Position.Y + 12, Position.Z - (15 * (float)Math.Cos(-Rotation.Y))), 11f);
-            SphereVoitureArrière = new BoundingSphere(new Vector3(Position.X + (30 * (float)Math.Sin(-Rotation.Y)), Position.Y + 12, Position.Z - (30 * (float)Math.Cos(-Rotation.Y))), 11f);
+            SphereVoitureAvant = new BoundingSphere(new Vector3(Position.X, Position.Y + 10, Position.Z), 7f);
+            SphereVoitureMillieu = new BoundingSphere(new Vector3(Position.X + (15 * (float)Math.Sin(-Rotation.Y)), Position.Y + 12, Position.Z - (15 * (float)Math.Cos(-Rotation.Y))), 7f);
+            SphereVoitureArrière = new BoundingSphere(new Vector3(Position.X + (30 * (float)Math.Sin(-Rotation.Y)), Position.Y + 10, Position.Z - (30 * (float)Math.Cos(-Rotation.Y))), 7f);
 
             BoxVoiture = BoundingBox.CreateMerged(BoundingBox.CreateFromSphere(SphereVoitureAvant), BoundingBox.CreateFromSphere(SphereVoitureMillieu));
             BoxVoiture = BoundingBox.CreateMerged(BoxVoiture, BoundingBox.CreateFromSphere(SphereVoitureArrière));
