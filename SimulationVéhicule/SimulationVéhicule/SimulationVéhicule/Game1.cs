@@ -88,7 +88,6 @@ namespace SimulationVéhicule
             //Components.Add(new Sol(this, 1f, Vector3.Zero, new Vector3(0, 0, 80 * MÈTRE), new Vector3(1, 0, 1), new Vector3(KILOMÈTRE, 0, 20 * MÈTRE), 1.0f, Color.Red));
             Components.Add(Mustang);
             Components.Add(AI);
-
             Services.AddService(typeof(RessourcesManager<SpriteFont>), GestionnaireDeFonts);
             Services.AddService(typeof(RessourcesManager<Texture2D>), GestionnaireDeTextures);
             Services.AddService(typeof(RessourcesManager<Model>), GestionnaireDeModèles);

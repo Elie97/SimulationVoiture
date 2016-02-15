@@ -67,7 +67,8 @@ namespace SimulationVéhicule
         BoundingSphere SphereVoitureArrière { get; set; }
         BoundingSphere SphereVoitureMillieu { get; set; }
 
-
+        SpriteBatch GestionSprites { get; set; }//ToDELETE
+        SpriteFont ArialFont { get; set; }//ToDELETE
 
 
         public Voiture(Game jeu, String nomModèle, float échelleInitiale, Vector3 rotationInitiale, Vector3 positionInitiale, float intervalleMAJ, bool user)
@@ -111,6 +112,8 @@ namespace SimulationVéhicule
 
         protected override void LoadContent()
         {
+            GestionSprites = Game.Services.GetService(typeof(SpriteBatch)) as SpriteBatch;//ToDELETE
+            ArialFont = Game.Content.Load<SpriteFont>("Fonts/Arial");//ToDELETE
             CaméraJeu = Game.Services.GetService(typeof(Caméra)) as Caméra;
             GestionnaireDeModèles = Game.Services.GetService(typeof(RessourcesManager<Model>)) as RessourcesManager<Model>;
             GestionnaireDeSon = Game.Services.GetService(typeof(RessourcesManager<SoundEffect>)) as RessourcesManager<SoundEffect>;
@@ -135,6 +138,10 @@ namespace SimulationVéhicule
                     effet.Projection = CaméraJeu.Projection;
                     effet.View = CaméraJeu.Vue;
                     effet.World = mondeLocal;
+                    if (GestionInput.EstEnfoncée(Keys.C))
+                    {
+                        Info();//ToDELETE
+                    }
                 }
                 maille.Draw();
             }
@@ -420,9 +427,19 @@ namespace SimulationVéhicule
                         {
                             Vitesse /= 2f;
                         }
-                        voiture.Rotation = new Vector3(voiture.Rotation.X, Rotation.Y - MathHelper.PiOver2, voiture.Rotation.Z);
+                        //voiture.Rotation = new Vector3(voiture.Rotation.X, Rotation.Y - MathHelper.PiOver2, voiture.Rotation.Z);
                         Vitesse -= KMHtoPixel(2.0f);
-                        voiture.Position = new Vector3(Position.X + (deltaPosition.X * 1.1f), voiture.Position.Y, voiture.Position.Z);
+                        voiture.Position = new Vector3(Position.X + (deltaPosition.X * 1.1f * (float)Math.Cos(voiture.Rotation.Y)), voiture.Position.Y, voiture.Position.Z + (deltaPosition.Y * 1.1f * (float)Math.Sin(voiture.Rotation.Y)));
+                    }
+                    else if (Collision == 9 && Vitesse >= KMHtoPixel(15.0f))
+                    {
+                        if (PixelToKMH(Vitesse) >= 40.0f)
+                        {
+                            Vitesse /= 2f;
+                        }
+                        //voiture.Rotation = new Vector3(voiture.Rotation.X, Rotation.Y - MathHelper.PiOver2, voiture.Rotation.Z);
+                        Vitesse -= KMHtoPixel(2.0f);
+                        voiture.Position = new Vector3(Position.X + (deltaPosition.X * 1.1f * (float)Math.Cos(voiture.Rotation.Y)), voiture.Position.Y, voiture.Position.Z + (deltaPosition.Y * 1.1f * (float)Math.Sin(voiture.Rotation.Y)));
                     }
                     else
                     {
@@ -555,6 +572,16 @@ namespace SimulationVéhicule
                 }
             }
             return collision;
+        }
+
+        void Info()//ToDelete
+        {
+            if (User)
+            {
+                string info = "Vitesse: " + ((int)PixelToKMH(Vitesse)) + "  Position: " + Position + "  Rotation:" + Rotation.Y;
+
+                GestionSprites.DrawString(ArialFont, info, new Vector2(0, 0), Color.White,0f,new Vector2(0,0),0.5f,SpriteEffects.None,0);
+            }
         }
     }
 }
