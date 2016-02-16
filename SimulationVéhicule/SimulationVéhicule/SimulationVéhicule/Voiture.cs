@@ -60,6 +60,7 @@ namespace SimulationVéhicule
         bool AccélérationPossible { get; set; }
         bool CollisionPrête { get; set; }
         int Collision { get; set; }
+        float RotationEnCollision { get; set; }
 
 
         BoundingBox BoxVoiture { get; set; }
@@ -99,6 +100,7 @@ namespace SimulationVéhicule
             AccélérationPossible = true;
             CollisionPrête = false;
             Collision = 0;
+            RotationEnCollision = 0;
             base.Initialize();
         }
 
@@ -492,22 +494,28 @@ namespace SimulationVéhicule
             bool enCollisionAvant = false;
             bool enCollisionMilieu = false;
             bool enCollisionArrière = false;
+            float rotation = 0;
             float deltaRotation = NormalizeRotation(Rotation.Y) - NormalizeRotation(voiture.Rotation.Y);
+            float deltaVitesse = voiture.Vitesse - Vitesse;
             enCollisionArrière = SphereVoitureAvant.Intersects(voiture.SphereVoitureArrière);
+            //rotation = (float)Math.Sin(deltaRotation) * (1 / (float)(Math.PI / 1.5f));
             if (enCollisionArrière)
             {
                 enCollisionArrière = voiture.BoxVoiture.Intersects(BoxVoiture);
                 if (CollisionPrête)
                 {
-                    //if (Math.Abs(deltaRotation) >= 0.1 && Math.Abs(deltaRotation) <= 0.9)
-                    //{
-                        voiture.Rotation = new Vector3(voiture.Rotation.X, voiture.Rotation.Y - (deltaRotation / 60f) * Vitesse, voiture.Rotation.Z);
-                    //}
-                    //Transfert d'énergie
-                    //voiture.Position = new Vector3(0,0,0);
-                    voiture.Position = new Vector3(voiture.Position.X, voiture.Position.Y, voiture.Position.Z + (2 * (float)Math.Cos(voiture.Rotation.Y)));
-                    voiture.Vitesse = Vitesse * 0.6f;
-                    voiture.Avance();
+                    RotationEnCollision = ((float)Math.Sin(deltaRotation) * (1 / (float)(Math.PI / 1.5f))) * deltaVitesse;
+                    //voiture.Rotation = new Vector3(voiture.Rotation.X, voiture.Rotation.Y + rotation, voiture.Rotation.Z);
+                    //voiture.Rotation = new Vector3(voiture.Rotation.X, voiture.Rotation.Y + MathHelper.PiOver2, voiture.Rotation.Z);
+                    ////if (Math.Abs(deltaRotation) >= 0.1 && Math.Abs(deltaRotation) <= 0.9)
+                    ////{
+                    //    voiture.Rotation = new Vector3(voiture.Rotation.X, voiture.Rotation.Y - (deltaRotation / 60f) * Vitesse, voiture.Rotation.Z);
+                    ////}
+                    ////Transfert d'énergie
+                    ////voiture.Position = new Vector3(0,0,0);
+                    //voiture.Position = new Vector3(voiture.Position.X, voiture.Position.Y, voiture.Position.Z + (2 * (float)Math.Cos(voiture.Rotation.Y)));
+                    //voiture.Vitesse = Vitesse * 0.6f;
+                    //voiture.Avance();
                     //Vitesse -= KMHtoPixel(50.0f);
                     //Vitesse -= KMHtoPixel(2.0f);
                 }
@@ -518,7 +526,8 @@ namespace SimulationVéhicule
                 voiture.Décélération(AvanceCollision);//devrait être la décélération naturelle de l'auto
                 voiture.Avance();//Same ^^
             }
-            Game.Window.Title = enCollisionArrière.ToString() + " : " + (Math.Cos(deltaRotation)).ToString();
+            RotationCollision(voiture);
+            Game.Window.Title = enCollisionArrière.ToString() + " : " + RotationEnCollision.ToString();
             return true;
         }
 
@@ -641,6 +650,22 @@ namespace SimulationVéhicule
                 string info = "Vitesse: " + ((int)PixelToKMH(Vitesse)) + "  Position: " + Position + "  Rotation:" + Rotation.Y;
 
                 GestionSprites.DrawString(ArialFont, info, new Vector2(0, 0), Color.White,0f,new Vector2(0,0),0.5f,SpriteEffects.None,0);
+            }
+        }
+
+        void RotationCollision(Voiture voiture)
+        {
+            if (RotationEnCollision >= 0)
+            {
+                if (voiture.Rotation.Y <= 5)//en tk
+                {
+                    
+                }
+                voiture.Rotation = new Vector3(voiture.Rotation.X, voiture.Rotation.Y + 0.01f, voiture.Rotation.Z);
+            }
+            else
+            {
+
             }
         }
     }
