@@ -61,6 +61,7 @@ namespace SimulationVéhicule
         bool CollisionPrête { get; set; }
         int Collision { get; set; }
         float RotationEnCollision { get; set; }
+        float VitesseRotation { get; set; }
 
 
         BoundingBox BoxVoiture { get; set; }
@@ -101,6 +102,7 @@ namespace SimulationVéhicule
             CollisionPrête = false;
             Collision = 0;
             RotationEnCollision = 0;
+            VitesseRotation = 0;
             base.Initialize();
         }
 
@@ -502,10 +504,14 @@ namespace SimulationVéhicule
             if (enCollisionArrière)
             {
                 enCollisionArrière = voiture.BoxVoiture.Intersects(BoxVoiture);
-                if (CollisionPrête)
+                if (CollisionPrête && Vitesse >= KMHtoPixel(30.0f))
                 {
-                    RotationEnCollision = ((float)Math.Sin(deltaRotation) * (1 / (float)(Math.PI / 1.5f))) * deltaVitesse;
-                    //voiture.Rotation = new Vector3(voiture.Rotation.X, voiture.Rotation.Y + rotation, voiture.Rotation.Z);
+                    if (Math.Abs(deltaRotation) >= 0.1f)
+                    {
+                        RotationEnCollision = (float)Math.Sin(deltaRotation) * ((float)MathHelper.PiOver4 * (PixelToKMH(Vitesse) / VITESSE_MAX));//deltaVitesse?
+                        RotationCollision(voiture, true, RotationEnCollision);
+                    }
+                    //voiture.Rotation = new Vector3(voiture.Rotation.X, voiture.Rotation.Y - RotationEnCollision, voiture.Rotation.Z);
                     //voiture.Rotation = new Vector3(voiture.Rotation.X, voiture.Rotation.Y + MathHelper.PiOver2, voiture.Rotation.Z);
                     ////if (Math.Abs(deltaRotation) >= 0.1 && Math.Abs(deltaRotation) <= 0.9)
                     ////{
@@ -519,6 +525,10 @@ namespace SimulationVéhicule
                     //Vitesse -= KMHtoPixel(50.0f);
                     //Vitesse -= KMHtoPixel(2.0f);
                 }
+                else
+                {
+                    Vitesse = 0;
+                }
                 CollisionPrête = true;
             }
             else
@@ -526,7 +536,7 @@ namespace SimulationVéhicule
                 voiture.Décélération(AvanceCollision);//devrait être la décélération naturelle de l'auto
                 voiture.Avance();//Same ^^
             }
-            RotationCollision(voiture);
+            RotationCollision(voiture, false, RotationEnCollision);
             Game.Window.Title = enCollisionArrière.ToString() + " : " + RotationEnCollision.ToString();
             return true;
         }
@@ -653,20 +663,14 @@ namespace SimulationVéhicule
             }
         }
 
-        void RotationCollision(Voiture voiture)
+        void RotationCollision(Voiture voiture, bool enContact, float angleMax)
         {
-            if (RotationEnCollision >= 0)
+            if (enContact)
             {
-                if (voiture.Rotation.Y <= 5)//en tk
-                {
-                    
-                }
-                voiture.Rotation = new Vector3(voiture.Rotation.X, voiture.Rotation.Y + 0.01f, voiture.Rotation.Z);
+                VitesseRotation = (angleMax) / 4f;
             }
-            else
-            {
-
-            }
+            VitesseRotation -= VitesseRotation * 0.1f;
+            voiture.Rotation = new Vector3(voiture.Rotation.X, voiture.Rotation.Y - VitesseRotation, voiture.Rotation.Z);
         }
     }
 }
