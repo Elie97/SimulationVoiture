@@ -8,7 +8,7 @@ namespace SimulationVéhicule
         const float INTERVALLE_MAJ_STANDARD = 1f / 60f;
         const float ACCÉLÉRATION = 0.001f;
         const float VITESSE_INITIALE_ROTATION = 5f;
-        const float VITESSE_INITIALE_TRANSLATION = 0.5f;
+        const float VITESSE_INITIALE_TRANSLATION = 0.1f;
         const float DELTA_LACET = MathHelper.Pi / 180; // 1 degré à la fois
         const float DELTA_TANGAGE = MathHelper.Pi / 180; // 1 degré à la fois
         const float DELTA_ROULIS = MathHelper.Pi / 180; // 1 degré à la fois
@@ -59,7 +59,7 @@ namespace SimulationVéhicule
             GestionInput = Game.Services.GetService(typeof(InputManager)) as InputManager;
         }
 
-        protected override void CréerPointDeVue()
+        public override void CréerPointDeVue()
         {
             Direction = Vector3.Normalize(Direction);
             OrientationVerticale = Vector3.Normalize(OrientationVerticale);
@@ -83,6 +83,7 @@ namespace SimulationVéhicule
             float TempsÉcoulé = (float)gameTime.ElapsedGameTime.TotalSeconds;
             TempsÉcouléDepuisMAJ += TempsÉcoulé;
             GestionClavier();
+            //CréerPointDeVue();
             if (TempsÉcouléDepuisMAJ >= IntervalleMAJ)
             {
                 //if (GestionInput.EstEnfoncée(Keys.LeftShift) || GestionInput.EstEnfoncée(Keys.RightShift))
@@ -92,7 +93,7 @@ namespace SimulationVéhicule
                 //    GérerRotation();
                 //    CréerPointDeVue();
                 //}
-                CréerPointDeVue();
+                //CréerPointDeVue();
                 TempsÉcouléDepuisMAJ = 0;
             }
             base.Update(gameTime);

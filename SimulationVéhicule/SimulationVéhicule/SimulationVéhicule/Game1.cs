@@ -36,6 +36,14 @@ namespace SimulationVéhicule
         Vector3 PositionCaméra { get; set; }
         float CibleYCaméra { get; set; }
         int VueArrière { get; set; }
+        //Vector3 ArrièreRapproché { get; set; }
+        //Vector3 ArrièreMoyen { get; set; }
+        //Vector3 ArrièreLoin { get; set; }
+        //Vector3 IntérieurConducteur { get; set; }
+        //Vector3 Capo { get; set; }
+        //Vector3 VueArrière { get; set; }
+        Vector3[] TableauPositionCaméra { get; set; }
+        int IndexPositionCaméra { get; set; }
 
         float TempsÉcouléDepuisMAJ { get; set; }
 
@@ -59,9 +67,11 @@ namespace SimulationVéhicule
 
             CibleYCaméra = 0;
             VueArrière = 1;
+            TableauPositionCaméra = new Vector3[6];
+            IndexPositionCaméra = 0;
             //Vector3 positionCaméra = new Vector3(0, 50, -120);
             Vector3 positionCaméra = new Vector3(0, 20, -5070);
-            PositionCaméra = new Vector3(0, 20, -70);
+            PositionCaméra = new Vector3(-80, 20, -80);
 
             Vector3 cibleCaméra = new Vector3(0, 0, 0);
 
@@ -103,12 +113,12 @@ namespace SimulationVéhicule
         protected override void Update(GameTime gameTime)
         {
             GérerClavier();
-            CaméraJeu.Direction = new Vector3(VueArrière * (float)Math.Sin(Mustang.Rotation.Y), CibleYCaméra, VueArrière * (float)Math.Cos(Mustang.Rotation.Y));
-            CaméraJeu.Position = new Vector3((PositionCaméra.Z * (float)Math.Sin(Mustang.Rotation.Y)) + Mustang.Position.X, (PositionCaméra.Y) + Mustang.Position.Y, (PositionCaméra.Z * (float)Math.Cos(Mustang.Rotation.Y)) + Mustang.Position.Z);
-            //boucle de temps
             TempsÉcouléDepuisMAJ += (float)gameTime.ElapsedGameTime.TotalSeconds;
             if (TempsÉcouléDepuisMAJ >= INTERVALLE_MAJ_STANDARD)
             {
+                GestionOrientationCaméra();
+                CaméraJeu.CréerPointDeVue();
+                AI.Vitesse = 2f;
                 Mustang.GestionCollisionVoiture(AI);
                 TempsÉcouléDepuisMAJ = 0;
             }
@@ -119,7 +129,7 @@ namespace SimulationVéhicule
         {
             GraphicsDevice.Clear(Color.SkyBlue);
             GestionSprites.Begin();
-            //Window.Title =AI.Vitesse + " - " + Mustang.GestionCollisionVoiture(AI).ToString(); 
+            //Window.Title = CaméraJeu.Position.ToString() + " - " + CaméraJeu.Direction.ToString(); 
             DebugShapeRenderer.Draw(gameTime, CaméraJeu.Vue, CaméraJeu.Projection);
             base.Draw(gameTime);
             GestionSprites.End();
@@ -131,63 +141,75 @@ namespace SimulationVéhicule
             {
                 Exit();
             }
-            Vector3 arrièreRapproché = new Vector3(0, 20, -70);
-            Vector3 arrièreMoyen = new Vector3(0, 25, -80);
-            Vector3 arrièreLoin = new Vector3(0, 30, -90);
-            Vector3 intérieurConducteur = new Vector3(0, 11, -20);
-            Vector3 capo = new Vector3(0, 12, -8);
-            Vector3 vueArrière = new Vector3(0, 20, 55);
+            Vector3 arrièreRapproché = new Vector3(-80, 20, -80);
+            Vector3 arrièreMoyen = new Vector3(-90, 25, -90);
+            Vector3 arrièreLoin = new Vector3(-100, 30, -100);
+            Vector3 intérieurConducteur = new Vector3(-20, 11, -20);
+            Vector3 capo = new Vector3(-10, 12, -10);
+            Vector3 vueArrière = new Vector3(70, 20, 70);
+            TableauPositionCaméra[0] = arrièreRapproché;
+            TableauPositionCaméra[1] = arrièreMoyen;
+            TableauPositionCaméra[2] = arrièreLoin;
+            TableauPositionCaméra[3] = intérieurConducteur;
+            TableauPositionCaméra[4] = capo;
+            TableauPositionCaméra[5] = vueArrière;
 
             if (GestionInput.EstNouvelleTouche(Keys.NumPad1))
             {
                 PositionCaméra = arrièreRapproché;
                 CibleYCaméra = 0;
                 VueArrière = 1;
+                IndexPositionCaméra = 0;
             }
             else if (GestionInput.EstNouvelleTouche(Keys.NumPad2))
             {
                 PositionCaméra = arrièreMoyen;
                 CibleYCaméra = -0.04f;
                 VueArrière = 1;
+                IndexPositionCaméra = 1;
             }
             else if (GestionInput.EstNouvelleTouche(Keys.NumPad3))
             {
                 PositionCaméra = arrièreLoin;
                 CibleYCaméra = -0.06f;
                 VueArrière = 1;
+                IndexPositionCaméra = 2;
             }
             else if (GestionInput.EstNouvelleTouche(Keys.NumPad4))
             {
                 PositionCaméra = intérieurConducteur;
                 CibleYCaméra = 0;
                 VueArrière = 1;
+                IndexPositionCaméra = 3;
             }
             else if(GestionInput.EstNouvelleTouche(Keys.NumPad5))
             {
                 PositionCaméra = capo;
                 CibleYCaméra = 0;
                 VueArrière = 1;
+                IndexPositionCaméra = 4;
             }
             else if (GestionInput.EstNouvelleTouche(Keys.NumPad6))
             {
                 PositionCaméra = vueArrière;
                 CibleYCaméra = 0;
                 VueArrière = -1;
+                IndexPositionCaméra = 5;
             }
         }
 
-        float GetAngle(float angle)
+        private void GestionOrientationCaméra()
         {
-            angle = angle / (float)(2 * Math.PI);
-            if (angle >= 2 * Math.PI)
-            {
-                angle -= 2 * (float)Math.PI;
-            }
-            if (angle <= -2 * Math.PI)
-            {
-                angle += 2 * (float)Math.PI;
-            }
-            return angle;
+            float orientationX = (float)Math.Sin(Mustang.Rotation.Y);
+            float orientationZ = (float)Math.Cos(Mustang.Rotation.Y);
+            Vector3 cible = new Vector3(VueArrière * orientationX, VueArrière * CaméraJeu.Direction.Y, VueArrière * orientationZ);
+            Vector3 ciblePosition = Mustang.AvanceCaméra() +
+                PositionCaméra * new Vector3((float)Math.Sin(Mustang.Rotation.Y), 1, (float)Math.Cos(Mustang.Rotation.Y));
+
+            CaméraJeu.Direction = Vector3.Lerp(CaméraJeu.Direction, cible, 0.1f);
+            CaméraJeu.Position = Vector3.Lerp(CaméraJeu.Position, ciblePosition, 0.1f);
+
+            PositionCaméra = new Vector3(TableauPositionCaméra[IndexPositionCaméra].X - -45 * (Mustang.PixelToKMH(Mustang.Vitesse) / 100.0f), TableauPositionCaméra[IndexPositionCaméra].Y, TableauPositionCaméra[IndexPositionCaméra].Z - -45 * (Mustang.PixelToKMH(Mustang.Vitesse) / 100.0f));
         }
     }
 }

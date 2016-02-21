@@ -27,7 +27,7 @@ namespace SimulationVéhicule
             : base(jeu)
         { }
 
-        protected virtual void CréerPointDeVue()
+        public virtual void CréerPointDeVue()
         {
             //Création de la matrice de vue (point de vue)
             Vue = Matrix.CreateLookAt(Position, Cible, OrientationVerticale);
@@ -53,14 +53,14 @@ namespace SimulationVéhicule
             CréerPointDeVue();
         }
 
-        private void CréerVolumeDeVisualisation()
+        public void CréerVolumeDeVisualisation()
         {
             //Création de la matrice de projection (volume de visualisation)
             Projection = Matrix.CreatePerspectiveFieldOfView(AngleOuvertureObjectif, AspectRatio,
                                                              DistancePlanRapproché, DistancePlanÉloigné);
         }
 
-        protected virtual void CréerVolumeDeVisualisation(float angleOuvertureObjectif, float distancePlanRapproché, float distancePlanÉloigné)
+        public virtual void CréerVolumeDeVisualisation(float angleOuvertureObjectif, float distancePlanRapproché, float distancePlanÉloigné)
         {
             //Initialisation des propriétés de la matrice de projection (volume de visualisation)
             AngleOuvertureObjectif = angleOuvertureObjectif;
@@ -71,7 +71,7 @@ namespace SimulationVéhicule
             CréerVolumeDeVisualisation();
         }
 
-        protected virtual void CréerVolumeDeVisualisation(float angleOuvertureObjectif, float aspectRatio,
+        public virtual void CréerVolumeDeVisualisation(float angleOuvertureObjectif, float aspectRatio,
                                                           float distancePlanRapproché, float distancePlanÉloigné)
         {
             //Initialisation des propriétés de la matrice de projection (volume de visualisation)

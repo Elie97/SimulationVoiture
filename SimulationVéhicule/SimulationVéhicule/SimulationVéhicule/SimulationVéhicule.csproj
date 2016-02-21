@@ -76,6 +76,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AfficheurFPS.cs" />
+    <Compile Include="CaméraQuaternion.cs" />
     <Compile Include="DebugShapeRenderer.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Program.cs" />
