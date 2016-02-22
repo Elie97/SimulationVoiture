@@ -32,6 +32,7 @@ namespace SimulationVéhicule
 
         Voiture Mustang { get; set; }
         Voiture AI { get; set; }
+        Terrain Carte { get; set; }
 
         Vector3 PositionCaméra { get; set; }
         float CibleYCaméra { get; set; }
@@ -61,8 +62,9 @@ namespace SimulationVéhicule
         {
             DebugShapeRenderer.Initialize(GraphicsDevice);
 
-            Mustang = new Voiture(this, "MustangGT500", 0.0088f, new Vector3(0, 0, 0), new Vector3(0, 0, -5000), INTERVALLE_MAJ_STANDARD, true);
+            Mustang = new Voiture(this, "MustangGT500", 0.0088f, new Vector3(0, 0, 0), new Vector3(0, 0, 0), INTERVALLE_MAJ_STANDARD, true);
             AI = new Voiture(this, "MustangGT500", 0.0088f, new Vector3(0, 0, 0), new Vector3(0, 0, -4500), INTERVALLE_MAJ_STANDARD, false);
+            Carte = new Terrain(this, 1f, Vector3.Zero, Vector3.Zero, new Vector3(25600, 250, 25600), "Terrain", "DétailsTerrain", 5, INTERVALLE_MAJ_STANDARD);
             TempsÉcouléDepuisMAJ = 0;
 
             CibleYCaméra = 0;
@@ -87,15 +89,8 @@ namespace SimulationVéhicule
             Components.Add(CaméraJeu);
             Components.Add(new Afficheur3D(this));
             Components.Add(new AfficheurFPS(this, INTERVALLE_CALCUL_FPS));
-            //Components.Add(new Sol(this, 1f, Vector3.Zero, new Vector3(0, 500, 0), new Vector3(1, 0, 1), new Vector3(100, 0, 10000), 1.0f, Color.White));
+            Components.Add(Carte);
             Components.Add(new Sol(this, 1f, Vector3.Zero, new Vector3(0, 0, -5000), new Vector3(1, 0, 1), new Vector3(10000, 0, 100), 1.0f, Color.Blue));
-            //Components.Add(new Sol(this, 1f, Vector3.Zero, new Vector3(0, 0, 20 * MÈTRE), new Vector3(1, 0, 1), new Vector3(KILOMÈTRE, 0, 20 * MÈTRE), 1.0f, Color.Green));
-            //Components.Add(new Sol(this, 1f, Vector3.Zero, new Vector3(0, 0, 30 * MÈTRE), new Vector3(1, 0, 1), new Vector3(KILOMÈTRE, 0, 20 * MÈTRE), 1.0f, Color.Yellow));
-            //Components.Add(new Sol(this, 1f, Vector3.Zero, new Vector3(0, 0, 40 * MÈTRE), new Vector3(1, 0, 1), new Vector3(KILOMÈTRE, 0, 20 * MÈTRE), 1.0f, Color.Black));
-            //Components.Add(new Sol(this, 1f, Vector3.Zero, new Vector3(0, 0, 50 * MÈTRE), new Vector3(1, 0, 1), new Vector3(KILOMÈTRE, 0, 20 * MÈTRE), 1.0f, Color.Orange));
-            //Components.Add(new Sol(this, 1f, Vector3.Zero, new Vector3(0, 0, 60 * MÈTRE), new Vector3(1, 0, 1), new Vector3(KILOMÈTRE, 0, 20 * MÈTRE), 1.0f, Color.Pink));
-            //Components.Add(new Sol(this, 1f, Vector3.Zero, new Vector3(0, 0, 70 * MÈTRE), new Vector3(1, 0, 1), new Vector3(KILOMÈTRE, 0, 20 * MÈTRE), 1.0f, Color.Brown));
-            //Components.Add(new Sol(this, 1f, Vector3.Zero, new Vector3(0, 0, 80 * MÈTRE), new Vector3(1, 0, 1), new Vector3(KILOMÈTRE, 0, 20 * MÈTRE), 1.0f, Color.Red));
             Components.Add(Mustang);
             Components.Add(AI);
             Services.AddService(typeof(RessourcesManager<SpriteFont>), GestionnaireDeFonts);
@@ -114,11 +109,13 @@ namespace SimulationVéhicule
         {
             GérerClavier();
             TempsÉcouléDepuisMAJ += (float)gameTime.ElapsedGameTime.TotalSeconds;
+            Mustang.Position = new Vector3(Mustang.Position.X, Carte.GetHauteur(Mustang.Position), Mustang.Position.Z);
             if (TempsÉcouléDepuisMAJ >= INTERVALLE_MAJ_STANDARD)
             {
                 GestionOrientationCaméra();
                 CaméraJeu.CréerPointDeVue();
-                AI.Vitesse = 2f;
+                //Mustang.Position = new Vector3(Mustang.Position.X, Carte.GetHauteur(Mustang.Position), Mustang.Position.Z);
+                //AI.Vitesse = 2f;
                 Mustang.GestionCollisionVoiture(AI);
                 TempsÉcouléDepuisMAJ = 0;
             }
@@ -129,7 +126,7 @@ namespace SimulationVéhicule
         {
             GraphicsDevice.Clear(Color.SkyBlue);
             GestionSprites.Begin();
-            //Window.Title = CaméraJeu.Position.ToString() + " - " + CaméraJeu.Direction.ToString(); 
+            Window.Title = Carte.GetHauteur(Mustang.Position).ToString() + " - " + Mustang.Position.ToString(); 
             DebugShapeRenderer.Draw(gameTime, CaméraJeu.Vue, CaméraJeu.Projection);
             base.Draw(gameTime);
             GestionSprites.End();

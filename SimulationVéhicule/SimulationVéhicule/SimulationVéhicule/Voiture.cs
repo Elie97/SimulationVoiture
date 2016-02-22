@@ -231,7 +231,7 @@ namespace SimulationVéhicule
                     }
                     else
                     {
-                        GetHauteur();
+                        //GetHauteur();
                     }
 
                     //PitchAndSound();
