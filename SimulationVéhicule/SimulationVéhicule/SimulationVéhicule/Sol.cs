@@ -19,7 +19,7 @@ namespace SimulationVéhicule
         public Vector3 Charpente { get; set; }
         Vector3 Origine { get; set; }
         Vector3 Delta { get; set; }
-        Vector3[] PtsSommets { get; set; }
+        Vector3[,] PtsSommets { get; set; }
         int Hauteur { get; set; }
         int Largeur { get; set; }
         Color Couleur { get; set; }
@@ -42,10 +42,10 @@ namespace SimulationVéhicule
         {
             GestionnaireDeTextures = Game.Services.GetService(typeof(RessourcesManager<Texture2D>)) as RessourcesManager<Texture2D>;
             Origine = new Vector3(-Charpente.X / 2, 0, Charpente.Z / 2);
-            Hauteur = (int)Charpente.X;
-            Largeur = (int)Charpente.Z;
+            Hauteur = 1;//(int)Charpente.X;
+            Largeur = 1;// (int)Charpente.Z;
             Delta = new Vector3(Hauteur / Étendue.X, 0, Largeur / Étendue.Z);
-            PtsSommets = new Vector3[Hauteur * Largeur];
+            PtsSommets = new Vector3[Hauteur, Largeur];
             Sommets = new VertexPositionColor[6];
             NbTriangles = Hauteur * Largeur * 2;
             CréerTableauPoints();
@@ -62,17 +62,18 @@ namespace SimulationVéhicule
 
         private void CréerTableauPoints()
         {
-            //for (int j = 0; j < Largeur; j++)
-            //{
-            //    for (int i = 0; i < Hauteur; i++)
-            //    {
-            //        PtsSommets[i + j * Hauteur] = new Vector3(Origine.X + Delta.X * i, 0, (Origine.Z - Delta.Z * j));
-            //    }
-            //}
-            PtsSommets[0] = new Vector3(Origine.X + Delta.X * 0, 0, (Origine.Z - Delta.Z * 0));
-            PtsSommets[1] = new Vector3(Origine.X + Delta.X * 1, 0, (Origine.Z - Delta.Z * 0));
-            PtsSommets[2] = new Vector3(Origine.X + Delta.X * 0, 0, (Origine.Z - Delta.Z * 1));
-            PtsSommets[3] = new Vector3(Origine.X + Delta.X * 1, 0, (Origine.Z - Delta.Z * 1));
+            for (int i = 0; i <= Hauteur; i++)
+            {
+                for (int j = 0; j <= Largeur; j++)
+                {
+                    PtsSommets[i, j] = new Vector3(Origine.X + Delta.X * i, 0, (Origine.Z - Delta.Z * j));
+
+                }
+            }
+            //PtsSommets[0,0] = new Vector3(Origine.X + Delta.X * 0, 0, (Origine.Z - Delta.Z * 0));
+            //PtsSommets[1,0] = new Vector3(Origine.X + Delta.X * 1, 0, (Origine.Z - Delta.Z * 0));
+            //PtsSommets[0,1] = new Vector3(Origine.X + Delta.X * 0, 0, (Origine.Z - Delta.Z * 1));
+            //PtsSommets[1,1] = new Vector3(Origine.X + Delta.X * 1, 0, (Origine.Z - Delta.Z * 1));
 
 
         }
@@ -93,12 +94,22 @@ namespace SimulationVéhicule
 
             //    }
             //}
-            Sommets[0] = new VertexPositionColor(PtsSommets[0], Couleur);
-            Sommets[1] = new VertexPositionColor(PtsSommets[2], Couleur);
-            Sommets[2] = new VertexPositionColor(PtsSommets[1], Couleur);
-            Sommets[3] = new VertexPositionColor(PtsSommets[1], Couleur);
-            Sommets[4] = new VertexPositionColor(PtsSommets[2], Couleur);
-            Sommets[5] = new VertexPositionColor(PtsSommets[3], Couleur);
+            int noSommet = -1;
+            for (int i = 0; i < (Hauteur); i++)
+            {
+                Sommets[0] = new VertexPositionColor(PtsSommets[i, 0], Couleur);
+                Sommets[1] = new VertexPositionColor(PtsSommets[i, 1], Couleur);
+                Sommets[2] = new VertexPositionColor(PtsSommets[i+1, 0], Couleur);
+                Sommets[3] = new VertexPositionColor(PtsSommets[i+1, 0], Couleur);
+                Sommets[4] = new VertexPositionColor(PtsSommets[i, 1], Couleur);
+                Sommets[5] = new VertexPositionColor(PtsSommets[i+1, 1], Couleur);
+            }
+            //Sommets[0] = new VertexPositionColor(PtsSommets[0,0], Couleur);
+            //Sommets[1] = new VertexPositionColor(PtsSommets[0,1], Couleur);
+            //Sommets[2] = new VertexPositionColor(PtsSommets[1,0], Couleur);
+            //Sommets[3] = new VertexPositionColor(PtsSommets[1,0], Couleur);
+            //Sommets[4] = new VertexPositionColor(PtsSommets[0,1], Couleur);
+            //Sommets[5] = new VertexPositionColor(PtsSommets[1,1], Couleur);
 
         }
 

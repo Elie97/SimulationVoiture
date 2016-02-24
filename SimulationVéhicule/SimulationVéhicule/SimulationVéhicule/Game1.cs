@@ -89,8 +89,8 @@ namespace SimulationVéhicule
             Components.Add(CaméraJeu);
             Components.Add(new Afficheur3D(this));
             Components.Add(new AfficheurFPS(this, INTERVALLE_CALCUL_FPS));
-            Components.Add(Carte);
-            Components.Add(new Sol(this, 1f, Vector3.Zero, new Vector3(0, 0, -5000), new Vector3(1, 0, 1), new Vector3(10000, 0, 100), 1.0f, Color.Blue));
+           // Components.Add(Carte);
+            Components.Add(new Sol(this, 1f, Vector3.Zero, new Vector3(0, 0, 0), new Vector3(1, 0, 1), new Vector3(100, 0, 100), 1.0f, Color.Blue));
             Components.Add(Mustang);
             Components.Add(AI);
             Services.AddService(typeof(RessourcesManager<SpriteFont>), GestionnaireDeFonts);
@@ -109,7 +109,7 @@ namespace SimulationVéhicule
         {
             GérerClavier();
             TempsÉcouléDepuisMAJ += (float)gameTime.ElapsedGameTime.TotalSeconds;
-            Mustang.Position = new Vector3(Mustang.Position.X, Carte.GetHauteur(Mustang.Position), Mustang.Position.Z);
+            //Mustang.Position = new Vector3(Mustang.Position.X, Carte.GetHauteur(Mustang.Position), Mustang.Position.Z);
             if (TempsÉcouléDepuisMAJ >= INTERVALLE_MAJ_STANDARD)
             {
                 GestionOrientationCaméra();
