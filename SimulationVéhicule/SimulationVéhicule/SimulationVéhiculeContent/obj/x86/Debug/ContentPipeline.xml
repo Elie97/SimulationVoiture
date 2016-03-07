@@ -47,6 +47,42 @@
       <Time>2016-02-01T16:58:16.1001282-05:00</Time>
     </Item>
     <Item>
+      <Source>Models\engine_diff_tex.tga</Source>
+      <Name>Models\engine_diff_tex</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+      <Options>None</Options>
+      <Output>C:\Users\élie\Documents\GitHub\SimulationVoiture\SimulationVéhicule\SimulationVéhicule\SimulationVéhicule\bin\x86\Debug\Content\Models\engine_diff_tex.xnb</Output>
+      <Time>2016-02-21T16:26:05.1141431-05:00</Time>
+    </Item>
+    <Item>
+      <Source>Models\turret_alt_diff_tex.tga</Source>
+      <Name>Models\turret_alt_diff_tex</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+      <Options>None</Options>
+      <Output>C:\Users\élie\Documents\GitHub\SimulationVoiture\SimulationVéhicule\SimulationVéhicule\SimulationVéhicule\bin\x86\Debug\Content\Models\turret_alt_diff_tex.xnb</Output>
+      <Time>2016-02-21T16:26:05.1561409-05:00</Time>
+    </Item>
+    <Item>
+      <Source>Textures\DétailsTerrain.jpg</Source>
+      <Name>Textures\DétailsTerrain</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+      <Options>None</Options>
+      <Output>C:\Users\élie\Documents\GitHub\SimulationVoiture\SimulationVéhicule\SimulationVéhicule\SimulationVéhicule\bin\x86\Debug\Content\Textures\DétailsTerrain.xnb</Output>
+      <Time>2016-03-01T20:52:12.8617489-05:00</Time>
+    </Item>
+    <Item>
+      <Source>Textures\Terrain.bmp</Source>
+      <Name>Textures\Terrain</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+      <Options>None</Options>
+      <Output>C:\Users\élie\Documents\GitHub\SimulationVoiture\SimulationVéhicule\SimulationVéhicule\SimulationVéhicule\bin\x86\Debug\Content\Textures\Terrain.xnb</Output>
+      <Time>2016-02-24T14:35:07.8961362-05:00</Time>
+    </Item>
+    <Item>
       <Source>Models\MustangGT500.FBX</Source>
       <Name>Models\MustangGT500</Name>
       <Importer>FbxImporter</Importer>
@@ -56,13 +92,64 @@
       <Time>2016-02-03T16:43:56.8674559-05:00</Time>
       <Dependency>
         <Key>obj\x86\Debug\Models\MustangGT500_0.xml</Key>
-        <Value>2016-02-03T16:44:01.2422975-05:00</Value>
+        <Value>2016-02-24T14:38:40.4394538-05:00</Value>
       </Dependency>
       <Request>C:\Users\élie\Documents\GitHub\SimulationVoiture\SimulationVéhicule\SimulationVéhicule\SimulationVéhicule\bin\x86\Debug\Content\Models\_Corroga_0.xnb</Request>
       <Request>C:\Users\élie\Documents\GitHub\SimulationVoiture\SimulationVéhicule\SimulationVéhicule\SimulationVéhicule\bin\x86\Debug\Content\Models\_Pool_03_0.xnb</Request>
       <Request>C:\Users\élie\Documents\GitHub\SimulationVoiture\SimulationVéhicule\SimulationVéhicule\SimulationVéhicule\bin\x86\Debug\Content\Models\_Pool_02_0.xnb</Request>
       <Request>C:\Users\élie\Documents\GitHub\SimulationVoiture\SimulationVéhicule\SimulationVéhicule\SimulationVéhicule\bin\x86\Debug\Content\Models\_Pool_Wa_0.xnb</Request>
       <Request>C:\Users\élie\Documents\GitHub\SimulationVoiture\SimulationVéhicule\SimulationVéhicule\SimulationVéhicule\bin\x86\Debug\Content\Models\_Pool_01_0.xnb</Request>
+    </Item>
+    <Item>
+      <Source>Models\tank.fbx</Source>
+      <Name>Models\tank</Name>
+      <Importer>FbxImporter</Importer>
+      <Processor>ModelProcessor</Processor>
+      <Options>None</Options>
+      <Output>C:\Users\élie\Documents\GitHub\SimulationVoiture\SimulationVéhicule\SimulationVéhicule\SimulationVéhicule\bin\x86\Debug\Content\Models\tank.xnb</Output>
+      <Time>2016-02-21T16:26:05.1391279-05:00</Time>
+      <Dependency>
+        <Key>obj\x86\Debug\Models\tank_0.xml</Key>
+        <Value>2016-02-24T14:38:43.0453323-05:00</Value>
+      </Dependency>
+      <Request>C:\Users\élie\Documents\GitHub\SimulationVoiture\SimulationVéhicule\SimulationVéhicule\SimulationVéhicule\bin\x86\Debug\Content\Models\engine_diff_tex_0.xnb</Request>
+      <Request>C:\Users\élie\Documents\GitHub\SimulationVoiture\SimulationVéhicule\SimulationVéhicule\SimulationVéhicule\bin\x86\Debug\Content\Models\turret_alt_diff_tex_0.xnb</Request>
+    </Item>
+    <Item>
+      <Source>Sounds\acceleration.wav</Source>
+      <Name>Sounds\acceleration</Name>
+      <Importer>WavImporter</Importer>
+      <Processor>SoundEffectProcessor</Processor>
+      <Options>None</Options>
+      <Output>C:\Users\élie\Documents\GitHub\SimulationVoiture\SimulationVéhicule\SimulationVéhicule\SimulationVéhicule\bin\x86\Debug\Content\Sounds\acceleration.xnb</Output>
+      <Time>2016-02-07T14:11:51.9838754-05:00</Time>
+    </Item>
+    <Item>
+      <Source>Sounds\EngineSound.wav</Source>
+      <Name>Sounds\EngineSound</Name>
+      <Importer>WavImporter</Importer>
+      <Processor>SoundEffectProcessor</Processor>
+      <Options>None</Options>
+      <Output>C:\Users\élie\Documents\GitHub\SimulationVoiture\SimulationVéhicule\SimulationVéhicule\SimulationVéhicule\bin\x86\Debug\Content\Sounds\EngineSound.xnb</Output>
+      <Time>2016-02-07T14:16:52.502997-05:00</Time>
+    </Item>
+    <Item>
+      <Source>Sounds\brakeEffect.wav</Source>
+      <Name>Sounds\brakeEffect</Name>
+      <Importer>WavImporter</Importer>
+      <Processor>SoundEffectProcessor</Processor>
+      <Options>None</Options>
+      <Output>C:\Users\élie\Documents\GitHub\SimulationVoiture\SimulationVéhicule\SimulationVéhicule\SimulationVéhicule\bin\x86\Debug\Content\Sounds\brakeEffect.xnb</Output>
+      <Time>2016-02-07T14:48:01.6015703-05:00</Time>
+    </Item>
+    <Item>
+      <Source>Fonts\Arial.spritefont</Source>
+      <Name>Fonts\Arial</Name>
+      <Importer>FontDescriptionImporter</Importer>
+      <Processor>FontDescriptionProcessor</Processor>
+      <Options>None</Options>
+      <Output>C:\Users\élie\Documents\GitHub\SimulationVoiture\SimulationVéhicule\SimulationVéhicule\SimulationVéhicule\bin\x86\Debug\Content\Fonts\Arial.xnb</Output>
+      <Time>2016-03-03T18:23:55.0648487-05:00</Time>
     </Item>
     <Item>
       <Source>Models\MustangGT500.FBX</Source>
@@ -152,75 +239,6 @@
       <Time>2016-02-01T16:58:16.0528137-05:00</Time>
     </Item>
     <Item>
-      <Source>Sounds\acceleration.wav</Source>
-      <Name>Sounds\acceleration</Name>
-      <Importer>WavImporter</Importer>
-      <Processor>SoundEffectProcessor</Processor>
-      <Options>None</Options>
-      <Output>C:\Users\élie\Documents\GitHub\SimulationVoiture\SimulationVéhicule\SimulationVéhicule\SimulationVéhicule\bin\x86\Debug\Content\Sounds\acceleration.xnb</Output>
-      <Time>2016-02-07T14:11:51.9838754-05:00</Time>
-    </Item>
-    <Item>
-      <Source>Sounds\EngineSound.wav</Source>
-      <Name>Sounds\EngineSound</Name>
-      <Importer>WavImporter</Importer>
-      <Processor>SoundEffectProcessor</Processor>
-      <Options>None</Options>
-      <Output>C:\Users\élie\Documents\GitHub\SimulationVoiture\SimulationVéhicule\SimulationVéhicule\SimulationVéhicule\bin\x86\Debug\Content\Sounds\EngineSound.xnb</Output>
-      <Time>2016-02-07T14:16:52.502997-05:00</Time>
-    </Item>
-    <Item>
-      <Source>Sounds\brakeEffect.wav</Source>
-      <Name>Sounds\brakeEffect</Name>
-      <Importer>WavImporter</Importer>
-      <Processor>SoundEffectProcessor</Processor>
-      <Options>None</Options>
-      <Output>C:\Users\élie\Documents\GitHub\SimulationVoiture\SimulationVéhicule\SimulationVéhicule\SimulationVéhicule\bin\x86\Debug\Content\Sounds\brakeEffect.xnb</Output>
-      <Time>2016-02-07T14:48:01.6015703-05:00</Time>
-    </Item>
-    <Item>
-      <Source>Fonts\Arial.spritefont</Source>
-      <Name>Fonts\Arial</Name>
-      <Importer>FontDescriptionImporter</Importer>
-      <Processor>FontDescriptionProcessor</Processor>
-      <Options>None</Options>
-      <Output>C:\Users\élie\Documents\GitHub\SimulationVoiture\SimulationVéhicule\SimulationVéhicule\SimulationVéhicule\bin\x86\Debug\Content\Fonts\Arial.xnb</Output>
-      <Time>2015-09-20T20:42:32-04:00</Time>
-    </Item>
-    <Item>
-      <Source>Models\engine_diff_tex.tga</Source>
-      <Name>Models\engine_diff_tex</Name>
-      <Importer>TextureImporter</Importer>
-      <Processor>TextureProcessor</Processor>
-      <Options>None</Options>
-      <Output>C:\Users\élie\Documents\GitHub\SimulationVoiture\SimulationVéhicule\SimulationVéhicule\SimulationVéhicule\bin\x86\Debug\Content\Models\engine_diff_tex.xnb</Output>
-      <Time>2016-02-21T16:26:05.1141431-05:00</Time>
-    </Item>
-    <Item>
-      <Source>Models\turret_alt_diff_tex.tga</Source>
-      <Name>Models\turret_alt_diff_tex</Name>
-      <Importer>TextureImporter</Importer>
-      <Processor>TextureProcessor</Processor>
-      <Options>None</Options>
-      <Output>C:\Users\élie\Documents\GitHub\SimulationVoiture\SimulationVéhicule\SimulationVéhicule\SimulationVéhicule\bin\x86\Debug\Content\Models\turret_alt_diff_tex.xnb</Output>
-      <Time>2016-02-21T16:26:05.1561409-05:00</Time>
-    </Item>
-    <Item>
-      <Source>Models\tank.fbx</Source>
-      <Name>Models\tank</Name>
-      <Importer>FbxImporter</Importer>
-      <Processor>ModelProcessor</Processor>
-      <Options>None</Options>
-      <Output>C:\Users\élie\Documents\GitHub\SimulationVoiture\SimulationVéhicule\SimulationVéhicule\SimulationVéhicule\bin\x86\Debug\Content\Models\tank.xnb</Output>
-      <Time>2016-02-21T16:26:05.1391279-05:00</Time>
-      <Dependency>
-        <Key>obj\x86\Debug\Models\tank_0.xml</Key>
-        <Value>2016-02-21T16:26:17.2965168-05:00</Value>
-      </Dependency>
-      <Request>C:\Users\élie\Documents\GitHub\SimulationVoiture\SimulationVéhicule\SimulationVéhicule\SimulationVéhicule\bin\x86\Debug\Content\Models\engine_diff_tex_0.xnb</Request>
-      <Request>C:\Users\élie\Documents\GitHub\SimulationVoiture\SimulationVéhicule\SimulationVéhicule\SimulationVéhicule\bin\x86\Debug\Content\Models\turret_alt_diff_tex_0.xnb</Request>
-    </Item>
-    <Item>
       <Source>Models\tank.fbx</Source>
       <Importer>FbxImporter</Importer>
       <Options>IntermediateFile, DontCacheImportedData</Options>
@@ -259,10 +277,46 @@
       <Output>C:\Users\élie\Documents\GitHub\SimulationVoiture\SimulationVéhicule\SimulationVéhicule\SimulationVéhicule\bin\x86\Debug\Content\Models\turret_alt_diff_tex_0.xnb</Output>
       <Time>2016-02-21T16:26:05.1561409-05:00</Time>
     </Item>
+    <Item>
+      <Source>Textures\route.jpg</Source>
+      <Name>Textures\route</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+      <Options>None</Options>
+      <Output>C:\Users\élie\Documents\GitHub\SimulationVoiture\SimulationVéhicule\SimulationVéhicule\SimulationVéhicule\bin\x86\Debug\Content\Textures\route.xnb</Output>
+      <Time>2016-03-02T22:31:57.0830179-05:00</Time>
+    </Item>
+    <Item>
+      <Source>Textures\test.bmp</Source>
+      <Name>Textures\test</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+      <Options>None</Options>
+      <Output>C:\Users\élie\Documents\GitHub\SimulationVoiture\SimulationVéhicule\SimulationVéhicule\SimulationVéhicule\bin\x86\Debug\Content\Textures\test.xnb</Output>
+      <Time>2016-03-01T20:43:37.5973077-05:00</Time>
+    </Item>
+    <Item>
+      <Source>Textures\aiguille.png</Source>
+      <Name>Textures\aiguille</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+      <Options>None</Options>
+      <Output>C:\Users\élie\Documents\GitHub\SimulationVoiture\SimulationVéhicule\SimulationVéhicule\SimulationVéhicule\bin\x86\Debug\Content\Textures\aiguille.xnb</Output>
+      <Time>2016-03-03T18:22:11.8909817-05:00</Time>
+    </Item>
+    <Item>
+      <Source>Textures\speedometer.png</Source>
+      <Name>Textures\speedometer</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+      <Options>None</Options>
+      <Output>C:\Users\élie\Documents\GitHub\SimulationVoiture\SimulationVéhicule\SimulationVéhicule\SimulationVéhicule\bin\x86\Debug\Content\Textures\speedometer.xnb</Output>
+      <Time>2016-03-02T11:45:50.1196521-05:00</Time>
+    </Item>
     <BuildSuccessful>true</BuildSuccessful>
     <Settings>
       <TargetPlatform>Windows</TargetPlatform>
-      <TargetProfile>Reach</TargetProfile>
+      <TargetProfile>HiDef</TargetProfile>
       <BuildConfiguration>Debug</BuildConfiguration>
       <CompressContent>false</CompressContent>
       <RootDirectory>C:\Users\élie\Documents\GitHub\SimulationVoiture\SimulationVéhicule\SimulationVéhicule\SimulationVéhiculeContent\</RootDirectory>

@@ -14,103 +14,197 @@ namespace SimulationVéhicule
 {
     public class Sol : PrimitiveDeBase
     {
-        public VertexPositionColor[] Sommets { get; set; }
-        Vector3 Étendue { get; set; }
-        public Vector3 Charpente { get; set; }
-        Vector3 Origine { get; set; }
-        Vector3 Delta { get; set; }
+        Vector2 Étendue { get; set; }
+        Vector2 Charpente { get; set; }
+        int NbRangées { get; set; }
+        int NbColonnes { get; set; }
+        String NomTexture { get; set; }
+        float Largeur { get; set; }
+        float Hauteur { get; set; }
+        Vector2 Delta { get; set; }
+        Vector2[,] PtsTexture { get; set; }
         Vector3[,] PtsSommets { get; set; }
-        int Hauteur { get; set; }
-        int Largeur { get; set; }
-        Color Couleur { get; set; }
-
-        int HauteurMax { get; set; }
-
+        VertexPositionTexture[] Sommets { get; set; }
+        Texture2D LaTexture { get; set; }
         BasicEffect EffetDeBase { get; set; }
+        Vector3 Origine { get; set; }
         RessourcesManager<Texture2D> GestionnaireDeTextures { get; set; }
+        Vector3[] PointsBox { get; set; }
+        Vector3[] PointsÉtape { get; set; }
+        Vector3[] PointBoxLatéralGauche { get; set; }
+        Vector3[] PointBoxLatéralDroit { get; set; }
 
-        public Sol(Game jeu, float homothétieInitiale, Vector3 rotationInitiale, Vector3 positionInitiale,
-                       Vector3 étendue, Vector3 charpente, float intervalleMAJ, Color couleur)
-            : base(jeu, homothétieInitiale, rotationInitiale, positionInitiale)
+        float Rayon { get; set; }
+        float Angle { get; set; }
+        bool Courbe { get; set; }
+        float AngleCourbe { get; set; }
+        float SensCourbe { get; set; }
+
+        public bool Franchi { get; set; }
+
+        public BoundingBox Box 
+        { 
+            get 
+            {
+                return BoundingBox.CreateFromPoints(PointsBox); 
+            } 
+        }
+
+        public BoundingBox BoxÉtape
+        {
+            get
+            {
+                return BoundingBox.CreateFromPoints(PointsÉtape);
+            }
+        }
+
+        //public BoundingBox BoxDroite
+        //{
+        //    get
+        //    {
+        //        return BoundingBox.CreateFromPoints(PointBoxLatéralDroit);
+        //    }
+        //}
+
+        //public BoundingBox BoxGauche
+        //{
+        //    get
+        //    {
+        //        return BoundingBox.CreateFromPoints(PointBoxLatéralGauche);
+        //    }
+        //}
+
+        float PositionRelativeX { get; set; }
+        float PositionRelativeZ { get; set; }
+        float PositionRelativeY { get; set; }
+
+        public Sol(Game jeu, float échelleInitiale, Vector3 rotationInitiale, Vector3 positionInitiale, Vector2 étendue, 
+            Vector2 charpente, string nomTexture, float rayon, float angle, bool courbe, float angleCourbe, float sensCourbe)
+            : base(jeu, échelleInitiale, rotationInitiale, positionInitiale)
         {
             Étendue = étendue;
             Charpente = charpente;
-            Couleur = couleur;
+            NomTexture = nomTexture;
+            Rayon = rayon;
+            Angle = angle;
+            Courbe = courbe;
+            AngleCourbe = angleCourbe;
+            SensCourbe = sensCourbe;
         }
+
 
         public override void Initialize()
         {
+            Franchi = false;
             GestionnaireDeTextures = Game.Services.GetService(typeof(RessourcesManager<Texture2D>)) as RessourcesManager<Texture2D>;
-            Origine = new Vector3(-Charpente.X / 2, 0, Charpente.Z / 2);
-            Hauteur = 1;//(int)Charpente.X;
-            Largeur = 1;// (int)Charpente.Z;
-            Delta = new Vector3(Hauteur / Étendue.X, 0, Largeur / Étendue.Z);
-            PtsSommets = new Vector3[Hauteur, Largeur];
-            Sommets = new VertexPositionColor[6];
-            NbTriangles = Hauteur * Largeur * 2;
+            LaTexture = GestionnaireDeTextures.Find(NomTexture);
+            Largeur = Étendue.X;
+            Hauteur = Étendue.Y;
+            NbColonnes = (int)Charpente.X;
+            NbRangées = (int)Charpente.Y;
+            PointsBox = new Vector3[NbColonnes * NbRangées];
+            PointsÉtape = new Vector3[2];
+            Delta = new Vector2(Largeur / ((float)NbColonnes - 1), Hauteur / ((float)NbRangées - 1));
+            //Origine = new Vector3(Position.X - (Étendue.X / 2) + ((Étendue.X / Charpente.X) / 2), Position.Y, Position.Z);
+            Origine = new Vector3(0, 0, 0);
+            PtsSommets = new Vector3[NbColonnes, NbRangées];
+            PtsTexture = new Vector2[NbColonnes, NbRangées];
+            Sommets = new VertexPositionTexture[(NbColonnes) * (NbRangées) * 6];
+            NbTriangles = NbColonnes * NbRangées * 2;
             CréerTableauPoints();
-            InitialiserSommets();
+            InitialiserDonnéesTexture();
+            SetPointBox();
             base.Initialize();
+        }
+
+        private void CréerTableauPoints()
+        {
+            for (int j = 0; j < NbRangées; j++)
+            {
+                for (int i = 0; i < NbColonnes; i++)
+                {
+                    PtsSommets[i, j] = new Vector3(Origine.X + Delta.X * i, Origine.Y, Origine.Z - Delta.Y * j);
+
+                }
+            }
+
+            if (Courbe)
+            {
+                //Game.Window.Title = AngleCourbe.ToString();
+                for (int j = 0; j < NbRangées; j++)
+                {
+                    for (int i = 0; i < NbColonnes; i++)
+                    {
+                        PtsSommets[i, j] = Vector3.Transform(new Vector3(PtsSommets[i, j].X, PtsSommets[i, j].Y, PtsSommets[i, j].Z),
+                            Matrix.CreateFromYawPitchRoll((((j) * SensCourbe) / (float)(NbRangées)) * AngleCourbe, 0, 0));
+                    }
+                }
+            }
+
+            for (int j = 0; j < NbRangées; j++)
+            {
+                for (int i = 0; i < NbColonnes; i++)
+                {
+                    PtsSommets[i, j] = new Vector3(PtsSommets[i, j].X - (Rayon * (float)Math.Sin(Angle * (j / (float)NbRangées)))
+                    , PtsSommets[i, j].Y, PtsSommets[i, j].Z);
+                }
+            }
+        }
+
+        protected override void InitialiserSommets()
+        {
+            int NoSommet = -1;
+            for (int j = 0; j < NbRangées - 1; j++)
+            {
+                for (int i = 0; i < NbColonnes - 1; i++)
+                {
+                    Sommets[++NoSommet] = new VertexPositionTexture(PtsSommets[i, j], PtsTexture[i, j]);
+                    Sommets[++NoSommet] = new VertexPositionTexture(PtsSommets[i, j + 1], PtsTexture[i, j + 1]);
+                    Sommets[++NoSommet] = new VertexPositionTexture(PtsSommets[i + 1, j], PtsTexture[i + 1, j]);
+                    Sommets[++NoSommet] = new VertexPositionTexture(PtsSommets[i + 1, j], PtsTexture[i + 1, j]);
+                    Sommets[++NoSommet] = new VertexPositionTexture(PtsSommets[i, j + 1], PtsTexture[i, j + 1]);
+                    Sommets[++NoSommet] = new VertexPositionTexture(PtsSommets[i + 1, j + 1], PtsTexture[i + 1, j + 1]);
+                    //Sommets[++NoSommet] = new VertexPositionColor(PtsSommets[i, j], Color.Red);
+                    //Sommets[++NoSommet] = new VertexPositionColor(PtsSommets[i, j + 1], Color.Red);
+                    //Sommets[++NoSommet] = new VertexPositionColor(PtsSommets[i + 1, j], Color.Red);
+                    //Sommets[++NoSommet] = new VertexPositionColor(PtsSommets[i + 1, j], Color.Red);
+                    //Sommets[++NoSommet] = new VertexPositionColor(PtsSommets[i, j + 1], Color.Red);
+                    //Sommets[++NoSommet] = new VertexPositionColor(PtsSommets[i + 1, j + 1], Color.Red);
+                }
+            }
+        }
+
+        void InitialiserDonnéesTexture()
+        {
+            Vector2 ptsTexture;
+            ptsTexture = new Vector2(1f / (NbColonnes - 1), 1f / (NbRangées - 1));
+            for (int j = 0; j < NbRangées; j++)
+            {
+                if (Hauteur / (float)NbRangées == 100)
+                {
+                    if (j % 2 == 0)
+                    {
+                        ptsTexture = new Vector2(1f / (NbColonnes - 1), 0);
+                    }
+                    else
+                    {
+                        ptsTexture = new Vector2(1f / (NbColonnes - 1), 1);
+                    }
+                }
+                for (int i = 0; i < NbColonnes; i++)
+                {
+                    PtsTexture[i, j] = new Vector2(i * ptsTexture.X, ptsTexture.Y * j);
+                }
+            }
         }
 
         protected override void LoadContent()
         {
             base.LoadContent();
             EffetDeBase = new BasicEffect(GraphicsDevice);
-            EffetDeBase.VertexColorEnabled = true;
-        }
-
-        private void CréerTableauPoints()
-        {
-            for (int i = 0; i <= Hauteur; i++)
-            {
-                for (int j = 0; j <= Largeur; j++)
-                {
-                    PtsSommets[i, j] = new Vector3(Origine.X + Delta.X * i, 0, (Origine.Z - Delta.Z * j));
-
-                }
-            }
-            //PtsSommets[0,0] = new Vector3(Origine.X + Delta.X * 0, 0, (Origine.Z - Delta.Z * 0));
-            //PtsSommets[1,0] = new Vector3(Origine.X + Delta.X * 1, 0, (Origine.Z - Delta.Z * 0));
-            //PtsSommets[0,1] = new Vector3(Origine.X + Delta.X * 0, 0, (Origine.Z - Delta.Z * 1));
-            //PtsSommets[1,1] = new Vector3(Origine.X + Delta.X * 1, 0, (Origine.Z - Delta.Z * 1));
-
-
-        }
-
-        protected override void InitialiserSommets()
-        {
-            //int NoSommet = -1;
-            //for (int j = 0; j < Largeur - 1; j++)
-            //{
-            //    for (int i = 0; i < Hauteur - 1; i++)
-            //    {
-            //        Sommets[++NoSommet] = new VertexPositionColor(PtsSommets[(i) + j * Hauteur], Color.White);
-            //        Sommets[++NoSommet] = new VertexPositionColor(PtsSommets[(i) + (j + 1) * Hauteur], Color.White);
-            //        Sommets[++NoSommet] = new VertexPositionColor(PtsSommets[(i + 1) + j * Hauteur], Color.White);
-            //        Sommets[++NoSommet] = new VertexPositionColor(PtsSommets[(i + 1) + j * Hauteur], Color.White);
-            //        Sommets[++NoSommet] = new VertexPositionColor(PtsSommets[(i) + (j + 1) * Hauteur], Color.White);
-            //        Sommets[++NoSommet] = new VertexPositionColor(PtsSommets[(i + 1) + (j + 1) * Hauteur], Color.White);
-
-            //    }
-            //}
-            int noSommet = -1;
-            for (int i = 0; i < (Hauteur); i++)
-            {
-                Sommets[0] = new VertexPositionColor(PtsSommets[i, 0], Couleur);
-                Sommets[1] = new VertexPositionColor(PtsSommets[i, 1], Couleur);
-                Sommets[2] = new VertexPositionColor(PtsSommets[i+1, 0], Couleur);
-                Sommets[3] = new VertexPositionColor(PtsSommets[i+1, 0], Couleur);
-                Sommets[4] = new VertexPositionColor(PtsSommets[i, 1], Couleur);
-                Sommets[5] = new VertexPositionColor(PtsSommets[i+1, 1], Couleur);
-            }
-            //Sommets[0] = new VertexPositionColor(PtsSommets[0,0], Couleur);
-            //Sommets[1] = new VertexPositionColor(PtsSommets[0,1], Couleur);
-            //Sommets[2] = new VertexPositionColor(PtsSommets[1,0], Couleur);
-            //Sommets[3] = new VertexPositionColor(PtsSommets[1,0], Couleur);
-            //Sommets[4] = new VertexPositionColor(PtsSommets[0,1], Couleur);
-            //Sommets[5] = new VertexPositionColor(PtsSommets[1,1], Couleur);
-
+            //EffetDeBase.VertexColorEnabled = true;
+            EffetDeBase.TextureEnabled = true;
+            EffetDeBase.Texture = LaTexture;
         }
 
         public override void Draw(GameTime gameTime)
@@ -121,9 +215,107 @@ namespace SimulationVéhicule
             foreach (EffectPass passeEffet in EffetDeBase.CurrentTechnique.Passes)
             {
                 passeEffet.Apply();
-                GraphicsDevice.DrawUserPrimitives<VertexPositionColor>(PrimitiveType.TriangleList, Sommets, 0, 2);
+                GraphicsDevice.DrawUserPrimitives<VertexPositionTexture>(PrimitiveType.TriangleList, Sommets, 0, NbTriangles);
+
             }
+            DebugShapeRenderer.AddBoundingBox(Box, Color.Wheat);
+            DebugShapeRenderer.AddBoundingBox(BoxÉtape, Color.Green);
+            //DebugShapeRenderer.AddBoundingBox(BoxDroite, Color.YellowGreen);
+            //DebugShapeRenderer.AddBoundingBox(BoxGauche, Color.YellowGreen);
+            //Game.Window.Title = PtsSommets[0, 50].Y.ToString();
+            //DebugShapeRenderer.AddBoundingBox(Box, Color.Wheat);
+            //DebugShapeRenderer.AddBoundingBox(Box, Color.Blue);
+            //DebugShapeRenderer.AddBoundingSphere(Sphere, Color.Yellow);
+            //DebugShapeRenderer.AddBoundingSphere(new BoundingSphere(new Vector3(Position.X, Position.Y, Position.Z), (Étendue.X / 2)), Color.Green);
             base.Draw(gameTime);
         }
+
+        public float GetHauteur(Vector3 positionVoiture)
+        {
+            float hauteur = PositionInitiale.Y;
+            if (RotationInitiale.X != 0)
+            {
+                float hauteurInitiale = Vector3.Transform(PtsSommets[0, 0], Matrix.CreateFromYawPitchRoll(RotationInitiale.Y, RotationInitiale.X, RotationInitiale.Z)).Y;
+                float hauteurFinale = Vector3.Transform(PtsSommets[0, NbRangées - 1], Matrix.CreateFromYawPitchRoll(RotationInitiale.Y, RotationInitiale.X, RotationInitiale.Z)).Y;
+                float deltaHauteur = (hauteurFinale - hauteurInitiale) / Hauteur;
+                float profondeur;
+
+                if (RotationInitiale.Y == 0 || RotationInitiale.Y == MathHelper.Pi)
+                {
+                    profondeur = Math.Abs(positionVoiture.Z) - Math.Abs(PositionInitiale.Z);
+                }
+                else
+                {
+                    profondeur = Math.Abs(positionVoiture.X) - Math.Abs(PositionInitiale.X);
+                }
+
+                if (profondeur >= Hauteur)
+                {
+                    profondeur = Hauteur;
+                }
+                if (profondeur <= 0)
+                {
+                    profondeur = 0;
+                }
+
+                hauteur = (profondeur * deltaHauteur);
+                if (RotationInitiale.X != 0)
+                {
+                    hauteur += ((profondeur / Hauteur) * (Hauteur * 0.03f));
+                }   
+            }
+
+            //Game.Window.Title = "I : " + Hauteur + " - F : " + hauteurFinale + " - D : " + deltaHauteur + " - D : " + profondeur + " - H : " + hauteur;
+
+            return hauteur;
+        }
+
+        void SetPointBox()
+        {
+            for (int i = 0; i < NbColonnes; i++)
+            {
+                for (int j = 0; j < NbRangées; j++)
+                {
+                    PointsBox[i + (i * j)] = PtsSommets[i, j];
+                }
+            }
+            PointsBox[0] = new Vector3(PointsBox[0].X, PointsBox[0].Y + 3, PointsBox[0].Z);
+            Matrix transformation = Matrix.CreateFromYawPitchRoll(RotationInitiale.Y, RotationInitiale.X, 0) * Matrix.CreateTranslation(PositionInitiale);
+            for (int i = 0; i < PointsBox.Length; i++)
+			{
+                PointsBox[i] = Vector3.Transform(PointsBox[i], transformation);
+			}
+
+
+            PointsÉtape[0] = PtsSommets[0, NbRangées - 1];
+            PointsÉtape[1] = new Vector3(PtsSommets[NbColonnes - 1, NbRangées - 1].X, PtsSommets[NbColonnes - 1, NbRangées - 1].Y + 200, PtsSommets[NbColonnes - 1, NbRangées - 1].Z);
+
+            for (int i = 0; i < PointsÉtape.Length; i++)
+            {
+                PointsÉtape[i] = Vector3.Transform(PointsÉtape[i], transformation);
+            }
+
+            ////PointBoxLatéralDroit = new Vector3[] { PtsSommets[NbColonnes - 1, 0], 
+            //  //  new Vector3(PtsSommets[NbColonnes - 1, NbRangées - 1].X, PtsSommets[NbColonnes - 1, NbRangées - 1].Y + 50, PtsSommets[NbColonnes - 1, NbRangées - 1].Z) };
+            //PointBoxLatéralDroit = new Vector3[NbRangées];
+            //for (int i = 0; i < NbRangées - 1; i++)
+            //{
+            //    PointBoxLatéralDroit[i] = Vector3.Transform(PtsSommets[NbColonnes - 1, i], Matrix.CreateFromYawPitchRoll(RotationInitiale.Y, RotationInitiale.X, 0));
+            //}
+            //for (int i = 0; i < PointBoxLatéralDroit.Length; i++)
+            //{
+            //    //PointBoxLatéralDroit[i] = Vector3.Transform(PointBoxLatéralDroit[i], Matrix.CreateFromYawPitchRoll(RotationInitiale.Y, 0, 0));
+            //    //PointBoxLatéralDroit[i] = Vector3.Transform(PointBoxLatéralDroit[i], Matrix.CreateFromYawPitchRoll(0, 0, RotationInitiale.Y));        
+            //}
+
+            //PointBoxLatéralGauche = new Vector3[] { PtsSommets[0, 0], 
+            //    new Vector3(PtsSommets[0, NbRangées - 1].X, PtsSommets[0, NbRangées - 1].Y + 50, PtsSommets[0, NbRangées - 1].Z) };
+
+            //for (int i = 0; i < PointBoxLatéralGauche.Length; i++)
+            //{
+            //   PointBoxLatéralGauche[i] = Vector3.Transform(PointBoxLatéralGauche[i], Matrix.CreateFromYawPitchRoll(RotationInitiale.Y, 0, 0));
+            //}
+        }
+
     }
 }

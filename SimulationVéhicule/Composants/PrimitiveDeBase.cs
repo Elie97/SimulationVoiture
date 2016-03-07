@@ -7,7 +7,7 @@ namespace SimulationVéhicule
     public abstract class PrimitiveDeBase : Microsoft.Xna.Framework.DrawableGameComponent
     {
         protected float HomothétieInitiale { get; private set; }
-        protected Vector3 RotationInitiale { get; private set; }
+        public Vector3 RotationInitiale { get; private set; }
         protected Vector3 PositionInitiale { get; private set; }
         protected int NbSommets { get; set; }
         protected int NbTriangles { get; set; }
