@@ -40,14 +40,16 @@ namespace SimulationVéhicule
         float AngleCourbe { get; set; }
         float SensCourbe { get; set; }
 
-        public bool Franchi { get; set; }
+        int NbVoiture { get; set; }
 
-        public BoundingBox Box 
-        { 
-            get 
+        public bool[] Franchi { get; set; }
+
+        public BoundingBox Box
+        {
+            get
             {
-                return BoundingBox.CreateFromPoints(PointsBox); 
-            } 
+                return BoundingBox.CreateFromPoints(PointsBox);
+            }
         }
 
         public BoundingBox BoxÉtape
@@ -78,8 +80,8 @@ namespace SimulationVéhicule
         float PositionRelativeZ { get; set; }
         float PositionRelativeY { get; set; }
 
-        public Sol(Game jeu, float échelleInitiale, Vector3 rotationInitiale, Vector3 positionInitiale, Vector2 étendue, 
-            Vector2 charpente, string nomTexture, float rayon, float angle, bool courbe, float angleCourbe, float sensCourbe)
+        public Sol(Game jeu, float échelleInitiale, Vector3 rotationInitiale, Vector3 positionInitiale, Vector2 étendue,
+            Vector2 charpente, string nomTexture, float rayon, float angle, bool courbe, float angleCourbe, float sensCourbe, int nbVoiture)
             : base(jeu, échelleInitiale, rotationInitiale, positionInitiale)
         {
             Étendue = étendue;
@@ -90,12 +92,17 @@ namespace SimulationVéhicule
             Courbe = courbe;
             AngleCourbe = angleCourbe;
             SensCourbe = sensCourbe;
+            NbVoiture = nbVoiture;
         }
 
 
         public override void Initialize()
         {
-            Franchi = false;
+            Franchi = new bool[NbVoiture];
+            for (int i = 0; i < Franchi.Length; i++)
+            {
+                Franchi[i] = false;
+            }
             GestionnaireDeTextures = Game.Services.GetService(typeof(RessourcesManager<Texture2D>)) as RessourcesManager<Texture2D>;
             LaTexture = GestionnaireDeTextures.Find(NomTexture);
             Largeur = Étendue.X;
@@ -131,14 +138,24 @@ namespace SimulationVéhicule
             if (Courbe)
             {
                 //Game.Window.Title = AngleCourbe.ToString();
+                //for (int j = 0; j < NbRangées; j++)
+                //{
+                //    for (int i = 0; i < NbColonnes; i++)
+                //    {
+                //        PtsSommets[i, j] = Vector3.Transform(new Vector3(PtsSommets[i, j].X, PtsSommets[i, j].Y, PtsSommets[i, j].Z),
+                //            Matrix.CreateFromYawPitchRoll((((j) * SensCourbe) / (float)(NbRangées*2)) * MathHelper.PiOver2, 0, 0));
+                //    }
+                //}
                 for (int j = 0; j < NbRangées; j++)
                 {
                     for (int i = 0; i < NbColonnes; i++)
                     {
-                        PtsSommets[i, j] = Vector3.Transform(new Vector3(PtsSommets[i, j].X, PtsSommets[i, j].Y, PtsSommets[i, j].Z),
-                            Matrix.CreateFromYawPitchRoll((((j) * SensCourbe) / (float)(NbRangées)) * AngleCourbe, 0, 0));
+                        PtsSommets[i, j] = Vector3.Transform(PtsSommets[i, j],
+                                Matrix.CreateRotationY(MathHelper.PiOver2));
                     }
                 }
+                PtsSommets[NbColonnes-1, 0] = Vector3.Transform(PtsSommets[0, 0],
+                                Matrix.CreateRotationY(-MathHelper.PiOver2));
             }
 
             for (int j = 0; j < NbRangées; j++)
@@ -262,7 +279,7 @@ namespace SimulationVéhicule
                 if (RotationInitiale.X != 0)
                 {
                     hauteur += ((profondeur / Hauteur) * (Hauteur * 0.03f));
-                }   
+                }
             }
 
             //Game.Window.Title = "I : " + Hauteur + " - F : " + hauteurFinale + " - D : " + deltaHauteur + " - D : " + profondeur + " - H : " + hauteur;
@@ -282,9 +299,9 @@ namespace SimulationVéhicule
             PointsBox[0] = new Vector3(PointsBox[0].X, PointsBox[0].Y + 3, PointsBox[0].Z);
             Matrix transformation = Matrix.CreateFromYawPitchRoll(RotationInitiale.Y, RotationInitiale.X, 0) * Matrix.CreateTranslation(PositionInitiale);
             for (int i = 0; i < PointsBox.Length; i++)
-			{
+            {
                 PointsBox[i] = Vector3.Transform(PointsBox[i], transformation);
-			}
+            }
 
 
             PointsÉtape[0] = PtsSommets[0, NbRangées - 1];

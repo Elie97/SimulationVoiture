@@ -77,6 +77,7 @@
   <ItemGroup>
     <Compile Include="AfficheurFPS.cs" />
     <Compile Include="CaméraQuaternion.cs" />
+    <Compile Include="Course.cs" />
     <Compile Include="DebugShapeRenderer.cs" />
     <Compile Include="GUI.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

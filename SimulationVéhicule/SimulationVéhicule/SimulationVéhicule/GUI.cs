@@ -42,7 +42,7 @@ namespace SimulationVéhicule
 
         int Temps { get; set; }
         int[] TableauTemps { get; set; }
-        Vector2 PositionTemps{ get; set; }
+        Vector2 PositionTemps { get; set; }
         Vector2 DimensionTemps { get; set; }
         bool AfficherTemps { get; set; }
 
@@ -54,7 +54,9 @@ namespace SimulationVéhicule
         int ToursFait { get; set; }
         public int NbCheckPointFranchis { get; set; }
 
-        public GUI(Game game, float intervalleMAJ, string aiguille, string accéléromètre, int nbVoiture, int nbTours)
+        int IDVoitureUtilisateur { get; set; }
+
+        public GUI(Game game, float intervalleMAJ, string aiguille, string accéléromètre, int nbVoiture, int nbTours, int idVoitureUtilisateur)
             : base(game)
         {
             IntervalleMAJ = intervalleMAJ;
@@ -62,6 +64,7 @@ namespace SimulationVéhicule
             NomAccéléromètre = accéléromètre;
             NbVoiture = nbVoiture;
             NbTours = nbTours;
+            IDVoitureUtilisateur = idVoitureUtilisateur;
         }
 
 
@@ -90,7 +93,7 @@ namespace SimulationVéhicule
             AfficherTemps = true;
             Vitesse = "200";
             PositionVitesse = new Vector2(103, Game.Window.ClientBounds.Height - 22) + DimensionVitesse;//ish
-            PositionDePosition = new Vector2(35,40) + DimensionPosition;
+            PositionDePosition = new Vector2(35, 40) + DimensionPosition;
             PositionTemps = new Vector2(40, 70) + DimensionTemps;
             PositionTour = new Vector2(Game.Window.ClientBounds.Width - 35, 40) + DimensionTour;
             base.Initialize();
@@ -110,7 +113,7 @@ namespace SimulationVéhicule
                 DimensionPosition = ArialFont.MeasureString(PositionUtilisateur.ToString() + "/" + NbVoiture.ToString());
                 DimensionTemps = ArialFont.MeasureString(TableauTemps[2].ToString("00") + ":" + TableauTemps[1].ToString("00") + "." + TableauTemps[0].ToString("00").ToString());
                 DimensionTour = ArialFont.MeasureString(PourcentageCourse.ToString("000"));
-                RotationAiguille = ((Math.Abs(Convert.ToInt32(Vitesse) / 100f)) * (float)MathHelper.Pi * 4/3) - 0.6f;//Vitesse max!
+                RotationAiguille = ((Math.Abs(Convert.ToInt32(Vitesse) / 100f)) * (float)MathHelper.Pi * 4 / 3) - 0.6f;//Vitesse max!
                 GestionTemps();
                 GestionPourcentage();
                 TempsÉcouléDepuisMAJ = 0;
@@ -121,10 +124,10 @@ namespace SimulationVéhicule
         public override void Draw(GameTime gameTime)
         {
             GestionSprites.Draw(Accéléromètre, new Vector2(100, Game.Window.ClientBounds.Height - 130), null, Color.White, 0, new Vector2(167, 27), 0.40f, SpriteEffects.None, 0);
-            GestionSprites.DrawString(ArialFont, Vitesse, PositionVitesse, new Color(17,83,133), 0f, new Vector2(DimensionVitesse.X / 2, DimensionVitesse.Y / 2), 0.75f, SpriteEffects.None, 0);
+            GestionSprites.DrawString(ArialFont, Vitesse, PositionVitesse, new Color(17, 83, 133), 0f, new Vector2(DimensionVitesse.X / 2, DimensionVitesse.Y / 2), 0.75f, SpriteEffects.None, 0);
             GestionSprites.Draw(Aiguille, new Vector2(103, Game.Window.ClientBounds.Height - 70), null, Color.White, RotationAiguille, new Vector2(167, 27), 0.35f, SpriteEffects.None, 0);
-            
-            GestionSprites.DrawString(ArialFont, ("POSITION"), PositionDePosition - new Vector2(10f,25), Color.White, 0f, new Vector2(DimensionPosition.X / 2, DimensionPosition.Y / 2), 0.5f, SpriteEffects.None, 0);
+
+            GestionSprites.DrawString(ArialFont, ("POSITION"), PositionDePosition - new Vector2(10f, 25), Color.White, 0f, new Vector2(DimensionPosition.X / 2, DimensionPosition.Y / 2), 0.5f, SpriteEffects.None, 0);
             GestionSprites.DrawString(ArialFont, (PositionUtilisateur.ToString() + "/" + NbVoiture.ToString()), PositionDePosition, Color.White, 0f, new Vector2(DimensionPosition.X / 2, DimensionPosition.Y / 2), 1.25f, SpriteEffects.None, 0);
 
             if (AfficherTemps)
@@ -173,9 +176,9 @@ namespace SimulationVéhicule
                 //ToursFait++;
             }
             PourcentageCourse = (int)(((NbCheckPointFranchis / nbCheckPoint) * 100) + additionTours);
-            Game.Window.Title = NbCheckPointFranchis.ToString() + " - " + ToursFait.ToString();
+            //Game.Window.Title = NbCheckPointFranchis.ToString() + " - " + ToursFait.ToString();
         }
-        
+
         public void UpdateNbCheckPointFranchis()
         {
             NbCheckPointFranchis++;
