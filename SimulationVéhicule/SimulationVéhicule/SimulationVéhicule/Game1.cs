@@ -8,6 +8,10 @@ using Microsoft.Xna.Framework.GamerServices;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using Microsoft.Xna.Framework.Media;
+using System.Net;
+using System.Net.Sockets;
+using System.Threading;
+using System.Text;
 
 namespace SimulationVéhicule
 {
@@ -69,6 +73,8 @@ namespace SimulationVéhicule
         protected override void Update(GameTime gameTime)
         {
             GérerClavier();
+            Talker();
+            Listener();
             base.Update(gameTime);
         }
 
@@ -85,6 +91,59 @@ namespace SimulationVéhicule
             {
                 Exit();
             }
+        }
+
+
+        private const int listenPort = 5004;
+        public void Talker()
+        {
+            Socket sending_socket = new Socket(AddressFamily.InterNetwork, SocketType.Dgram, ProtocolType.Udp);
+
+            // Adress IP
+            IPAddress send_to_address = IPAddress.Parse("172.17.106.124");
+            //IPAddress send_to_address = IPAddress.Parse("127.0.0.1");
+
+            IPEndPoint sending_end_point = new IPEndPoint(send_to_address, listenPort);
+
+            string textToSend = Console.ReadLine();
+            byte[] send_buffer = Encoding.ASCII.GetBytes(textToSend);
+
+            try
+            {
+                sending_socket.SendTo(send_buffer, sending_end_point);
+            }
+            catch (Exception send_exception)
+            {
+                Console.WriteLine(" Exception {0}", send_exception.Message);
+            }
+        }
+        public void Listener()
+        {
+            bool done = false;
+            UdpClient listener = new UdpClient(listenPort);
+            IPEndPoint groupEP = new IPEndPoint(IPAddress.Any, listenPort);
+            string received_data;
+            byte[] receive_byte_array;
+            try
+            {
+                while (!done)
+                {
+                    receive_byte_array = listener.Receive(ref groupEP);
+                    received_data = Encoding.ASCII.GetString(receive_byte_array, 0, receive_byte_array.Length);
+                }
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e.ToString());
+            }
+            listener.Close();
+            //return 0;
+        }
+        public void Sérialisation()
+        {
+        }
+        public void DéSérialisation()
+        {
         }
     }
 }
