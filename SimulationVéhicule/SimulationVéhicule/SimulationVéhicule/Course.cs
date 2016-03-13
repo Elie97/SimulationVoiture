@@ -22,6 +22,7 @@ namespace SimulationVéhicule
         public List<bool[]> CheckPointParVoiture { get; set; }
         public List<int> PositionVoiture { get; set; }
         public List<int[]> FranchiParVoiture { get; set; }
+        public List<int[]> NbFranchis { get; set; }
 
         public List<int> Position { get; set; }
 
@@ -79,20 +80,23 @@ namespace SimulationVéhicule
 
                 for (int i = 0; i < LaPiste.Count(); i++)
                 {
-                    if (ListeVoiture[0].BoxVoiture.Intersects(LaPiste[i].BoxÉtape))
+                    for (int j = 0; j < LaPiste[i].BoxÉtape.Count(); j++)
                     {
-                        LaPiste[i].Franchi[v] = true;
+                        if (ListeVoiture[v].BoxVoiture.Intersects(LaPiste[i].BoxÉtape[j]))
+                        {
+                            LaPiste[i].Franchi[v] = true;
+                        }
                     }
                 }
             }
 
             for (int v = 0; v < NbVoiture; v++)
             {
-                FranchiParVoiture[v][0] = CheckPointParVoiture[v].Where(x => x).Count();//En ordre plz
+                FranchiParVoiture[v][0] = CheckPointParVoiture[v].Where(x => x).Count() + (ToursFait[v] * LaPiste.Count());//En ordre plz
                 FranchiParVoiture[v][1] = v;
             }
-            Game.Window.Title = LaPiste[4].Franchi[0].ToString() + " - " + LaPiste[4].Franchi[1].ToString();
-            //FranchiParVoiture = FranchiParVoiture.OrderBy(x => x[0]).ToList();
+            Game.Window.Title = LaPiste[1].BoxÉtape[1].Min.ToString();
+            NbFranchis = FranchiParVoiture.OrderBy(x => x[0]).ToList();
 
 
 

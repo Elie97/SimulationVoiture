@@ -565,7 +565,6 @@ namespace SimulationVéhicule
                 }
             }
             RotationCollision(voiture, false, RotationEnCollision, DernièreCollisionEstAvant);
-            //Game.Window.Title = collisionAvantVitesseNégative.ToString() + " : " + Math.Cos(deltaRotation).ToString();
             return true;
         }
 
@@ -631,7 +630,6 @@ namespace SimulationVéhicule
                 }
             }
             RotationCollision(voiture, false, RotationEnCollision, DernièreCollisionEstAvant);
-            //Game.Window.Title = Math.Abs(deltaRotation).ToString();
         }
 
         public bool GestionCollisionPiste(Sol sol)

@@ -92,35 +92,35 @@ namespace SimulationVéhicule
             NbVoiture = ListeVoiture.Count();
 
 
-            LaPiste.Add(new Sol(this, 1.0f, new Vector3(0, MathHelper.Pi, 0), new Vector3(0, 0, 0), new Vector2(100, 200), new Vector2(2, 2), "route", 0, 0, false, 0, 1, NbVoiture));
-            LaPiste.Add(new Sol(this, 1.0f, new Vector3(0, MathHelper.Pi, 0), new Vector3(0, 0, 200), new Vector2(100, 200), new Vector2(2, 20), "route", 15, 2 * MathHelper.Pi, false, 0, 1, NbVoiture));
-            //LaPiste.Add(new Sol(this, 1.0f, new Vector3(0 ,MathHelper.Pi, 0), new Vector3(0, 0, 400), new Vector2(100, 200), new Vector2(2, 2), "route", 0, 0, false, 0, 1, NbVoiture));
-            LaPiste.Add(new Sol(this, 1.0f, new Vector3(0, MathHelper.PiOver2, 0), new Vector3(-125, -0.5f, 750), new Vector2(100, 200), new Vector2(2, 2), "route", 0, 0, false, 0, 1, NbVoiture));
-            LaPiste.Add(new Sol(this, 1.0f, new Vector3(0, MathHelper.Pi, 0), new Vector3(0, 0, 600), new Vector2(100, 200), new Vector2(20, 20), "route", 0, 0, true, MathHelper.Pi / 4, -1, NbVoiture));
-            LaPiste.Add(new Sol(this, 1.0f, new Vector3(0, MathHelper.PiOver2, 0), new Vector3(-275, 0, 750), new Vector2(100, 200), new Vector2(2, 2), "route", 0, 0, false, 0, 1, NbVoiture));
-            LaPiste.Add(new Sol(this, 1.0f, new Vector3(0, MathHelper.PiOver2, 0), new Vector3(-475, 0, 750), new Vector2(100, 200), new Vector2(2, 2), "route", 0, 0, false, 0, 1, NbVoiture));
-            LaPiste.Add(new Sol(this, 1.0f, new Vector3(MathHelper.Pi / 8f, MathHelper.PiOver2, 0), new Vector3(-675, 0, 750), new Vector2(100, 800), new Vector2(2, 8), "route", 0, 0, false, 0, 1, NbVoiture));
-            LaPiste.Add(new Sol(this, 1.0f, new Vector3(0, MathHelper.PiOver2, 0), new Vector3(-1875, 50, 750), new Vector2(100, 200), new Vector2(2, 2), "route", 0, 0, false, 0, 1, NbVoiture));
-            LaPiste.Add(new Sol(this, 1.0f, new Vector3(0, MathHelper.PiOver2, 0), new Vector3(-2075, 0, 750), new Vector2(100, 200), new Vector2(2, 2), "route", 0, 0, false, 0, 1, NbVoiture));
-            LaPiste.Add(new Sol(this, 1.0f, new Vector3(0, MathHelper.PiOver2, 0), new Vector3(-2275, 0, 750), new Vector2(100, 200), new Vector2(2, 20), "route", 0, 0, true, MathHelper.PiOver4, -1, NbVoiture));
-            LaPiste.Add(new Sol(this, 1.0f, new Vector3(0, 0, 0), new Vector3(-2450, 0, 575), new Vector2(100, 200), new Vector2(2, 2), "route", 0, 0, false, 0, 1, NbVoiture));
-            LaPiste.Add(new Sol(this, 1.0f, new Vector3(0, 0, 0), new Vector3(-2450, 0, 375), new Vector2(100, 200), new Vector2(2, 2), "route", 0, 0, false, 0, 1, NbVoiture));
-            LaPiste.Add(new Sol(this, 1.0f, new Vector3(0, 0, 0), new Vector3(-2450, 0, 175), new Vector2(100, 200), new Vector2(2, 2), "route", 0, 0, false, 0, 1, NbVoiture));
-            LaPiste.Add(new Sol(this, 1.0f, new Vector3(0, 0, 0), new Vector3(-2450, 0, -25), new Vector2(100, 200), new Vector2(2, 2), "route", 0, 0, false, 0, 1, NbVoiture));
-            LaPiste.Add(new Sol(this, 1.0f, new Vector3(0, 0, 0), new Vector3(-2450, 0, -225), new Vector2(100, 200), new Vector2(2, 20), "route", 0, 0, true, MathHelper.PiOver4, -1, NbVoiture));
-            LaPiste.Add(new Sol(this, 1.0f, new Vector3(0, -MathHelper.PiOver2, 0), new Vector3(-2300, 0, -400), new Vector2(100, 200), new Vector2(2, 2), "route", 0, 0, false, 0, 1, NbVoiture));
-            LaPiste.Add(new Sol(this, 1.0f, new Vector3(0, -MathHelper.PiOver2, 0), new Vector3(-2100, 0, -400), new Vector2(100, 200), new Vector2(2, 2), "route", 0, 0, false, 0, 1, NbVoiture));
-            LaPiste.Add(new Sol(this, 1.0f, new Vector3(0, -MathHelper.PiOver2, 0), new Vector3(-1900, 0, -400), new Vector2(100, 200), new Vector2(2, 2), "route", 0, 0, false, 0, 1, NbVoiture));
-            LaPiste.Add(new Sol(this, 1.0f, new Vector3(0, -MathHelper.PiOver2, 0), new Vector3(-1700, 0, -400), new Vector2(100, 200), new Vector2(2, 2), "route", 0, 0, false, 0, 1, NbVoiture));
-            LaPiste.Add(new Sol(this, 1.0f, new Vector3(0, -MathHelper.PiOver2, 0), new Vector3(-1500, 0, -400), new Vector2(100, 200), new Vector2(2, 2), "route", 0, 0, false, 0, 1, NbVoiture));
-            LaPiste.Add(new Sol(this, 1.0f, new Vector3(0, -MathHelper.PiOver2, 0), new Vector3(-1300, 0, -400), new Vector2(100, 200), new Vector2(2, 2), "route", 0, 0, false, 0, 1, NbVoiture));
-            LaPiste.Add(new Sol(this, 1.0f, new Vector3(0, -MathHelper.PiOver2, 0), new Vector3(-1100, 0, -400), new Vector2(100, 200), new Vector2(2, 2), "route", 0, 0, false, 0, 1, NbVoiture));
-            LaPiste.Add(new Sol(this, 1.0f, new Vector3(0, -MathHelper.PiOver2, 0), new Vector3(-900, 0, -400), new Vector2(100, 200), new Vector2(2, 2), "route", 0, 0, false, 0, 1, NbVoiture));
-            LaPiste.Add(new Sol(this, 1.0f, new Vector3(0, -MathHelper.PiOver2, 0), new Vector3(-700, 0, -400), new Vector2(100, 200), new Vector2(2, 2), "route", 0, 0, false, 0, 1, NbVoiture));
-            LaPiste.Add(new Sol(this, 1.0f, new Vector3(0, -MathHelper.PiOver2, 0), new Vector3(-500, 0, -400), new Vector2(100, 200), new Vector2(2, 2), "route", 0, 0, false, 0, 1, NbVoiture));
-            LaPiste.Add(new Sol(this, 1.0f, new Vector3(0, -MathHelper.PiOver2, 0), new Vector3(-300, 0, -400), new Vector2(100, 200), new Vector2(2, 2), "route", 0, 0, false, 0, 1, NbVoiture));
-            LaPiste.Add(new Sol(this, 1.0f, new Vector3(0, MathHelper.Pi, 0), new Vector3(0, 0, -200), new Vector2(100, 200), new Vector2(2, 2), "route", 0, 0, false, 0, 1, NbVoiture));
-            LaPiste.Add(new Sol(this, 1.0f, new Vector3(0, -MathHelper.PiOver2, 0), new Vector3(-150, 0, -400), new Vector2(100, 200), new Vector2(2, 20), "route", 0, 0, true, MathHelper.PiOver4, -1, NbVoiture));
+            LaPiste.Add(new Sol(this, 1.0f, new Vector3(0, MathHelper.Pi, 0), new Vector3(0, 0, 0), new Vector2(100, 200), new Vector2(2, 2), "route", 0, 0, false, 0, NbVoiture));
+            LaPiste.Add(new Sol(this, 1.0f, new Vector3(0, MathHelper.Pi, 0), new Vector3(0, 0, 200), new Vector2(100, 200), new Vector2(2, 20), "route", 15, 2 * MathHelper.Pi, false, 0, NbVoiture));
+            LaPiste.Add(new Sol(this, 1.0f, new Vector3(0, MathHelper.Pi, 0), new Vector3(0, 0, 400), new Vector2(100, 200), new Vector2(2, 2), "route", 0, 0, false, 0, NbVoiture));
+            LaPiste.Add(new Sol(this, 1.0f, new Vector3(0, MathHelper.PiOver2, 0), new Vector3(-100, -0, 700), new Vector2(100, 200), new Vector2(2, 2), "route", 0, 0, false, 0, NbVoiture));
+            LaPiste.Add(new Sol(this, 1.0f, new Vector3(0, MathHelper.Pi, 0), new Vector3(-100, 0, 600), new Vector2(100, 200), new Vector2(2, 20), "route", 0, 0, true, MathHelper.PiOver2, NbVoiture));
+            LaPiste.Add(new Sol(this, 1.0f, new Vector3(0, MathHelper.PiOver2, 0), new Vector3(-275, 0, 700), new Vector2(100, 200), new Vector2(2, 4), "route", 0, 0, false, 0, NbVoiture));
+            LaPiste.Add(new Sol(this, 1.0f, new Vector3(0, MathHelper.PiOver2, 0), new Vector3(-475, 0, 700), new Vector2(100, 200), new Vector2(2, 2), "route", 0, 0, false, 0, NbVoiture));
+            LaPiste.Add(new Sol(this, 1.0f, new Vector3(MathHelper.Pi / 8f, MathHelper.PiOver2, 0), new Vector3(-675, 0, 700), new Vector2(100, 800), new Vector2(2, 8), "route", 0, 0, false, 0, NbVoiture));
+            LaPiste.Add(new Sol(this, 1.0f, new Vector3(0, MathHelper.PiOver2, 0), new Vector3(-1875, 50, 700), new Vector2(100, 200), new Vector2(2, 2), "route", 0, 0, false, 0, NbVoiture));
+            LaPiste.Add(new Sol(this, 1.0f, new Vector3(0, MathHelper.PiOver2, 0), new Vector3(-2075, 0, 700), new Vector2(100, 200), new Vector2(2, 2), "route", 0, 0, false, 0, NbVoiture));
+            LaPiste.Add(new Sol(this, 1.0f, new Vector3(0, MathHelper.PiOver2, 0), new Vector3(-2275, 0, 600), new Vector2(100, 200), new Vector2(2, 20), "route", 0, 0, true, MathHelper.PiOver2, NbVoiture));
+            LaPiste.Add(new Sol(this, 1.0f, new Vector3(0, 0, 0), new Vector3(-2375, 0, 600), new Vector2(100, 200), new Vector2(2, 2), "route", 0, 0, false, 0, NbVoiture));
+            LaPiste.Add(new Sol(this, 1.0f, new Vector3(0, 0, 0), new Vector3(-2375, 0, 400), new Vector2(100, 200), new Vector2(2, 2), "route", 0, 0, false, 0, NbVoiture));
+            LaPiste.Add(new Sol(this, 1.0f, new Vector3(0, 0, 0), new Vector3(-2375, 0, 200), new Vector2(100, 200), new Vector2(2, 2), "route", 0, 0, false, 0, NbVoiture));
+            LaPiste.Add(new Sol(this, 1.0f, new Vector3(0, 0, 0), new Vector3(-2375, 0, 0), new Vector2(100, 200), new Vector2(2, 2), "route", 0, 0, false, 0, NbVoiture));
+            LaPiste.Add(new Sol(this, 1.0f, new Vector3(0, 0, 0), new Vector3(-2275, 0, -200), new Vector2(100, 200), new Vector2(2, 20), "route", 0, 0, true, MathHelper.PiOver2, NbVoiture));
+            LaPiste.Add(new Sol(this, 1.0f, new Vector3(0, -MathHelper.PiOver2, 0), new Vector3(-2275, 0, -300), new Vector2(100, 200), new Vector2(2, 2), "route", 0, 0, false, 0, NbVoiture));
+            LaPiste.Add(new Sol(this, 1.0f, new Vector3(0, -MathHelper.PiOver2, 0), new Vector3(-2100, 0, -300), new Vector2(100, 200), new Vector2(2, 2), "route", 0, 0, false, 0, NbVoiture));
+            LaPiste.Add(new Sol(this, 1.0f, new Vector3(0, -MathHelper.PiOver2, 0), new Vector3(-1900, 0, -300), new Vector2(100, 200), new Vector2(2, 2), "route", 0, 0, false, 0, NbVoiture));
+            LaPiste.Add(new Sol(this, 1.0f, new Vector3(0, -MathHelper.PiOver2, 0), new Vector3(-1700, 0, -300), new Vector2(100, 200), new Vector2(2, 2), "route", 0, 0, false, 0, NbVoiture));
+            LaPiste.Add(new Sol(this, 1.0f, new Vector3(0, -MathHelper.PiOver2, 0), new Vector3(-1500, 0, -300), new Vector2(100, 200), new Vector2(2, 2), "route", 0, 0, false, 0, NbVoiture));
+            LaPiste.Add(new Sol(this, 1.0f, new Vector3(0, -MathHelper.PiOver2, 0), new Vector3(-1300, 0, -300), new Vector2(100, 200), new Vector2(2, 2), "route", 0, 0, false, 0, NbVoiture));
+            LaPiste.Add(new Sol(this, 1.0f, new Vector3(0, -MathHelper.PiOver2, 0), new Vector3(-1100, 0, -300), new Vector2(100, 200), new Vector2(2, 2), "route", 0, 0, false, 0, NbVoiture));
+            LaPiste.Add(new Sol(this, 1.0f, new Vector3(0, -MathHelper.PiOver2, 0), new Vector3(-900, 0, -300), new Vector2(100, 200), new Vector2(2, 2), "route", 0, 0, false, 0, NbVoiture));
+            LaPiste.Add(new Sol(this, 1.0f, new Vector3(0, -MathHelper.PiOver2, 0), new Vector3(-700, 0, -300), new Vector2(100, 200), new Vector2(2, 2), "route", 0, 0, false, 0, NbVoiture));
+            LaPiste.Add(new Sol(this, 1.0f, new Vector3(0, -MathHelper.PiOver2, 0), new Vector3(-500, 0, -300), new Vector2(100, 200), new Vector2(2, 2), "route", 0, 0, false, 0, NbVoiture));
+            LaPiste.Add(new Sol(this, 1.0f, new Vector3(0, -MathHelper.PiOver2, 0), new Vector3(-300, 0, -300), new Vector2(100, 200), new Vector2(2, 2), "route", 0, 0, false, 0, NbVoiture));
+            LaPiste.Add(new Sol(this, 1.0f, new Vector3(0, MathHelper.Pi, 0), new Vector3(0, 0, -200), new Vector2(100, 200), new Vector2(2, 2), "route", 0, 0, false, 0, NbVoiture));
+            LaPiste.Add(new Sol(this, 1.0f, new Vector3(0, -MathHelper.PiOver2, 0), new Vector3(-100, 0, -200), new Vector2(100, 200), new Vector2(2, 20), "route", 0, 0, true, MathHelper.PiOver2, NbVoiture));
 
 
             CheckPoint = new bool[LaPiste.Count()];
@@ -191,7 +191,7 @@ namespace SimulationVéhicule
             {
                 GestionOrientationCaméra();
                 CaméraJeu.CréerPointDeVue();
-               // ListeVoiture[1].Vitesse = 1f;
+                ListeVoiture[1].Vitesse = 2f;
                 for (int i = 1; i < ListeVoiture.Count(); i++)
                 {
                     ListeVoiture[IDVoitureUtilisateur].GestionCollisionVoiture(ListeVoiture[i]);
@@ -218,9 +218,17 @@ namespace SimulationVéhicule
                     }
                 }
 
+                int position = 0;
+                for (int i = 0; i < LaCourse.NbFranchis.Count(); i++)
+                {
+                    if (IDVoitureUtilisateur == LaCourse.NbFranchis[i][1])
+                    {
+                        position = NbVoiture - i;
+                    }
+                }
                 //GestionCourse();
-                Interface.UpdateGUI((int)ListeVoiture[IDVoitureUtilisateur].PixelToKMH(ListeVoiture[IDVoitureUtilisateur].Vitesse), 
-                    LaCourse.FranchiParVoiture[IDVoitureUtilisateur][0], LaCourse.CheckPointParVoiture[IDVoitureUtilisateur], 
+                Interface.UpdateGUI((int)ListeVoiture[IDVoitureUtilisateur].PixelToKMH(ListeVoiture[IDVoitureUtilisateur].Vitesse),
+                    position, LaCourse.CheckPointParVoiture[IDVoitureUtilisateur], 
                     LaCourse.ToursFait[IDVoitureUtilisateur]);
 
                 //Window.Title = LaCourse.FranchiParVoiture[0][0].ToString() + " - " + LaCourse.FranchiParVoiture[1][0].ToString();

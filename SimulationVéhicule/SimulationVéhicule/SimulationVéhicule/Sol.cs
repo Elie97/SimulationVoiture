@@ -14,6 +14,8 @@ namespace SimulationVéhicule
 {
     public class Sol : PrimitiveDeBase
     {
+        const int NB_CHECK_POINT = 2;
+
         Vector2 Étendue { get; set; }
         Vector2 Charpente { get; set; }
         int NbRangées { get; set; }
@@ -37,12 +39,14 @@ namespace SimulationVéhicule
         float Rayon { get; set; }
         float Angle { get; set; }
         bool Courbe { get; set; }
-        float AngleCourbe { get; set; }
-        float SensCourbe { get; set; }
+        float RotationCourbe { get; set; }
 
         int NbVoiture { get; set; }
 
         public bool[] Franchi { get; set; }
+        public List<bool[]> ListeFranchi { get; set; }
+
+        List<Vector3[]> ListePointÉtape { get; set; }
 
         public BoundingBox Box
         {
@@ -52,11 +56,16 @@ namespace SimulationVéhicule
             }
         }
 
-        public BoundingBox BoxÉtape
+        public List<BoundingBox> BoxÉtape
         {
             get
             {
-                return BoundingBox.CreateFromPoints(PointsÉtape);
+                List<BoundingBox> boxÉtape = new List<BoundingBox>();
+                foreach (Vector3[] x in ListePointÉtape)
+	            {
+                    boxÉtape.Add(BoundingBox.CreateFromPoints(x));
+	            }
+                return boxÉtape;
             }
         }
 
@@ -81,7 +90,7 @@ namespace SimulationVéhicule
         float PositionRelativeY { get; set; }
 
         public Sol(Game jeu, float échelleInitiale, Vector3 rotationInitiale, Vector3 positionInitiale, Vector2 étendue,
-            Vector2 charpente, string nomTexture, float rayon, float angle, bool courbe, float angleCourbe, float sensCourbe, int nbVoiture)
+            Vector2 charpente, string nomTexture, float rayon, float angle, bool courbe, float rotationCourbe, int nbVoiture)
             : base(jeu, échelleInitiale, rotationInitiale, positionInitiale)
         {
             Étendue = étendue;
@@ -90,14 +99,14 @@ namespace SimulationVéhicule
             Rayon = rayon;
             Angle = angle;
             Courbe = courbe;
-            AngleCourbe = angleCourbe;
-            SensCourbe = sensCourbe;
+            RotationCourbe = rotationCourbe;
             NbVoiture = nbVoiture;
         }
 
 
         public override void Initialize()
         {
+            ListeFranchi = new List<bool[]>();//pcq il y a + de 1 check point par piste!
             Franchi = new bool[NbVoiture];
             for (int i = 0; i < Franchi.Length; i++)
             {
@@ -111,6 +120,7 @@ namespace SimulationVéhicule
             NbRangées = (int)Charpente.Y;
             PointsBox = new Vector3[NbColonnes * NbRangées];
             PointsÉtape = new Vector3[2];
+            ListePointÉtape = new List<Vector3[]>();
             Delta = new Vector2(Largeur / ((float)NbColonnes - 1), Hauteur / ((float)NbRangées - 1));
             //Origine = new Vector3(Position.X - (Étendue.X / 2) + ((Étendue.X / Charpente.X) / 2), Position.Y, Position.Z);
             Origine = new Vector3(0, 0, 0);
@@ -130,32 +140,56 @@ namespace SimulationVéhicule
             {
                 for (int i = 0; i < NbColonnes; i++)
                 {
-                    PtsSommets[i, j] = new Vector3(Origine.X + Delta.X * i, Origine.Y, Origine.Z - Delta.Y * j);
+                    if (Courbe)
+                    {
+                        PtsSommets[i, j] = new Vector3(Origine.X + Delta.X * i, Origine.Y, Origine.Z - 0.5f * j);
+                    }
+                    else
+                    {
+                        PtsSommets[i, j] = new Vector3(Origine.X + Delta.X * i, Origine.Y, Origine.Z - Delta.Y * j);
+                    }
 
                 }
             }
 
             if (Courbe)
             {
-                //Game.Window.Title = AngleCourbe.ToString();
                 //for (int j = 0; j < NbRangées; j++)
                 //{
                 //    for (int i = 0; i < NbColonnes; i++)
                 //    {
                 //        PtsSommets[i, j] = Vector3.Transform(new Vector3(PtsSommets[i, j].X, PtsSommets[i, j].Y, PtsSommets[i, j].Z),
-                //            Matrix.CreateFromYawPitchRoll((((j) * SensCourbe) / (float)(NbRangées*2)) * MathHelper.PiOver2, 0, 0));
+                //            Matrix.CreateFromYawPitchRoll((((j) * SensCourbe) / (float)(NbRangées * 2)) * MathHelper.PiOver2, 0, 0));
                 //    }
                 //}
+
+
+
                 for (int j = 0; j < NbRangées; j++)
                 {
                     for (int i = 0; i < NbColonnes; i++)
                     {
-                        PtsSommets[i, j] = Vector3.Transform(PtsSommets[i, j],
-                                Matrix.CreateRotationY(MathHelper.PiOver2));
+
+                        //PtsSommets[i, j] = Vector3.Transform(new Vector3(Origine.X + Delta.X * i, Origine.Y, Origine.Z - 0.5f * j),
+                        //    Matrix.CreateRotationY((j / (float)NbRangées) * MathHelper.PiOver2));
+
+                        PtsSommets[i, j] = Vector3.Transform(new Vector3(PtsSommets[i, j].X, PtsSommets[i, j].Y, PtsSommets[i, j].Z),
+                             Matrix.CreateRotationY((j) / (float)(NbRangées) * MathHelper.PiOver2));
                     }
                 }
-                PtsSommets[NbColonnes-1, 0] = Vector3.Transform(PtsSommets[0, 0],
-                                Matrix.CreateRotationY(-MathHelper.PiOver2));
+
+                for (int j = 0; j < NbRangées; j++)
+                {
+                    for (int i = 0; i < NbColonnes; i++)
+                    {
+
+                        PtsSommets[i, j] = Vector3.Transform(PtsSommets[i, j],
+                             Matrix.CreateRotationY(RotationCourbe));
+                    }
+                }
+
+
+
             }
 
             for (int j = 0; j < NbRangées; j++)
@@ -236,10 +270,12 @@ namespace SimulationVéhicule
 
             }
             DebugShapeRenderer.AddBoundingBox(Box, Color.Wheat);
-            DebugShapeRenderer.AddBoundingBox(BoxÉtape, Color.Green);
+            foreach (BoundingBox x in BoxÉtape)
+            {
+                DebugShapeRenderer.AddBoundingBox(x, Color.Green);
+            }
             //DebugShapeRenderer.AddBoundingBox(BoxDroite, Color.YellowGreen);
             //DebugShapeRenderer.AddBoundingBox(BoxGauche, Color.YellowGreen);
-            //Game.Window.Title = PtsSommets[0, 50].Y.ToString();
             //DebugShapeRenderer.AddBoundingBox(Box, Color.Wheat);
             //DebugShapeRenderer.AddBoundingBox(Box, Color.Blue);
             //DebugShapeRenderer.AddBoundingSphere(Sphere, Color.Yellow);
@@ -282,7 +318,6 @@ namespace SimulationVéhicule
                 }
             }
 
-            //Game.Window.Title = "I : " + Hauteur + " - F : " + hauteurFinale + " - D : " + deltaHauteur + " - D : " + profondeur + " - H : " + hauteur;
 
             return hauteur;
         }
@@ -304,13 +339,22 @@ namespace SimulationVéhicule
             }
 
 
-            PointsÉtape[0] = PtsSommets[0, NbRangées - 1];
-            PointsÉtape[1] = new Vector3(PtsSommets[NbColonnes - 1, NbRangées - 1].X, PtsSommets[NbColonnes - 1, NbRangées - 1].Y + 200, PtsSommets[NbColonnes - 1, NbRangées - 1].Z);
 
-            for (int i = 0; i < PointsÉtape.Length; i++)
+            //GÉNÉRIQUE?
+            for (int k = 0; k < NB_CHECK_POINT; k++)
             {
-                PointsÉtape[i] = Vector3.Transform(PointsÉtape[i], transformation);
+                PointsÉtape = new Vector3[2];
+                PointsÉtape[0] = new Vector3(PtsSommets[0, NbRangées - 1].X, PtsSommets[0, NbRangées - 1].Y, PtsSommets[0, NbRangées - 1].Z / (k + 1));
+                PointsÉtape[1] = new Vector3(PtsSommets[NbColonnes - 1, NbRangées - 1].X, PtsSommets[NbColonnes - 1, NbRangées - 1].Y + 200, PtsSommets[NbColonnes - 1, NbRangées - 1].Z / (k + 1));
+
+                for (int i = 0; i < PointsÉtape.Length; i++)
+                {
+                    PointsÉtape[i] = Vector3.Transform(PointsÉtape[i], transformation);
+                }
+                ListePointÉtape.Add(PointsÉtape);
             }
+
+            //
 
             ////PointBoxLatéralDroit = new Vector3[] { PtsSommets[NbColonnes - 1, 0], 
             //  //  new Vector3(PtsSommets[NbColonnes - 1, NbRangées - 1].X, PtsSommets[NbColonnes - 1, NbRangées - 1].Y + 50, PtsSommets[NbColonnes - 1, NbRangées - 1].Z) };
