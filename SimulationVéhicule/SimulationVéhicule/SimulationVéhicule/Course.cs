@@ -23,6 +23,7 @@ namespace SimulationVéhicule
         public List<int> PositionVoiture { get; set; }
         public List<int[]> FranchiParVoiture { get; set; }
         public List<int[]> NbFranchis { get; set; }
+        List<bool>[] ListeCheckPoint { get; set; }
 
         public List<int> Position { get; set; }
 
@@ -37,6 +38,7 @@ namespace SimulationVéhicule
 
         public override void Initialize()
         {
+            ListeCheckPoint = new List<bool>[2];
             ToursFait = new int[NbVoiture];
             for (int i = 0; i < NbVoiture; i++)
             {
@@ -52,51 +54,95 @@ namespace SimulationVéhicule
             for (int i = 0; i < NbVoiture; i++)
             {
                 FranchiParVoiture.Add(new int[2]);
+               
             }
             base.Initialize();
         }
 
         public override void Update(GameTime gameTime)
         {
-            for (int v = 0; v < NbVoiture; v++)
+            int nbCheckPointParTour = LaPiste.Count() * Sol.NB_CHECK_POINT;
+
+
+
+
+            //for (int v = 0; v < NbVoiture; v++)
+            //{
+            //    if (ToursFait[v] < NbTours)
+            //    {
+            //        if (LaPiste.TrueForAll(x => x.Franchi[v]))
+            //        {
+            //            for (int j = 0; j < LaPiste.Count(); j++)
+            //            {
+            //                LaPiste[j].Franchi[v] = false;
+            //            }
+            //            //Interface.NbCheckPointFranchis = 0;
+            //            ToursFait[v]++;
+            //        }
+            //        for (int j = 0; j < LaPiste.Count(); j++)
+            //        {
+            //            CheckPointParVoiture[v][j] = LaPiste[j].Franchi[v];
+            //        }
+            //        LaPiste[LaPiste.Count() - 1].Franchi[k, v] = false;
+            //    }
+
+            //    for (int i = 0; i < LaPiste.Count(); i++)
+            //    {
+            //        for (int j = 0; j < LaPiste[i].BoxÉtape.Count(); j++)
+            //        {
+            //            if (ListeVoiture[v].BoxVoiture.Intersects(LaPiste[i].BoxÉtape[j]))
+            //            {
+            //                //LaPiste[i].Franchi[v] = true;
+            //            }
+            //        }
+            //    }
+            //}
+
+            //for (int v = 0; v < NbVoiture; v++)
+            //{
+            //    FranchiParVoiture[v][0] = CheckPointParVoiture[v].Where(x => x).Count() + (ToursFait[v] * LaPiste.Count());//En ordre plz
+            //    FranchiParVoiture[v][1] = v;
+            //}
+            ////Game.Window.Title = LaPiste[1].BoxÉtape[1].Min.ToString();
+            //NbFranchis = FranchiParVoiture.OrderBy(x => x[0]).ToList();
+            string d = "";
+            //foreach (Sol x in LaPiste)
+            //{
+            //    for (int i = 0; i < Sol.NB_CHECK_POINT; i++)
+            //    {
+            //        d += x.ListeFranchiParVoiture[0][i].ToString() + " - ";
+            //    }
+            //}
+
+            if (ToursFait[0] < NbTours)
             {
-                if (ToursFait[v] < NbTours)
+                ListeCheckPoint[0] = new List<bool>();
+                for (int i = 0; i < LaPiste.Count(); i++)
                 {
-                    if (LaPiste.TrueForAll(x => x.Franchi[v]))
+                    foreach (bool x in LaPiste[i].ListeFranchiParVoiture[0])
                     {
-                        for (int j = 0; j < LaPiste.Count(); j++)
-                        {
-                            LaPiste[j].Franchi[v] = false;
-                        }
-                        //Interface.NbCheckPointFranchis = 0;
-                        ToursFait[v]++;
+                        ListeCheckPoint[0].Add(x);
                     }
-                    for (int j = 0; j < LaPiste.Count(); j++)
-                    {
-                        CheckPointParVoiture[v][j] = LaPiste[j].Franchi[v];
-                    }
-                    LaPiste[LaPiste.Count() - 1].Franchi[v] = false;
                 }
+
 
                 for (int i = 0; i < LaPiste.Count(); i++)
                 {
                     for (int j = 0; j < LaPiste[i].BoxÉtape.Count(); j++)
                     {
-                        if (ListeVoiture[v].BoxVoiture.Intersects(LaPiste[i].BoxÉtape[j]))
+                        if (ListeVoiture[0].BoxVoiture.Intersects(LaPiste[i].BoxÉtape[j]))
                         {
-                            LaPiste[i].Franchi[v] = true;
+                            LaPiste[i].ListeFranchiParVoiture[0][j] = true;
                         }
                     }
-                }
+                }   
             }
 
-            for (int v = 0; v < NbVoiture; v++)
+            foreach (bool x in ListeCheckPoint[0])
             {
-                FranchiParVoiture[v][0] = CheckPointParVoiture[v].Where(x => x).Count() + (ToursFait[v] * LaPiste.Count());//En ordre plz
-                FranchiParVoiture[v][1] = v;
+                d += x + " - ";
             }
-            Game.Window.Title = LaPiste[1].BoxÉtape[1].Min.ToString();
-            NbFranchis = FranchiParVoiture.OrderBy(x => x[0]).ToList();
+            Game.Window.Title = d.ToString();
 
 
 

@@ -14,7 +14,7 @@ namespace SimulationVéhicule
 {
     public class Sol : PrimitiveDeBase
     {
-        const int NB_CHECK_POINT = 2;
+        public const int NB_CHECK_POINT = 2;
 
         Vector2 Étendue { get; set; }
         Vector2 Charpente { get; set; }
@@ -43,8 +43,9 @@ namespace SimulationVéhicule
 
         int NbVoiture { get; set; }
 
-        public bool[] Franchi { get; set; }
-        public List<bool[]> ListeFranchi { get; set; }
+        public bool[,] Franchi { get; set; }
+        public List<bool> ListeFranchi { get; set; }
+        public List<List<bool>> ListeFranchiParVoiture { get; set; }
 
         List<Vector3[]> ListePointÉtape { get; set; }
 
@@ -61,10 +62,10 @@ namespace SimulationVéhicule
             get
             {
                 List<BoundingBox> boxÉtape = new List<BoundingBox>();
-                foreach (Vector3[] x in ListePointÉtape)
-	            {
-                    boxÉtape.Add(BoundingBox.CreateFromPoints(x));
-	            }
+                for (int i = 0; i < ListePointÉtape.Count(); i++)
+                {
+                    boxÉtape.Add(BoundingBox.CreateFromPoints(ListePointÉtape[ListePointÉtape.Count() - i - 1]));
+                }
                 return boxÉtape;
             }
         }
@@ -106,12 +107,25 @@ namespace SimulationVéhicule
 
         public override void Initialize()
         {
-            ListeFranchi = new List<bool[]>();//pcq il y a + de 1 check point par piste!
-            Franchi = new bool[NbVoiture];
-            for (int i = 0; i < Franchi.Length; i++)
+            ListeFranchi = new List<bool>();//pcq il y a + de 1 check point par piste!
+            ListeFranchiParVoiture = new List<List<bool>>();
+            Franchi = new bool[NB_CHECK_POINT, NbVoiture];
+
+            for (int j = 0; j < NbVoiture; j++)
             {
-                Franchi[i] = false;
+                ListeFranchi = new List<bool>();
+                for (int i = 0; i < NB_CHECK_POINT; i++)
+                {
+                    Franchi[i, j] = false;
+                    ListeFranchi.Add(false);
+                    ListeFranchiParVoiture.Add(ListeFranchi);
+                }
             }
+
+
+            
+
+
             GestionnaireDeTextures = Game.Services.GetService(typeof(RessourcesManager<Texture2D>)) as RessourcesManager<Texture2D>;
             LaTexture = GestionnaireDeTextures.Find(NomTexture);
             Largeur = Étendue.X;
