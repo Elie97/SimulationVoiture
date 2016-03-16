@@ -118,8 +118,8 @@ namespace SimulationVéhicule
                 {
                     Franchi[i, j] = false;
                     ListeFranchi.Add(false);
-                    ListeFranchiParVoiture.Add(ListeFranchi);
                 }
+                ListeFranchiParVoiture.Add(ListeFranchi);
             }
 
 
@@ -359,7 +359,7 @@ namespace SimulationVéhicule
             {
                 PointsÉtape = new Vector3[2];
                 PointsÉtape[0] = new Vector3(PtsSommets[0, NbRangées - 1].X, PtsSommets[0, NbRangées - 1].Y, PtsSommets[0, NbRangées - 1].Z / (k + 1));
-                PointsÉtape[1] = new Vector3(PtsSommets[NbColonnes - 1, NbRangées - 1].X, PtsSommets[NbColonnes - 1, NbRangées - 1].Y + 200, PtsSommets[NbColonnes - 1, NbRangées - 1].Z / (k + 1));
+                PointsÉtape[1] = new Vector3(PtsSommets[NbColonnes - 1, NbRangées - 1].X, PtsSommets[NbColonnes - 1, NbRangées - 1].Y + 100, PtsSommets[NbColonnes - 1, NbRangées - 1].Z / (k + 1));
 
                 for (int i = 0; i < PointsÉtape.Length; i++)
                 {

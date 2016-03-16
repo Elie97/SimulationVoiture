@@ -85,14 +85,14 @@ namespace SimulationVéhicule
             Carte = new Terrain(this, 1f, Vector3.Zero, new Vector3(0, -1275, 0), new Vector3(25600, 1000, 25600), "test", "DétailsTerrain", 5, INTERVALLE_MAJ_STANDARD);
             LaPiste = new List<Sol>();
             ListeVoiture = new List<Voiture>();
-            Mustang = new Voiture(this, "MustangGT500", 0.0088f, new Vector3(0, 0, 0), new Vector3(-70, 0, -100), INTERVALLE_MAJ_STANDARD, true);
-            AI = new Voiture(this, "MustangGT500", 0.0088f, new Vector3(0, 0, 0), new Vector3(-30, 0, -100), INTERVALLE_MAJ_STANDARD, false);
+            Mustang = new Voiture(this, "MustangGT500", 0.0088f, new Vector3(0, 0, 0), new Vector3(-70, 0, 0), INTERVALLE_MAJ_STANDARD, true);
+            AI = new Voiture(this, "MustangGT500", 0.0088f, new Vector3(0, 0, 0), new Vector3(-30, 0, -0), INTERVALLE_MAJ_STANDARD, false);
             ListeVoiture.Add(Mustang);
             ListeVoiture.Add(AI);
             NbVoiture = ListeVoiture.Count();
 
 
-            //LaPiste.Add(new Sol(this, 1.0f, new Vector3(0, MathHelper.Pi, 0), new Vector3(0, 0, 0), new Vector2(100, 200), new Vector2(2, 2), "route", 0, 0, false, 0, NbVoiture));
+            LaPiste.Add(new Sol(this, 1.0f, new Vector3(0, MathHelper.Pi, 0), new Vector3(0, 0, 0), new Vector2(100, 200), new Vector2(2, 2), "route", 0, 0, false, 0, NbVoiture));
             LaPiste.Add(new Sol(this, 1.0f, new Vector3(0, MathHelper.Pi, 0), new Vector3(0, 0, 200), new Vector2(100, 200), new Vector2(2, 20), "route", 15, 2 * MathHelper.Pi, false, 0, NbVoiture));
             LaPiste.Add(new Sol(this, 1.0f, new Vector3(0, MathHelper.Pi, 0), new Vector3(0, 0, 400), new Vector2(100, 200), new Vector2(2, 2), "route", 0, 0, false, 0, NbVoiture));
             //LaPiste.Add(new Sol(this, 1.0f, new Vector3(0, MathHelper.PiOver2, 0), new Vector3(-100, -0, 700), new Vector2(100, 200), new Vector2(2, 2), "route", 0, 0, false, 0, NbVoiture));
@@ -191,7 +191,7 @@ namespace SimulationVéhicule
             {
                 GestionOrientationCaméra();
                 CaméraJeu.CréerPointDeVue();
-                ListeVoiture[1].Vitesse = 2f;
+                ListeVoiture[1].Vitesse = 1f;
                 for (int i = 1; i < ListeVoiture.Count(); i++)
                 {
                     ListeVoiture[IDVoitureUtilisateur].GestionCollisionVoiture(ListeVoiture[i]);
@@ -219,16 +219,16 @@ namespace SimulationVéhicule
                 }
 
                 int position = 0;
-                //for (int i = 0; i < LaCourse.NbFranchis.Count(); i++)
-                //{
-                //    if (IDVoitureUtilisateur == LaCourse.NbFranchis[i][1])
-                //    {
-                //        position = NbVoiture - i;
-                //    }
-                //}
+                for (int i = 0; i < LaCourse.NbFranchis.Count(); i++)
+                {
+                    //if (IDVoitureUtilisateur == LaCourse.NbFranchis[i][1])
+                    //{
+                    //    position = NbVoiture - i;
+                    //}
+                }
                 //GestionCourse();
                 Interface.UpdateGUI((int)ListeVoiture[IDVoitureUtilisateur].PixelToKMH(ListeVoiture[IDVoitureUtilisateur].Vitesse),
-                    position, LaCourse.CheckPointParVoiture[IDVoitureUtilisateur], 
+                    LaCourse.PositionUtilisateur, LaCourse.CheckPointParVoiture[IDVoitureUtilisateur], 
                     LaCourse.ToursFait[IDVoitureUtilisateur]);
 
                 //Window.Title = LaCourse.FranchiParVoiture[0][0].ToString() + " - " + LaCourse.FranchiParVoiture[1][0].ToString();

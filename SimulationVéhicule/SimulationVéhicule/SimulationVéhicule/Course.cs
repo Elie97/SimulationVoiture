@@ -20,10 +20,11 @@ namespace SimulationVéhicule
         public List<Sol> LaPiste { get; set; }
         public List<Voiture> ListeVoiture { get; set; }
         public List<bool[]> CheckPointParVoiture { get; set; }
-        public List<int> PositionVoiture { get; set; }
         public List<int[]> FranchiParVoiture { get; set; }
-        public List<int[]> NbFranchis { get; set; }
+        public int[] NbFranchis { get; set; }
         List<bool>[] ListeCheckPoint { get; set; }
+        List<int[]> PositionVoiture { get; set; }
+        public int PositionUtilisateur { get; set; }
 
         public List<int> Position { get; set; }
 
@@ -38,116 +39,128 @@ namespace SimulationVéhicule
 
         public override void Initialize()
         {
+            PositionUtilisateur = NbVoiture;
+            NbFranchis = new int[NbVoiture];
             ListeCheckPoint = new List<bool>[2];
             ToursFait = new int[NbVoiture];
+            CheckPointParVoiture = new List<bool[]>(NbVoiture);
+            FranchiParVoiture = new List<int[]>(NbVoiture);
+            PositionVoiture = new List<int[]>();
+
             for (int i = 0; i < NbVoiture; i++)
             {
+                NbFranchis[i] = 0;
                 ToursFait[i] = 0;
+                CheckPointParVoiture.Add(new bool[LaPiste.Count()]);
+                FranchiParVoiture.Add(new int[2]);
             }
 
-            CheckPointParVoiture = new List<bool[]>(NbVoiture);
-            for (int i = 0; i < NbVoiture; i++)
-            {
-                CheckPointParVoiture.Add(new bool[LaPiste.Count()]);
-            }
-            FranchiParVoiture = new List<int[]>(NbVoiture);
-            for (int i = 0; i < NbVoiture; i++)
-            {
-                FranchiParVoiture.Add(new int[2]);
-               
-            }
+
             base.Initialize();
         }
 
         public override void Update(GameTime gameTime)
         {
             int nbCheckPointParTour = LaPiste.Count() * Sol.NB_CHECK_POINT;
+            PositionVoiture = new List<int[]>();
 
-
-
-
-            //for (int v = 0; v < NbVoiture; v++)
-            //{
-            //    if (ToursFait[v] < NbTours)
-            //    {
-            //        if (LaPiste.TrueForAll(x => x.Franchi[v]))
-            //        {
-            //            for (int j = 0; j < LaPiste.Count(); j++)
-            //            {
-            //                LaPiste[j].Franchi[v] = false;
-            //            }
-            //            //Interface.NbCheckPointFranchis = 0;
-            //            ToursFait[v]++;
-            //        }
-            //        for (int j = 0; j < LaPiste.Count(); j++)
-            //        {
-            //            CheckPointParVoiture[v][j] = LaPiste[j].Franchi[v];
-            //        }
-            //        LaPiste[LaPiste.Count() - 1].Franchi[k, v] = false;
-            //    }
-
-            //    for (int i = 0; i < LaPiste.Count(); i++)
-            //    {
-            //        for (int j = 0; j < LaPiste[i].BoxÉtape.Count(); j++)
-            //        {
-            //            if (ListeVoiture[v].BoxVoiture.Intersects(LaPiste[i].BoxÉtape[j]))
-            //            {
-            //                //LaPiste[i].Franchi[v] = true;
-            //            }
-            //        }
-            //    }
-            //}
-
-            //for (int v = 0; v < NbVoiture; v++)
-            //{
-            //    FranchiParVoiture[v][0] = CheckPointParVoiture[v].Where(x => x).Count() + (ToursFait[v] * LaPiste.Count());//En ordre plz
-            //    FranchiParVoiture[v][1] = v;
-            //}
-            ////Game.Window.Title = LaPiste[1].BoxÉtape[1].Min.ToString();
-            //NbFranchis = FranchiParVoiture.OrderBy(x => x[0]).ToList();
-            string d = "";
-            //foreach (Sol x in LaPiste)
-            //{
-            //    for (int i = 0; i < Sol.NB_CHECK_POINT; i++)
-            //    {
-            //        d += x.ListeFranchiParVoiture[0][i].ToString() + " - ";
-            //    }
-            //}
-
-            if (ToursFait[0] < NbTours)
+            for (int v = 0; v < NbVoiture; v++)
             {
-                ListeCheckPoint[0] = new List<bool>();
+                //ini liste de tous les checks points
+                ListeCheckPoint[v] = new List<bool>();
                 for (int i = 0; i < LaPiste.Count(); i++)
                 {
-                    foreach (bool x in LaPiste[i].ListeFranchiParVoiture[0])
+                    foreach (bool x in LaPiste[i].ListeFranchiParVoiture[v])
                     {
-                        ListeCheckPoint[0].Add(x);
+                        ListeCheckPoint[v].Add(x);
                     }
                 }
 
+                if (ToursFait[v] < NbTours)
+                {
+                    //retour checkpont à false si tour complet
+                    if (ListeCheckPoint[v].TrueForAll(x => x))
+                    {
+                        for (int i = 0; i < LaPiste.Count(); i++)
+                        {
+                            for (int j = 0; j < Sol.NB_CHECK_POINT; j++)
+                            {
+                                LaPiste[i].ListeFranchiParVoiture[v][j] = false;
+                            }
+                        }
+                        ToursFait[v]++;
+                    }
+                }
+                if (!ListeVoiture[v].BoxVoiture.Intersects(LaPiste[LaPiste.Count() - 1].BoxÉtape[Sol.NB_CHECK_POINT - 1]))
+                {
+                    LaPiste[LaPiste.Count() - 1].ListeFranchiParVoiture[v][1] = false;
+                }
+
+                //détection collision check point
+                for (int i = 0; i < LaPiste.Count(); i++)
+                {
+                    for (int j = 0; j < LaPiste[i].BoxÉtape.Count(); j++)
+                    {
+                        if (ListeVoiture[v].BoxVoiture.Intersects(LaPiste[i].BoxÉtape[j]))
+                        {
+                            LaPiste[i].ListeFranchiParVoiture[v][j] = true;
+                        }
+                    }
+                }
 
                 for (int i = 0; i < LaPiste.Count(); i++)
                 {
                     for (int j = 0; j < LaPiste[i].BoxÉtape.Count(); j++)
                     {
-                        if (ListeVoiture[0].BoxVoiture.Intersects(LaPiste[i].BoxÉtape[j]))
-                        {
-                            LaPiste[i].ListeFranchiParVoiture[0][j] = true;
-                        }
+                        ListeCheckPoint[v][i + i + j] = LaPiste[i].ListeFranchiParVoiture[v][j];
                     }
-                }   
+                }
+
+                NbFranchis[v] = ListeCheckPoint[v].Where(x => x).Count() + (ToursFait[v] * LaPiste.Count() * Sol.NB_CHECK_POINT);
+
+                PositionVoiture.Add(new int[] { v, NbFranchis[v] });
             }
 
+            PositionVoiture = PositionVoiture.OrderByDescending(x => x[1]).ToList();
+
+            for (int i = 0; i < PositionVoiture.Count(); i++)
+            {
+                if (!ÉgaleUnePosition(0))
+                {
+                    if (0 == PositionVoiture[i][0])//id voiture utilisateur
+                    {
+                        PositionUtilisateur = i + 1;
+                    }
+                }
+            }
+
+            string d = "";
             foreach (bool x in ListeCheckPoint[0])
             {
-                d += x + " - ";
+                d += " - " + x;
             }
-            Game.Window.Title = d.ToString();
 
+
+            Game.Window.Title = ÉgaleUnePosition(0).ToString();
+            //Game.Window.Title = NbFranchis[0].ToString() + " + " + NbFranchis[1].ToString();
 
 
 
             base.Update(gameTime);
+        }
+
+        bool ÉgaleUnePosition(int IDUtilisateur)
+        {
+            bool égaleUnePosition = false;
+            for (int i = 1; i < NbVoiture; i++)
+            {
+                égaleUnePosition = false;
+                if (NbFranchis[IDUtilisateur] == NbFranchis[i])
+                {
+                    égaleUnePosition = true;
+                } 
+            }
+            return égaleUnePosition;
         }
     }
 }

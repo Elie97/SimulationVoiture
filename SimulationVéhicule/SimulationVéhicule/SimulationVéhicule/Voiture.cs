@@ -75,7 +75,7 @@ namespace SimulationVéhicule
         public BoundingSphere SphereVoitureAvant { get; set; }
         BoundingSphere SphereVoitureArrière { get; set; }
         BoundingSphere SphereVoitureMillieu { get; set; }
-        BoundingSphere SphereRouteAvant { get; set; }
+        public BoundingSphere SphereRouteAvant { get; set; }
 
         BoundingBox BoxVoitureAvant { get; set; }
         BoundingBox BoxVoitureArrière { get; set; }
