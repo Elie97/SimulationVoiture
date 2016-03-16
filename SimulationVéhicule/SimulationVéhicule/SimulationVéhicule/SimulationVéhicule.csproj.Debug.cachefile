@@ -1,3 +1,4 @@
+Content\Textures\route.xnb
 Content\Models\_Corroga.xnb
 Content\Models\_Pool_01.xnb
 Content\Models\_Pool_02.xnb
@@ -7,6 +8,9 @@ Content\Models\engine_diff_tex.xnb
 Content\Models\turret_alt_diff_tex.xnb
 Content\Textures\DétailsTerrain.xnb
 Content\Textures\Terrain.xnb
+Content\Textures\test.xnb
+Content\Textures\aiguille.xnb
+Content\Textures\speedometer.xnb
 Content\Models\MustangGT500.xnb
 Content\Models\tank.xnb
 Content\Sounds\acceleration.xnb
@@ -20,7 +24,3 @@ Content\Models\_Pool_Wa_0.xnb
 Content\Models\_Pool_01_0.xnb
 Content\Models\engine_diff_tex_0.xnb
 Content\Models\turret_alt_diff_tex_0.xnb
-Content\Textures\route.xnb
-Content\Textures\test.xnb
-Content\Textures\aiguille.xnb
-Content\Textures\speedometer.xnb

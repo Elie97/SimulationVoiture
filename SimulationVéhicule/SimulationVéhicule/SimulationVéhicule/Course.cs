@@ -25,6 +25,7 @@ namespace SimulationVéhicule
         List<bool>[] ListeCheckPoint { get; set; }
         List<int[]> PositionVoiture { get; set; }
         public int PositionUtilisateur { get; set; }
+        List<bool[]> CheckPointFranchiParVoiture { get; set; }
 
         public List<int> Position { get; set; }
 
@@ -44,6 +45,7 @@ namespace SimulationVéhicule
             ListeCheckPoint = new List<bool>[2];
             ToursFait = new int[NbVoiture];
             CheckPointParVoiture = new List<bool[]>(NbVoiture);
+            CheckPointFranchiParVoiture = new List<bool[]>(NbVoiture);
             FranchiParVoiture = new List<int[]>(NbVoiture);
             PositionVoiture = new List<int[]>();
 
@@ -97,13 +99,28 @@ namespace SimulationVéhicule
                 }
 
                 //détection collision check point
+                float t = 0;
                 for (int i = 0; i < LaPiste.Count(); i++)
                 {
                     for (int j = 0; j < LaPiste[i].BoxÉtape.Count(); j++)
                     {
-                        if (ListeVoiture[v].BoxVoiture.Intersects(LaPiste[i].BoxÉtape[j]))
+                        if (ListeVoiture[v].BoxVoiture.Intersects(LaPiste[i].BoxComplet))
                         {
-                            LaPiste[i].ListeFranchiParVoiture[v][j] = true;
+                            //Game.Window.Title = GetSensDeltaRotationSol(ListeVoiture[0].Rotation.Y, LaPiste[i].RotationInitiale.Y).ToString();
+                            //LaPiste[i].ListeFranchiParVoiture[v][j] = false;
+                            if (ListeVoiture[v].BoxVoiture.Intersects(LaPiste[i].BoxÉtape[j]))
+                            {
+                                //LaPiste[i].ListeFranchiParVoiture[v][j] = true;
+                                if (GetSensDeltaRotationSol(ListeVoiture[v].Rotation.Y, LaPiste[i].RotationInitiale.Y) >= 0)
+                                {
+                                    LaPiste[i].ListeFranchiParVoiture[v][j] = true;
+                                    //Game.Window.Title = GetSensDeltaRotationSol(ListeVoiture[0].Rotation.Y, LaPiste[i].RotationInitiale.Y).ToString();
+                                }
+                                if (GetSensDeltaRotationSol(ListeVoiture[v].Rotation.Y, LaPiste[i].RotationInitiale.Y) <= 0)
+                                {
+                                    LaPiste[i].ListeFranchiParVoiture[v][j] = false;
+                                }
+                            }
                         }
                     }
                 }
@@ -119,6 +136,7 @@ namespace SimulationVéhicule
                 NbFranchis[v] = ListeCheckPoint[v].Where(x => x).Count() + (ToursFait[v] * LaPiste.Count() * Sol.NB_CHECK_POINT);
 
                 PositionVoiture.Add(new int[] { v, NbFranchis[v] });
+
             }
 
             PositionVoiture = PositionVoiture.OrderByDescending(x => x[1]).ToList();
@@ -140,9 +158,20 @@ namespace SimulationVéhicule
                 d += " - " + x;
             }
 
+            for (int i = 0; i < LaPiste.Count(); i++)
+            {
+                for (int j = 0; j < LaPiste[i].BoxÉtape.Count(); j++)
+                {
+                    if(ListeCheckPoint[0][i + i + j] == true)
+                    {
+                        LaPiste[i].CouleurCheckPoint = Color.Green;
+                    }
+                }
+            }
 
-            Game.Window.Title = ÉgaleUnePosition(0).ToString();
-            //Game.Window.Title = NbFranchis[0].ToString() + " + " + NbFranchis[1].ToString();
+            //Game.Window.Title = GetSensDeltaRotationSol(ListeVoiture[0].Rotation.Y, LaPiste[ListeCheckPoint[0].Where(x => x).Count() / 2].RotationInitiale.Y).ToString() + " - " + (ListeCheckPoint[0].Where(x => x).Count() / 2).ToString() + "/" + LaPiste.Count().ToString();
+            //Game.Window.Title = (ListeVoiture[0].Rotation.Y % MathHelper.Pi).ToString();
+            Game.Window.Title = NbFranchis[0].ToString() + " + " + NbFranchis[1].ToString();
 
 
 
@@ -161,6 +190,50 @@ namespace SimulationVéhicule
                 } 
             }
             return égaleUnePosition;
+        }
+
+        float NormalizeRotation(float rotation)
+        {
+            //if (rotation > 0)
+            //{
+            //    rotation = rotation % (float)(Math.PI);
+            //}
+            //else if (rotation < 0)
+            //{
+            //    rotation = rotation % (float)(Math.PI);
+            //}
+            //if (rotation > (Math.PI))
+            //{
+            //    rotation = rotation - ((float)Math.PI - rotation);
+            //}
+            return (float)Math.Cos(rotation);
+        }
+
+        float GetSensDeltaRotationSol(float rotationVoiture, float rotationSol)
+        {
+            float deltaRotation = 0;
+            float facteurVitesse = 1;
+            if (rotationSol == MathHelper.Pi)
+            {
+                deltaRotation = (float)Math.Cos(rotationVoiture);
+            }
+            if (rotationSol == (MathHelper.PiOver2))
+            {
+                deltaRotation = (float)-Math.Sin(rotationVoiture);
+            }
+            if (rotationSol == 0)
+            {
+                deltaRotation = (float)-Math.Cos(rotationVoiture);
+            }
+            if (rotationSol == -MathHelper.Pi)
+            {
+                deltaRotation = (float)Math.Sin(rotationVoiture);
+            }
+            if (ListeVoiture[0].Vitesse != 0)
+            {
+                facteurVitesse = (ListeVoiture[0].Vitesse / Math.Abs(ListeVoiture[0].Vitesse));
+            }
+            return deltaRotation * facteurVitesse;
         }
     }
 }

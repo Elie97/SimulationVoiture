@@ -35,6 +35,9 @@ namespace SimulationVéhicule
         Vector3[] PointsÉtape { get; set; }
         Vector3[] PointBoxLatéralGauche { get; set; }
         Vector3[] PointBoxLatéralDroit { get; set; }
+        Vector3[] PointsBoxComplet { get; set; }
+
+        public Color CouleurCheckPoint { get; set; }
 
         float Rayon { get; set; }
         float Angle { get; set; }
@@ -54,6 +57,14 @@ namespace SimulationVéhicule
             get
             {
                 return BoundingBox.CreateFromPoints(PointsBox);
+            }
+        }
+
+        public BoundingBox BoxComplet
+        {
+            get
+            {
+                return BoundingBox.CreateFromPoints(PointsBoxComplet);
             }
         }
 
@@ -107,6 +118,7 @@ namespace SimulationVéhicule
 
         public override void Initialize()
         {
+            CouleurCheckPoint = Color.Red;
             ListeFranchi = new List<bool>();//pcq il y a + de 1 check point par piste!
             ListeFranchiParVoiture = new List<List<bool>>();
             Franchi = new bool[NB_CHECK_POINT, NbVoiture];
@@ -133,6 +145,7 @@ namespace SimulationVéhicule
             NbColonnes = (int)Charpente.X;
             NbRangées = (int)Charpente.Y;
             PointsBox = new Vector3[NbColonnes * NbRangées];
+            PointsBoxComplet = new Vector3[NbColonnes * NbRangées];
             PointsÉtape = new Vector3[2];
             ListePointÉtape = new List<Vector3[]>();
             Delta = new Vector2(Largeur / ((float)NbColonnes - 1), Hauteur / ((float)NbRangées - 1));
@@ -286,8 +299,9 @@ namespace SimulationVéhicule
             DebugShapeRenderer.AddBoundingBox(Box, Color.Wheat);
             foreach (BoundingBox x in BoxÉtape)
             {
-                DebugShapeRenderer.AddBoundingBox(x, Color.Green);
+                DebugShapeRenderer.AddBoundingBox(x, CouleurCheckPoint);
             }
+            //DebugShapeRenderer.AddBoundingBox(BoxComplet, Color.Black);
             //DebugShapeRenderer.AddBoundingBox(BoxDroite, Color.YellowGreen);
             //DebugShapeRenderer.AddBoundingBox(BoxGauche, Color.YellowGreen);
             //DebugShapeRenderer.AddBoundingBox(Box, Color.Wheat);
@@ -350,6 +364,20 @@ namespace SimulationVéhicule
             for (int i = 0; i < PointsBox.Length; i++)
             {
                 PointsBox[i] = Vector3.Transform(PointsBox[i], transformation);
+            }
+
+            for (int i = 0; i < NbColonnes; i++)
+            {
+                for (int j = 0; j < NbRangées; j++)
+                {
+                    PointsBoxComplet[i + (i * j)] = PtsSommets[i, j];
+                }
+            }
+            PointsBoxComplet[0] = new Vector3(PointsBoxComplet[0].X, PointsBoxComplet[0].Y + 100, PointsBoxComplet[0].Z);
+            transformation = Matrix.CreateFromYawPitchRoll(RotationInitiale.Y, RotationInitiale.X, 0) * Matrix.CreateTranslation(PositionInitiale);
+            for (int i = 0; i < PointsBoxComplet.Length; i++)
+            {
+                PointsBoxComplet[i] = Vector3.Transform(PointsBoxComplet[i], transformation);
             }
 
 
