@@ -99,22 +99,39 @@ namespace SimulationVéhicule
                 }
 
                 //détection collision check point
-                float t = 0;
                 for (int i = 0; i < LaPiste.Count(); i++)
                 {
                     for (int j = 0; j < LaPiste[i].BoxÉtape.Count(); j++)
                     {
-                        if (ListeVoiture[v].BoxVoiture.Intersects(LaPiste[i].BoxComplet))
+                        if (ListeVoiture[v].BoxVoiture.Intersects(LaPiste[i].BoxÉtape[j]))
                         {
-                            //Game.Window.Title = GetSensDeltaRotationSol(ListeVoiture[0].Rotation.Y, LaPiste[i].RotationInitiale.Y).ToString();
-                            //LaPiste[i].ListeFranchiParVoiture[v][j] = false;
-                            if (ListeVoiture[v].BoxVoiture.Intersects(LaPiste[i].BoxÉtape[j]))
+                            if (i != 0 && j == 1 && LaPiste[i].ListeFranchiParVoiture[v][j - 1] == true)
                             {
-                                //LaPiste[i].ListeFranchiParVoiture[v][j] = true;
                                 if (GetSensDeltaRotationSol(ListeVoiture[v].Rotation.Y, LaPiste[i].RotationInitiale.Y) >= 0)
                                 {
                                     LaPiste[i].ListeFranchiParVoiture[v][j] = true;
-                                    //Game.Window.Title = GetSensDeltaRotationSol(ListeVoiture[0].Rotation.Y, LaPiste[i].RotationInitiale.Y).ToString();
+                                }
+                                if (GetSensDeltaRotationSol(ListeVoiture[v].Rotation.Y, LaPiste[i].RotationInitiale.Y) <= 0)
+                                {
+                                    LaPiste[i].ListeFranchiParVoiture[v][j] = false;
+                                }
+                            }
+                            if (i != 0 && j == 0 && LaPiste[i-1].ListeFranchiParVoiture[v][j+1] == true)
+                            {
+                                if (GetSensDeltaRotationSol(ListeVoiture[v].Rotation.Y, LaPiste[i].RotationInitiale.Y) >= 0)
+                                {
+                                    LaPiste[i].ListeFranchiParVoiture[v][j] = true;
+                                }
+                                if (GetSensDeltaRotationSol(ListeVoiture[v].Rotation.Y, LaPiste[i].RotationInitiale.Y) <= 0)
+                                {
+                                    LaPiste[i].ListeFranchiParVoiture[v][j] = false;
+                                }
+                            }
+                            if (i == 0)
+                            {
+                                if (GetSensDeltaRotationSol(ListeVoiture[v].Rotation.Y, LaPiste[i].RotationInitiale.Y) >= 0)
+                                {
+                                    LaPiste[i].ListeFranchiParVoiture[v][j] = true;
                                 }
                                 if (GetSensDeltaRotationSol(ListeVoiture[v].Rotation.Y, LaPiste[i].RotationInitiale.Y) <= 0)
                                 {
@@ -171,7 +188,7 @@ namespace SimulationVéhicule
 
             //Game.Window.Title = GetSensDeltaRotationSol(ListeVoiture[0].Rotation.Y, LaPiste[ListeCheckPoint[0].Where(x => x).Count() / 2].RotationInitiale.Y).ToString() + " - " + (ListeCheckPoint[0].Where(x => x).Count() / 2).ToString() + "/" + LaPiste.Count().ToString();
             //Game.Window.Title = (ListeVoiture[0].Rotation.Y % MathHelper.Pi).ToString();
-            Game.Window.Title = NbFranchis[0].ToString() + " + " + NbFranchis[1].ToString();
+            //Game.Window.Title = NbFranchis[0].ToString() + " + " + NbFranchis[1].ToString();
 
 
 
@@ -192,22 +209,6 @@ namespace SimulationVéhicule
             return égaleUnePosition;
         }
 
-        float NormalizeRotation(float rotation)
-        {
-            //if (rotation > 0)
-            //{
-            //    rotation = rotation % (float)(Math.PI);
-            //}
-            //else if (rotation < 0)
-            //{
-            //    rotation = rotation % (float)(Math.PI);
-            //}
-            //if (rotation > (Math.PI))
-            //{
-            //    rotation = rotation - ((float)Math.PI - rotation);
-            //}
-            return (float)Math.Cos(rotation);
-        }
 
         float GetSensDeltaRotationSol(float rotationVoiture, float rotationSol)
         {
@@ -225,7 +226,7 @@ namespace SimulationVéhicule
             {
                 deltaRotation = (float)-Math.Cos(rotationVoiture);
             }
-            if (rotationSol == -MathHelper.Pi)
+            if (rotationSol == -MathHelper.PiOver2)
             {
                 deltaRotation = (float)Math.Sin(rotationVoiture);
             }
