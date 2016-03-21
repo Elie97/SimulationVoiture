@@ -41,21 +41,28 @@ namespace SimulationVéhicule
         float PositionRelativeX { get; set; }
         float PositionRelativeZ { get; set; }
         float PositionRelativeY { get; set; }
+        Model Ciel { get; set; }
+        Matrix[] TransformationsModèle { get; set; }
+        Texture2D TextureCiel { get; set; }
+        RessourcesManager<Model> GestionnaireDeModèles { get; set; }
+        GraphicsDevice Device { get; set; }
 
 
         public Terrain(Game jeu, float homothétieInitiale, Vector3 rotationInitiale, Vector3 positionInitiale,
-                       Vector3 étendue, string nomCarteTerrain, string nomTextureTerrain, int nbNiveauxTexture, float intervalleMAJ)
+                       Vector3 étendue, string nomCarteTerrain, string nomTextureTerrain, int nbNiveauxTexture, float intervalleMAJ, Caméra caméraJeu)
             : base(jeu, homothétieInitiale, rotationInitiale, positionInitiale, intervalleMAJ)
         {
             Étendue = étendue;
             NomCarteTerrain = nomCarteTerrain;
             NomTextureTerrain = nomTextureTerrain;
             NbNiveauTexture = nbNiveauxTexture;
+            //CaméraJeu = caméraJeu;
         }
 
         public override void Initialize()
         {
             GestionnaireDeTextures = Game.Services.GetService(typeof(RessourcesManager<Texture2D>)) as RessourcesManager<Texture2D>;
+            Device = Game.Services.GetService(typeof(GraphicsDevice)) as GraphicsDevice;
             InitialiserDonnéesCarte();
             InitialiserDonnéesTexture();
             Origine = new Vector3(-Étendue.X / 2, 0, Étendue.Z / 2); //pour centrer la primitive au point (0,0,0)
@@ -64,10 +71,7 @@ namespace SimulationVéhicule
             base.Initialize();
         }
 
-        //
-        // à partir de la texture servant de carte de hauteur (HeightMap), on initialise les données
-        // relatives à la structure de la carte
-        //
+
         void InitialiserDonnéesCarte()
         {
             CarteTerrain = GestionnaireDeTextures.Find(NomCarteTerrain); //Trouver le terrain
@@ -80,10 +84,6 @@ namespace SimulationVéhicule
             NbSommets = NbColonnes * NbRangées * 6; //*2 pour le nb de triangles et *3 pour le nombre de sommets
         }
 
-        //
-        // à partir de la texture contenant les textures carte de hauteur (HeightMap), on initialise les données
-        // relatives à l'application des textures de la carte
-        //
         void InitialiserDonnéesTexture()
         {
             TextureTerrain = this.GestionnaireDeTextures.Find(this.NomTextureTerrain);
@@ -108,6 +108,12 @@ namespace SimulationVéhicule
             EffetDeBase = new BasicEffect(GraphicsDevice);
             InitialiserParamètresEffetDeBase();
             monde = GetMonde();
+            GestionnaireDeModèles = Game.Services.GetService(typeof(RessourcesManager<Model>)) as RessourcesManager<Model>;
+            Ciel = GestionnaireDeModèles.Find("Ciel");
+            TransformationsModèle = new Matrix[Ciel.Bones.Count];
+            Ciel.CopyAbsoluteBoneTransformsTo(TransformationsModèle);
+            //TextureCiel = GestionnaireDeModèles.Find("cloudMap");
+            //Ciel.Meshes[0].MeshParts[0].Effect = EffetDeBase.Clone()
         }
 
         void InitialiserParamètresEffetDeBase()
@@ -116,10 +122,6 @@ namespace SimulationVéhicule
             EffetDeBase.Texture = TextureTerrain;
         }
 
-        //
-        // Création du tableau des points de sommets (on crée les points)
-        // Ce processus implique la transformation des points 2D de la texture en coordonnées 3D du terrain
-        //
         private void CréerTableauPoints()
         {
             for (int i = 0; i <= NbColonnes; i++)
@@ -222,11 +224,26 @@ namespace SimulationVéhicule
             EffetDeBase.World = monde;
             EffetDeBase.View = CaméraJeu.Vue;
             EffetDeBase.Projection = CaméraJeu.Projection;
+
+            foreach (ModelMesh Mesh in Ciel.Meshes)
+            {
+                foreach (BasicEffect Effect in Mesh.Effects)
+                {
+                    Effect.Projection = CaméraJeu.Projection;
+                    Effect.View = CaméraJeu.Vue;
+                    Effect.World = TransformationsModèle[Mesh.ParentBone.Index] * Matrix.CreateScale(1000000) * Matrix.CreateTranslation(CaméraJeu.Position);
+                }
+                Mesh.Draw();
+            }
+            
             foreach (EffectPass pass in EffetDeBase.CurrentTechnique.Passes)
             {
                 pass.Apply();
                 GraphicsDevice.DrawUserPrimitives<VertexPositionTexture>(PrimitiveType.TriangleList, TabSommets, 0, NbTriangles);
             }
+
+            //Device.Ren   
         }
+
     }
 }

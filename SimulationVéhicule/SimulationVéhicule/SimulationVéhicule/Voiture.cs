@@ -13,7 +13,7 @@ namespace SimulationVéhicule
     public class Voiture : Microsoft.Xna.Framework.DrawableGameComponent
     {
         const float DÉCÉLÉRATION = 0.02f;// en décimètre
-        public const float VITESSE_MAX = 240;// Km/H
+        public const float VITESSE_MAX = 200;// Km/H
         const float VITESSE_MAX_RECULONS = -30.0f;// Km/H
         const float ACCÉLÉRATION = 4.0f;// Temps en seconde pour atteindre 100 km/h 4.0f!!!
         const float ACCÉLÉRATION_RECULONS = -2.0f;// Temps en seconde pour atteindre 100 km/h
@@ -413,7 +413,7 @@ namespace SimulationVéhicule
             {
                 if (Vitesse < KMHtoPixel(VITESSE_MAX))
                 {
-                    Vitesse += ((KMHtoPixel(VITESSE_MAX) / ACCÉLÉRATION) / 60f);
+                    Vitesse += ((KMHtoPixel(100) / ACCÉLÉRATION) / 60f);//BUG!!!
                 }
                 else
                 {

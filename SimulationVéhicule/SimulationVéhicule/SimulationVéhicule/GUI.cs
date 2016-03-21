@@ -199,7 +199,7 @@ namespace SimulationVéhicule
                 TempsÉcouléDepuisMAJ = 0;
             }
 
-            Game.Window.Title = TransparenceNotif.ToString() + " - " + ÉchelleNotif.ToString();
+            //Game.Window.Title = TransparenceNotif.ToString() + " - " + ÉchelleNotif.ToString();
             base.Update(gameTime);
         }
 
