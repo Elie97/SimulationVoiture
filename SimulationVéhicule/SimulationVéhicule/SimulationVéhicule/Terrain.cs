@@ -47,6 +47,13 @@ namespace SimulationVéhicule
         RessourcesManager<Model> GestionnaireDeModèles { get; set; }
         GraphicsDevice Device { get; set; }
 
+        Effect effect;
+        Texture2D grassTexture;
+        private int terrainWidth = 4;
+        private int terrainLength = 3;
+        private float[,] heightData;
+        VertexPositionNormalTexture[] terrainVertices;
+        int[] indices;
 
         public Terrain(Game jeu, float homothétieInitiale, Vector3 rotationInitiale, Vector3 positionInitiale,
                        Vector3 étendue, string nomCarteTerrain, string nomTextureTerrain, int nbNiveauxTexture, float intervalleMAJ, Caméra caméraJeu)
@@ -91,11 +98,6 @@ namespace SimulationVéhicule
             ÉcartTexture = 1f / (float)NbNiveauTexture;
         }
 
-        //
-        // Allocation des deux tableaux
-        //    1) celui contenant les points de sommet (les points uniques), 
-        //    2) celui contenant les sommets servant à dessiner les triangles
-        //
         void AllouerTableaux()
         {
             PtsSommets = new Vector3[NbColonnes + 1, NbRangées + 1];
@@ -114,7 +116,98 @@ namespace SimulationVéhicule
             Ciel.CopyAbsoluteBoneTransformsTo(TransformationsModèle);
             //TextureCiel = GestionnaireDeModèles.Find("cloudMap");
             //Ciel.Meshes[0].MeshParts[0].Effect = EffetDeBase.Clone()
+
+            effect = Game.Content.Load<Effect>("effects");
+            grassTexture = Game.Content.Load<Texture2D>("Textures/DétailsTerrain3");
+
+            LoadHeightData(CarteTerrain);
+            terrainVertices = SetUpTerrainVertices();
+            SetUpIndices();
+            CalculateNormals();
         }
+
+        private void LoadHeightData(Texture2D heightMap)
+        {
+            terrainWidth = heightMap.Width;
+            terrainLength = heightMap.Height;
+
+            Color[] heightMapColors = new Color[terrainWidth * terrainLength];
+            heightMap.GetData(heightMapColors);
+
+            heightData = new float[terrainWidth, terrainLength];
+            for (int x = 0; x < terrainWidth; x++)
+                for (int y = 0; y < terrainLength; y++)
+                    heightData[x, y] = heightMapColors[x + y * terrainWidth].R / 5.0f;
+        }
+
+        private VertexPositionNormalTexture[] SetUpTerrainVertices()
+        {
+            VertexPositionNormalTexture[] terrainVertices = new VertexPositionNormalTexture[terrainWidth * terrainLength];
+
+            for (int x = 0; x < terrainWidth; x++)
+            {
+                for (int y = 0; y < terrainLength; y++)
+                {
+                    terrainVertices[x + y * terrainWidth].Position = new Vector3(PtsSommets[x, y].X, TrouverHauteur(x, NbRangées - y) * 5f, PtsSommets[x, y].Z);
+                    terrainVertices[x + y * terrainWidth].TextureCoordinate.X = (float)x / 30.0f;
+                    terrainVertices[x + y * terrainWidth].TextureCoordinate.Y = (float)y / 30.0f;
+                }
+            }
+
+            return terrainVertices;
+        }
+
+        private void SetUpIndices()
+        {
+            indices = new int[(terrainWidth - 1) * (terrainLength - 1) * 6];
+            int counter = 0;
+            for (int y = 0; y < terrainLength - 1; y++)
+            {
+                for (int x = 0; x < terrainWidth - 1; x++)
+                {
+                    int lowerLeft = x + y * terrainWidth;
+                    int lowerRight = (x + 1) + y * terrainWidth;
+                    int topLeft = x + (y + 1) * terrainWidth;
+                    int topRight = (x + 1) + (y + 1) * terrainWidth;
+
+                    indices[counter++] = topLeft;
+                    indices[counter++] = lowerRight;
+                    indices[counter++] = lowerLeft;
+
+                    indices[counter++] = topLeft;
+                    indices[counter++] = topRight;
+                    indices[counter++] = lowerRight;
+                }
+            }
+        }
+
+        private void CalculateNormals()
+        {
+            for (int i = 0; i < terrainVertices.Length; i++)
+                terrainVertices[i].Normal = new Vector3(0, 0, 0);
+
+            for (int i = 0; i < indices.Length / 3; i++)
+            {
+                int index1 = indices[i * 3];
+                int index2 = indices[i * 3 + 1];
+                int index3 = indices[i * 3 + 2];
+
+                Vector3 side1 = terrainVertices[index1].Position - terrainVertices[index3].Position;
+                Vector3 side2 = terrainVertices[index1].Position - terrainVertices[index2].Position;
+                Vector3 normal = Vector3.Cross(side1, side2);
+
+                terrainVertices[index1].Normal += normal;
+                terrainVertices[index2].Normal += normal;
+                terrainVertices[index3].Normal += normal;
+            }
+
+            for (int i = 0; i < terrainVertices.Length; i++)
+                terrainVertices[i].Normal.Normalize();
+        }
+
+
+
+
 
         void InitialiserParamètresEffetDeBase()
         {
@@ -129,7 +222,6 @@ namespace SimulationVéhicule
                 for (int j = 0; j <= NbRangées; j++)
                 {
                     PtsSommets[i, j] = new Vector3(Origine.X + (float)i * DeltaCarte.X, TrouverHauteur(i, NbRangées - j) * 5f, Origine.Z - (float)j * DeltaCarte.Y);
-
                 }
             }
         }
@@ -236,13 +328,32 @@ namespace SimulationVéhicule
                 Mesh.Draw();
             }
 
-            foreach (EffectPass pass in EffetDeBase.CurrentTechnique.Passes)
+            //foreach (EffectPass pass in EffetDeBase.CurrentTechnique.Passes)
+            //{
+            //    pass.Apply();
+            //    GraphicsDevice.DrawUserPrimitives<VertexPositionTexture>(PrimitiveType.TriangleList, TabSommets, 0, NbTriangles);
+            //}
+
+            effect.CurrentTechnique = effect.Techniques["Textured"];
+            effect.Parameters["xTexture"].SetValue(grassTexture);
+
+            effect.Parameters["Monde"].SetValue(monde);
+            effect.Parameters["MatriceVue"].SetValue(CaméraJeu.Vue);
+            effect.Parameters["MatriceProjection"].SetValue(CaméraJeu.Projection);
+
+            Vector3 lightDirection = new Vector3(1.0f, -1.0f, -1.0f);
+            lightDirection.Normalize();
+
+            effect.Parameters["DirectionLumiere"].SetValue(lightDirection);
+            effect.Parameters["LumiereAmbiante"].SetValue(0.4f);
+            effect.Parameters["LumiereActive"].SetValue(true);
+
+            foreach (EffectPass pass in effect.CurrentTechnique.Passes)
             {
                 pass.Apply();
-                GraphicsDevice.DrawUserPrimitives<VertexPositionTexture>(PrimitiveType.TriangleList, TabSommets, 0, NbTriangles);
-            }
 
-            //Device.Ren   
+                GraphicsDevice.DrawUserIndexedPrimitives(PrimitiveType.TriangleList, terrainVertices, 0, terrainVertices.Length, indices, 0, indices.Length / 3, VertexPositionNormalTexture.VertexDeclaration);
+            }
         }
 
     }
