@@ -208,6 +208,16 @@
       <Importer>TextureImporter</Importer>
       <Processor>TextureProcessor</Processor>
     </Compile>
+    <Compile Include="Textures\DétailsTerrain3.jpg">
+      <Name>DétailsTerrain3</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+    </Compile>
+    <Compile Include="Models\SkyDomeTexture.png">
+      <Name>SkyDomeTexture</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Models\Audi R8.fbx">
@@ -224,9 +234,9 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Models\Ciel.x">
-      <Name>Ciel</Name>
-      <Importer>XImporter</Importer>
+    <Compile Include="Models\Ciel2.FBX">
+      <Name>Ciel2</Name>
+      <Importer>FbxImporter</Importer>
       <Processor>ModelProcessor</Processor>
     </Compile>
   </ItemGroup>

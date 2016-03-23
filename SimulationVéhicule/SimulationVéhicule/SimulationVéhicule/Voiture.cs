@@ -610,7 +610,7 @@ namespace SimulationVéhicule
 
         public bool GestionCollisionPiste(Sol sol)
         {
-            bool enCollision = SphereRouteAvant.Intersects(sol.Box);
+            bool enCollision = BoxVoiture.Intersects(sol.Box);//Fonctionne PAS!
             if (enCollision)
             {
                 //sol.GetHauteur(Position);

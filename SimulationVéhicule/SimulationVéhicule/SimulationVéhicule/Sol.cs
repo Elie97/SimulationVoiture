@@ -41,7 +41,7 @@ namespace SimulationVéhicule
 
         float Rayon { get; set; }
         float Angle { get; set; }
-        bool Courbe { get; set; }
+        public bool Courbe { get; set; }
         float RotationCourbe { get; set; }
 
         int NbVoiture { get; set; }
@@ -134,10 +134,6 @@ namespace SimulationVéhicule
                 ListeFranchiParVoiture.Add(ListeFranchi);
             }
 
-
-            
-
-
             GestionnaireDeTextures = Game.Services.GetService(typeof(RessourcesManager<Texture2D>)) as RessourcesManager<Texture2D>;
             LaTexture = GestionnaireDeTextures.Find(NomTexture);
             Largeur = Étendue.X;
@@ -181,25 +177,11 @@ namespace SimulationVéhicule
 
             if (Courbe)
             {
-                //for (int j = 0; j < NbRangées; j++)
-                //{
-                //    for (int i = 0; i < NbColonnes; i++)
-                //    {
-                //        PtsSommets[i, j] = Vector3.Transform(new Vector3(PtsSommets[i, j].X, PtsSommets[i, j].Y, PtsSommets[i, j].Z),
-                //            Matrix.CreateFromYawPitchRoll((((j) * SensCourbe) / (float)(NbRangées * 2)) * MathHelper.PiOver2, 0, 0));
-                //    }
-                //}
-
-
 
                 for (int j = 0; j < NbRangées; j++)
                 {
                     for (int i = 0; i < NbColonnes; i++)
                     {
-
-                        //PtsSommets[i, j] = Vector3.Transform(new Vector3(Origine.X + Delta.X * i, Origine.Y, Origine.Z - 0.5f * j),
-                        //    Matrix.CreateRotationY((j / (float)NbRangées) * MathHelper.PiOver2));
-
                         PtsSommets[i, j] = Vector3.Transform(new Vector3(PtsSommets[i, j].X, PtsSommets[i, j].Y, PtsSommets[i, j].Z),
                              Matrix.CreateRotationY((j) / (float)(NbRangées) * MathHelper.PiOver2));
                     }
@@ -209,13 +191,10 @@ namespace SimulationVéhicule
                 {
                     for (int i = 0; i < NbColonnes; i++)
                     {
-
                         PtsSommets[i, j] = Vector3.Transform(PtsSommets[i, j],
                              Matrix.CreateRotationY(RotationCourbe));
                     }
                 }
-
-
 
             }
 

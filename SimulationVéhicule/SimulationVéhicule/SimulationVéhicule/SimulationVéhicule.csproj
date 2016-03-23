@@ -85,6 +85,7 @@
     <Compile Include="Game1.cs" />
     <Compile Include="Sol.cs" />
     <Compile Include="Terrain.cs" />
+    <Compile Include="TerrainShaders.cs" />
     <Compile Include="Voiture.cs" />
   </ItemGroup>
   <ItemGroup>

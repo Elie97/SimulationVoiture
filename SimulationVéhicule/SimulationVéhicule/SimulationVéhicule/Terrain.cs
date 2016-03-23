@@ -109,7 +109,7 @@ namespace SimulationVéhicule
             InitialiserParamètresEffetDeBase();
             monde = GetMonde();
             GestionnaireDeModèles = Game.Services.GetService(typeof(RessourcesManager<Model>)) as RessourcesManager<Model>;
-            Ciel = GestionnaireDeModèles.Find("Ciel");
+            Ciel = GestionnaireDeModèles.Find("Ciel2");
             TransformationsModèle = new Matrix[Ciel.Bones.Count];
             Ciel.CopyAbsoluteBoneTransformsTo(TransformationsModèle);
             //TextureCiel = GestionnaireDeModèles.Find("cloudMap");
@@ -129,13 +129,13 @@ namespace SimulationVéhicule
                 for (int j = 0; j <= NbRangées; j++)
                 {
                     PtsSommets[i, j] = new Vector3(Origine.X + (float)i * DeltaCarte.X, TrouverHauteur(i, NbRangées - j) * 5f, Origine.Z - (float)j * DeltaCarte.Y);
-                    
+
                 }
             }
         }
 
         public float GetHauteur(Vector3 positionVoiture)
-        {            
+        {
             for (int i = 0; i < NbColonnes; i++)
             {
                 if ((int)positionVoiture.X == (int)PtsSommets[i, 0].X)
@@ -155,7 +155,7 @@ namespace SimulationVéhicule
             {
                 for (int j = 0; j < NbRangées; j++)
                 {
-                    if (PositionRelativeX == (int)PtsSommets[i,j].X && PositionRelativeZ == (int)PtsSommets[i,j].Z)
+                    if (PositionRelativeX == (int)PtsSommets[i, j].X && PositionRelativeZ == (int)PtsSommets[i, j].Z)
                     {
                         PositionRelativeY = PtsSommets[i, j].Y;
                     }
@@ -231,11 +231,11 @@ namespace SimulationVéhicule
                 {
                     Effect.Projection = CaméraJeu.Projection;
                     Effect.View = CaméraJeu.Vue;
-                    Effect.World = TransformationsModèle[Mesh.ParentBone.Index] * Matrix.CreateScale(1000000) * Matrix.CreateTranslation(CaméraJeu.Position);
+                    Effect.World = TransformationsModèle[Mesh.ParentBone.Index] * Matrix.CreateScale(10000/2) * Matrix.CreateTranslation(CaméraJeu.Position);
                 }
                 Mesh.Draw();
             }
-            
+
             foreach (EffectPass pass in EffetDeBase.CurrentTechnique.Passes)
             {
                 pass.Apply();

@@ -107,33 +107,33 @@ namespace SimulationVéhicule
                         {
                             if (i != 0 && j == 1 && LaPiste[i].ListeFranchiParVoiture[v][j - 1] == true)
                             {
-                                if (GetSensDeltaRotationSol(ListeVoiture[v].Rotation.Y, LaPiste[i].RotationInitiale.Y) >= 0)
+                                if (GetSensDeltaRotationSol(ListeVoiture[v].Rotation.Y, LaPiste[i].RotationInitiale.Y, LaPiste[i].Courbe) >= 0)
                                 {
                                     LaPiste[i].ListeFranchiParVoiture[v][j] = true;
                                 }
-                                if (GetSensDeltaRotationSol(ListeVoiture[v].Rotation.Y, LaPiste[i].RotationInitiale.Y) <= 0)
+                                if (GetSensDeltaRotationSol(ListeVoiture[v].Rotation.Y, LaPiste[i].RotationInitiale.Y, LaPiste[i].Courbe) <= 0)
                                 {
                                     LaPiste[i].ListeFranchiParVoiture[v][j] = false;
                                 }
                             }
                             if (i != 0 && j == 0 && LaPiste[i-1].ListeFranchiParVoiture[v][j+1] == true)
                             {
-                                if (GetSensDeltaRotationSol(ListeVoiture[v].Rotation.Y, LaPiste[i].RotationInitiale.Y) >= 0)
+                                if (GetSensDeltaRotationSol(ListeVoiture[v].Rotation.Y, LaPiste[i].RotationInitiale.Y, LaPiste[i].Courbe) >= 0)
                                 {
                                     LaPiste[i].ListeFranchiParVoiture[v][j] = true;
                                 }
-                                if (GetSensDeltaRotationSol(ListeVoiture[v].Rotation.Y, LaPiste[i].RotationInitiale.Y) <= 0)
+                                if (GetSensDeltaRotationSol(ListeVoiture[v].Rotation.Y, LaPiste[i].RotationInitiale.Y, LaPiste[i].Courbe) <= 0)
                                 {
                                     LaPiste[i].ListeFranchiParVoiture[v][j] = false;
                                 }
                             }
                             if (i == 0)
                             {
-                                if (GetSensDeltaRotationSol(ListeVoiture[v].Rotation.Y, LaPiste[i].RotationInitiale.Y) >= 0)
+                                if (GetSensDeltaRotationSol(ListeVoiture[v].Rotation.Y, LaPiste[i].RotationInitiale.Y, LaPiste[i].Courbe) >= 0)
                                 {
                                     LaPiste[i].ListeFranchiParVoiture[v][j] = true;
                                 }
-                                if (GetSensDeltaRotationSol(ListeVoiture[v].Rotation.Y, LaPiste[i].RotationInitiale.Y) <= 0)
+                                if (GetSensDeltaRotationSol(ListeVoiture[v].Rotation.Y, LaPiste[i].RotationInitiale.Y, LaPiste[i].Courbe) <= 0)
                                 {
                                     LaPiste[i].ListeFranchiParVoiture[v][j] = false;
                                 }
@@ -210,10 +210,11 @@ namespace SimulationVéhicule
         }
 
 
-        float GetSensDeltaRotationSol(float rotationVoiture, float rotationSol)
+        float GetSensDeltaRotationSol(float rotationVoiture, float rotationSol, bool courbe)
         {
             float deltaRotation = 0;
             float facteurVitesse = 1;
+            float sensRotation = 0;
             if (rotationSol == MathHelper.Pi)
             {
                 deltaRotation = (float)Math.Cos(rotationVoiture);
@@ -234,7 +235,12 @@ namespace SimulationVéhicule
             {
                 facteurVitesse = (ListeVoiture[0].Vitesse / Math.Abs(ListeVoiture[0].Vitesse));
             }
-            return deltaRotation * facteurVitesse;
+            sensRotation = deltaRotation * facteurVitesse;
+            if (courbe)
+            {
+                sensRotation = 1;
+            }
+            return sensRotation;
         }
     }
 }

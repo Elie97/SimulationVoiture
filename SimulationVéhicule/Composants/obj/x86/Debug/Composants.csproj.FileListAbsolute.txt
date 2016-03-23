@@ -18,7 +18,6 @@ C:\Users\élie\Desktop\SimulationVehicule-master\SimulationVéhicule - Copy\Comp
 C:\Users\élie\Desktop\SimulationVehicule-master\SimulationVéhicule - Copy\Composants\obj\x86\Debug\Composants.pdb
 C:\Users\élie\Documents\GitHub\SimulationVoiture\SimulationVéhicule\Composants\bin\x86\Debug\Composants.dll
 C:\Users\élie\Documents\GitHub\SimulationVoiture\SimulationVéhicule\Composants\bin\x86\Debug\Composants.pdb
-C:\Users\élie\Documents\GitHub\SimulationVoiture\SimulationVéhicule\Composants\obj\x86\Debug\Composants.csprojResolveAssemblyReference.cache
 C:\Users\élie\Documents\GitHub\SimulationVoiture\SimulationVéhicule\Composants\obj\x86\Debug\Microsoft.Xna.Framework.RuntimeProfile.txt
 C:\Users\élie\Documents\GitHub\SimulationVoiture\SimulationVéhicule\Composants\obj\x86\Debug\Composants.dll
 C:\Users\élie\Documents\GitHub\SimulationVoiture\SimulationVéhicule\Composants\obj\x86\Debug\Composants.pdb
