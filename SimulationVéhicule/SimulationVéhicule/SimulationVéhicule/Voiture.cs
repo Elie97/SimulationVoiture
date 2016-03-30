@@ -18,7 +18,7 @@ namespace SimulationVéhicule
         const float ACCÉLÉRATION = 4.0f;// Temps en seconde pour atteindre 100 km/h 4.0f!!!
         const float ACCÉLÉRATION_RECULONS = -2.0f;// Temps en seconde pour atteindre 100 km/h
         const float MASSE_VOITURE = 1000.0f;// En Kilogramme
-        const float ACCÉLÉRATION_FREIN = 3.0f;// Km/h Valeur pas correcte
+        public const float ACCÉLÉRATION_FREIN = 3.0f;// Km/h Valeur pas correcte
         const float ROTATION_MAXIMALE_ROUE = (float)Math.PI / 80f;
         const float ROTATION_MAX_MODELE_ROUE = 0.8f;
         Vector3 DIMENSION = new Vector3(20, 25, 40);
@@ -61,6 +61,9 @@ namespace SimulationVéhicule
 
         SoundEffectInstance SoundAcceleration { get; set; }
         SoundEffectInstance SoundBrake { get; set; }
+        SoundEffectInstance SoundChangementVitesse { get; set; }
+        SoundEffectInstance SoundCourbe { get; set; }
+        SoundEffectInstance BornToBeWild { get; set; }
         Song Queen { get; set; }
 
         bool User { get; set; }
@@ -68,6 +71,8 @@ namespace SimulationVéhicule
         public bool EnContactVoiture { get; set; }
         bool AvanceCollision { get; set; }
         bool AvancePossible { get; set; }
+        public bool AvancePossiblePiste { get; set; }
+        public bool ReculePossiblePiste { get; set; }
         bool AccélérationPossible { get; set; }
         bool CollisionPrête { get; set; }
         int Collision { get; set; }
@@ -91,6 +96,8 @@ namespace SimulationVéhicule
         SpriteBatch GestionSprites { get; set; }//ToDELETE
         SpriteFont ArialFont { get; set; }//ToDELETE
 
+        public bool Controle { get; set; }
+
         public Voiture(Game jeu, String nomModèle, float échelleInitiale, Vector3 rotationInitiale, Vector3 positionInitiale, float intervalleMAJ, bool user)
             : base(jeu)
         {
@@ -107,6 +114,7 @@ namespace SimulationVéhicule
         public override void Initialize()
         {
             CalculerMonde();
+            Controle = true;
             Dimension = new Vector3(20, 25, 40);
             EnAvant = true;
             Vitesse = 0;
@@ -116,12 +124,14 @@ namespace SimulationVéhicule
             EnContactVoiture = false;
             FacteurEngine = -0.5f;
             AvanceCollision = true;
+            AvancePossiblePiste = true;
             AccélérationPossible = true;
+            ReculePossiblePiste = true;
             CollisionPrête = false;
             DernièreCollisionEstAvant = false;
             Translation = false;
             ChuteLibrePossible = true;
-            AvancePossible = true;
+            AvancePossible = false;
             Collision = 0;
             RotationEnCollision = 0;
             VitesseRotation = 0;
@@ -172,19 +182,30 @@ namespace SimulationVéhicule
                 Roues[i].CopyAbsoluteBoneTransformsTo(TransformationsRoues[i]);
             }
             GestionInput = Game.Services.GetService(typeof(InputManager)) as InputManager;
-            SoundAcceleration = GestionnaireDeSon.Find("acceleration").CreateInstance();
+            SoundAcceleration = GestionnaireDeSon.Find("Gear1").CreateInstance();
             SoundBrake = GestionnaireDeSon.Find("brakeEffect").CreateInstance();
+            SoundCourbe = GestionnaireDeSon.Find("BrakeCurveMajor").CreateInstance();
+            BornToBeWild = GestionnaireDeSon.Find("BornToBeWild").CreateInstance();
         }
 
         public override void Draw(GameTime gameTime)
         {
+            //Game.Window.Title = Modèle.Bones["Mesh187"].Name;
             foreach (ModelMesh Mesh in Modèle.Meshes)
             {
                 foreach (BasicEffect Effect in Mesh.Effects)    
                 {
                     Effect.Projection = CaméraJeu.Projection;   
-                    Effect.View = CaméraJeu.Vue;   
+                    Effect.View = CaméraJeu.Vue;
                     Effect.World = TransformationsModèle[Mesh.ParentBone.Index] * GetMonde();
+                    Effect.LightingEnabled = true;
+                    Effect.AmbientLightColor = new Vector3(0.2f, 0.2f, 0.2f);
+                    //if (Mesh.Name == Modèle.Bones["Mesh187"].Name)
+                    //{
+                    //    Game.Window.Title = Mesh.Name;
+                    //    Effect.AmbientLightColor = new Vector3(1f, 1f, 1f);
+                    //    //Effect.AmbientLightColor = new Vector3(1, 1, 1);
+                    //}
                 }
                 Mesh.Draw(); 
             }
@@ -197,8 +218,8 @@ namespace SimulationVéhicule
                     {
                         Effect.Projection = CaméraJeu.Projection;
                         Effect.View = CaméraJeu.Vue;
-                        Effect.World = TransformationsRoues[i][Mesh.ParentBone.Index] * GetMondeRoues(i); 
-                        Effect.EnableDefaultLighting(); 
+                        Effect.World = TransformationsRoues[i][Mesh.ParentBone.Index] * GetMondeRoues(i);
+                        Effect.EnableDefaultLighting();
                     }
                     Mesh.Draw();
                 }
@@ -209,6 +230,7 @@ namespace SimulationVéhicule
                 Info();//ToDELETE
             }
 
+
             // DebugShapeRenderer.AddBoundingBox(BoxVoiture, Color.Red);
             //DebugShapeRenderer.AddBoundingBox(BoxVoitureAvant, Color.Green);
             //DebugShapeRenderer.AddBoundingBox(BoxVoitureMillieu, Color.Red);
@@ -218,68 +240,72 @@ namespace SimulationVéhicule
             //DebugShapeRenderer.AddBoundingSphere((SphereVoitureMillieu), Color.Red);
             //DebugShapeRenderer.AddBoundingSphere((SphereVoitureArrière), Color.Yellow);
 
-
-
         }
 
         public override void Update(GameTime gameTime)
         {
-
             TempsÉcouléDepuisMAJ += (float)gameTime.ElapsedGameTime.TotalSeconds;
             if (TempsÉcouléDepuisMAJ >= IntervalleMAJ)
             {
+
                 if (User)
                 {
-                    if (GestionInput.EstEnfoncée(Keys.W) && Vitesse >= 0 && AvancePossible)
+                    Game.Window.Title = Rotation.ToString();
+                    if (Controle)
                     {
-                        if (GestionInput.EstEnfoncée(Keys.E))
+                        if (GestionInput.EstEnfoncée(Keys.W) && Vitesse >= 0 && AvancePossible && AvancePossiblePiste)
                         {
-                            EnAvant = true;
-                            if (AccélérationPossible)
+                            if (GestionInput.EstEnfoncée(Keys.E))
                             {
-                                Accélération(EnAvant);
+                                EnAvant = true;
+                                if (AccélérationPossible)
+                                {
+                                    Accélération(EnAvant);
+                                }
                             }
+                            Avance();
                         }
-                        Avance();
-                    }
-                    else if (GestionInput.EstEnfoncée(Keys.S) && Vitesse <= 0)
-                    {
-                        if (GestionInput.EstEnfoncée(Keys.E))
+                        else if (GestionInput.EstEnfoncée(Keys.S) && Vitesse <= 0 && ReculePossiblePiste)
                         {
-                            EnAvant = false;
-                            if (AccélérationPossible)
+                            if (GestionInput.EstEnfoncée(Keys.E))
                             {
-                                Accélération(EnAvant);
+                                EnAvant = false;
+                                if (AccélérationPossible)
+                                {
+                                    Accélération(EnAvant);
+                                }
                             }
+                            Avance();
                         }
-                        Avance();
-                    }
-                    else
-                    {
-                        Décélération(EnAvant);
-                        Avance();
-                    }
-                    if (Vitesse != 0)
-                    {
-                        GestionRotationVoiture();
-                    }
-                    if (GestionInput.EstEnfoncée(Keys.Tab))
-                    {
-                        Freinage();
-                    }
+                        else
+                        {
+                            Décélération(EnAvant);
+                            Avance();
+                        }
+                        if (Vitesse != 0)
+                        {
+                            GestionRotationVoiture();
+                        }
+                        if (GestionInput.EstEnfoncée(Keys.Tab))
+                        {
+                            Freinage();
+                        }
 
-                    if (Position.Y <= 0)
-                    {
-                        Temps = 0;
-                        Position = new Vector3(Position.X, 0, Position.Z);
-                    }
-                    //else
-                    //{
-                    //    GetHauteur();
-                    //}
+                        if (Position.Y <= 0)
+                        {
+                            Temps = 0;
+                            Position = new Vector3(Position.X, 0, Position.Z);
+                        }
+                        //else
+                        //{
+                        //    GetHauteur();
+                        //}
 
-                    PitchAndSound();
+                        PitchAndSound();
+                        Radio();
+                    }
                 }
+
                 CalculerMonde();
                 CreateBoundingBox();
                 TempsÉcouléDepuisMAJ = 0;
@@ -302,7 +328,7 @@ namespace SimulationVéhicule
                 MondeRoue[0] = Matrix.Identity;
                 MondeRoue[0] *= Matrix.CreateScale(Échelle);
                 MondeRoue[0] *= Matrix.CreateFromYawPitchRoll(Rotation.Y, RotationRoue.X, Rotation.Z);
-                MondeRoue[0] *= Matrix.CreateTranslation(new Vector3(Position.X - 27 * (float)Math.Sin(Rotation.Y) - 8 * (float)Math.Cos(Rotation.Y), Position.Y + 4, Position.Z - 27 * (float)Math.Cos(Rotation.Y) + 8 * (float)Math.Sin(Rotation.Y)));
+                MondeRoue[0] *= Matrix.CreateTranslation(new Vector3(Position.X - 27 * (float)Math.Sin(Rotation.Y) - 8 * (float)Math.Cos(Rotation.Y), Position.Y + 4 + ((float)Math.Sin(Rotation.X) * 27), Position.Z - 27 * (float)Math.Cos(Rotation.Y) + 8 * (float)Math.Sin(Rotation.Y)));
                 monde = MondeRoue[0];
             }
             else if (roue == 1)
@@ -320,7 +346,7 @@ namespace SimulationVéhicule
                 MondeRoue[2] = Matrix.Identity;
                 MondeRoue[2] *= Matrix.CreateScale(Échelle);
                 MondeRoue[2] *= Matrix.CreateFromYawPitchRoll(Rotation.Y, RotationRoue.X, MathHelper.Pi);
-                MondeRoue[2] *= Matrix.CreateTranslation(new Vector3(Position.X - 27 * (float)Math.Sin(Rotation.Y) + 8 * (float)Math.Cos(Rotation.Y), Position.Y + 4, Position.Z - 27 * (float)Math.Cos(Rotation.Y) - 8 * (float)Math.Sin(Rotation.Y)));
+                MondeRoue[2] *= Matrix.CreateTranslation(new Vector3(Position.X - 27 * (float)Math.Sin(Rotation.Y) + 8 * (float)Math.Cos(Rotation.Y), Position.Y + 4 + ((float)Math.Sin(Rotation.X) * 27), Position.Z - 27 * (float)Math.Cos(Rotation.Y) - 8 * (float)Math.Sin(Rotation.Y)));
                 monde = MondeRoue[2];
             }
             else if (roue == 3)
@@ -498,44 +524,53 @@ namespace SimulationVéhicule
         void PitchAndSound()
         {
             SoundAcceleration.Play();
-            SoundAcceleration.Volume = 0.25f;
+            SoundAcceleration.Volume = 1.0f;
             if (!GestionInput.EstEnfoncée(Keys.Tab))
             {
-                if (SoundBrake.Volume - 0.05f >= 0)
+                if (SoundCourbe.Volume - 0.05f >= 0)
                 {
-                    SoundBrake.Volume = SoundBrake.Volume - 0.05f;
+                    SoundCourbe.Volume = SoundCourbe.Volume - 0.05f;
                 }
-                if (Vitesse >= KMHtoPixel(0) && Vitesse < KMHtoPixel(30))
-                {
+                //if (Vitesse >= KMHtoPixel(0) && Vitesse < KMHtoPixel(30))
+                //{
                     SoundAcceleration.Pitch = (Math.Abs(PixelToKMH(Vitesse)) / VITESSE_MAX) - 0.1f;
-                }
-                else if (Vitesse >= KMHtoPixel(30) && Vitesse < KMHtoPixel(60))
-                {
-                    SoundAcceleration.Pitch = (Math.Abs(PixelToKMH(Vitesse)) / VITESSE_MAX) - 0.3f;
-                }
-                else if (Vitesse >= KMHtoPixel(60))
-                {
-                    SoundAcceleration.Pitch = (Math.Abs(PixelToKMH(Vitesse)) / VITESSE_MAX) - 0.5f;
-                }
+                //}
+                //else if (Vitesse >= KMHtoPixel(30) && Vitesse < KMHtoPixel(60))
+                //{
+                //    //SoundChangementVitesse.Play();
+                //    SoundAcceleration.Pitch = (Math.Abs(PixelToKMH(Vitesse)) / VITESSE_MAX) - 0.3f;
+                //}
+                //else if (Vitesse >= KMHtoPixel(60) && Vitesse < KMHtoPixel(100))
+                //{
+                //    SoundAcceleration.Pitch = (Math.Abs(PixelToKMH(Vitesse)) / VITESSE_MAX) - 0.5f;
+                //}
+                //else if (Vitesse >= KMHtoPixel(100) && Vitesse < KMHtoPixel(150))
+                //{
+                //    SoundAcceleration.Pitch = (Math.Abs(PixelToKMH(Vitesse)) / VITESSE_MAX) - 0.7f;
+                //}
+                //else if (Vitesse >= KMHtoPixel(150))
+                //{
+                //    SoundAcceleration.Pitch = (Math.Abs(PixelToKMH(Vitesse)) / VITESSE_MAX) - 0.9f;
+                //}
             }
             else
             {
                 SoundAcceleration.Pitch = (Math.Abs(PixelToKMH(Vitesse)) / VITESSE_MAX) - 0.1f;
                 if (Vitesse >= KMHtoPixel(60))
                 {
-                    SoundBrake.Play();
-                    SoundBrake.Volume = 1.0f;
+                    SoundCourbe.Play();
+                    SoundCourbe.Volume = 1.0f;
                 }
             }
 
             if ((GestionInput.EstEnfoncée(Keys.Left) || GestionInput.EstEnfoncée(Keys.Right)) && Vitesse >= KMHtoPixel(70))
             {
-                SoundBrake.Play();
-                SoundBrake.Volume = 1.0f;
+                SoundCourbe.Play();
+                SoundCourbe.Volume = 0.5f;
             }
             else
             {
-                SoundBrake.Stop();
+                SoundCourbe.Stop();
             }
 
             if (Vitesse == 0)
@@ -649,7 +684,7 @@ namespace SimulationVéhicule
 
         }
 
-        float NormalizeRotation(float rotation)
+        public float NormalizeRotation(float rotation)
         {
             if (rotation > 0)
             {
@@ -692,6 +727,15 @@ namespace SimulationVéhicule
         public void VariationInclinaison()
         {
             Rotation = new Vector3(Rotation.X + 0.005f, Rotation.Y, Rotation.Z);
+        }
+
+        void Radio()
+        {
+            if (GestionInput.EstNouvelleTouche(Keys.D1))
+            {
+                BornToBeWild.Play();
+                BornToBeWild.Volume = 1.0f;
+            }
         }
     }
 }

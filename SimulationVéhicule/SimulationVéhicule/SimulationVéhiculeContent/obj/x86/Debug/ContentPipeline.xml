@@ -149,7 +149,7 @@
       <Processor>FontDescriptionProcessor</Processor>
       <Options>None</Options>
       <Output>C:\Users\élie\Documents\GitHub\SimulationVoiture\SimulationVéhicule\SimulationVéhicule\SimulationVéhicule\bin\x86\Debug\Content\Fonts\Arial.xnb</Output>
-      <Time>2016-03-21T16:39:25.8459977-04:00</Time>
+      <Time>2016-03-24T11:20:31.8704537-04:00</Time>
     </Item>
     <Item>
       <Source>Models\MustangGT500.FBX</Source>
@@ -284,7 +284,7 @@
       <Processor>TextureProcessor</Processor>
       <Options>None</Options>
       <Output>C:\Users\élie\Documents\GitHub\SimulationVoiture\SimulationVéhicule\SimulationVéhicule\SimulationVéhicule\bin\x86\Debug\Content\Textures\route.xnb</Output>
-      <Time>2016-03-02T22:31:57.0830179-05:00</Time>
+      <Time>2016-03-23T13:52:42.6656006-04:00</Time>
     </Item>
     <Item>
       <Source>Textures\test.bmp</Source>
@@ -442,15 +442,6 @@
       <Time>2016-03-21T16:39:25.8580038-04:00</Time>
     </Item>
     <Item>
-      <Source>Textures\cloudMap.jpg</Source>
-      <Name>Textures\cloudMap</Name>
-      <Importer>TextureImporter</Importer>
-      <Processor>TextureProcessor</Processor>
-      <Options>None</Options>
-      <Output>C:\Users\élie\Documents\GitHub\SimulationVoiture\SimulationVéhicule\SimulationVéhicule\SimulationVéhicule\bin\x86\Debug\Content\Textures\cloudMap.xnb</Output>
-      <Time>2016-03-21T16:39:25.8700123-04:00</Time>
-    </Item>
-    <Item>
       <Source>Textures\CarteTest.png</Source>
       <Name>Textures\CarteTest</Name>
       <Importer>TextureImporter</Importer>
@@ -522,6 +513,224 @@
       <Options>None</Options>
       <Output>C:\Users\élie\Documents\GitHub\SimulationVoiture\SimulationVéhicule\SimulationVéhicule\SimulationVéhicule\bin\x86\Debug\Content\Textures\SkyDomeTexture_0.xnb</Output>
       <Time>2016-03-21T17:24:27.6803778-04:00</Time>
+    </Item>
+    <Item>
+      <Source>Textures\CarteTest2.png</Source>
+      <Name>Textures\CarteTest2</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+      <Options>None</Options>
+      <Output>C:\Users\élie\Documents\GitHub\SimulationVoiture\SimulationVéhicule\SimulationVéhicule\SimulationVéhicule\bin\x86\Debug\Content\Textures\CarteTest2.xnb</Output>
+      <Time>2016-03-23T15:34:11.5631743-04:00</Time>
+    </Item>
+    <Item>
+      <Source>Textures\CarteTest3.png</Source>
+      <Name>Textures\CarteTest3</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+      <Options>None</Options>
+      <Output>C:\Users\élie\Documents\GitHub\SimulationVoiture\SimulationVéhicule\SimulationVéhicule\SimulationVéhicule\bin\x86\Debug\Content\Textures\CarteTest3.xnb</Output>
+      <Time>2016-03-23T15:36:41.3263992-04:00</Time>
+    </Item>
+    <Item>
+      <Source>Sounds\TimeIntro.wav</Source>
+      <Name>Sounds\TimeIntro</Name>
+      <Importer>WavImporter</Importer>
+      <Processor>SoundEffectProcessor</Processor>
+      <Options>None</Options>
+      <Output>C:\Users\élie\Documents\GitHub\SimulationVoiture\SimulationVéhicule\SimulationVéhicule\SimulationVéhicule\bin\x86\Debug\Content\Sounds\TimeIntro.xnb</Output>
+      <Time>2016-03-23T20:00:51.8281401-04:00</Time>
+    </Item>
+    <Item>
+      <Source>Textures\courseCountdown.png</Source>
+      <Name>Textures\courseCountdown</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+      <Options>None</Options>
+      <Output>C:\Users\élie\Documents\GitHub\SimulationVoiture\SimulationVéhicule\SimulationVéhicule\SimulationVéhicule\bin\x86\Debug\Content\Textures\courseCountdown.xnb</Output>
+      <Time>2016-03-24T10:59:26.0586555-04:00</Time>
+    </Item>
+    <Item>
+      <Source>Sounds\Gear1.wav</Source>
+      <Name>Sounds\Gear1</Name>
+      <Importer>WavImporter</Importer>
+      <Processor>SoundEffectProcessor</Processor>
+      <Options>None</Options>
+      <Output>C:\Users\élie\Documents\GitHub\SimulationVoiture\SimulationVéhicule\SimulationVéhicule\SimulationVéhicule\bin\x86\Debug\Content\Sounds\Gear1.xnb</Output>
+      <Time>2014-03-27T08:28:22-04:00</Time>
+    </Item>
+    <Item>
+      <Source>Sounds\Gear1ToGear2.wav</Source>
+      <Name>Sounds\Gear1ToGear2</Name>
+      <Importer>WavImporter</Importer>
+      <Processor>SoundEffectProcessor</Processor>
+      <Options>None</Options>
+      <Output>C:\Users\élie\Documents\GitHub\SimulationVoiture\SimulationVéhicule\SimulationVéhicule\SimulationVéhicule\bin\x86\Debug\Content\Sounds\Gear1ToGear2.xnb</Output>
+      <Time>2014-03-27T08:28:22-04:00</Time>
+    </Item>
+    <Item>
+      <Source>Sounds\Gear2.wav</Source>
+      <Name>Sounds\Gear2</Name>
+      <Importer>WavImporter</Importer>
+      <Processor>SoundEffectProcessor</Processor>
+      <Options>None</Options>
+      <Output>C:\Users\élie\Documents\GitHub\SimulationVoiture\SimulationVéhicule\SimulationVéhicule\SimulationVéhicule\bin\x86\Debug\Content\Sounds\Gear2.xnb</Output>
+      <Time>2014-03-27T08:28:22-04:00</Time>
+    </Item>
+    <Item>
+      <Source>Sounds\Gear3.wav</Source>
+      <Name>Sounds\Gear3</Name>
+      <Importer>WavImporter</Importer>
+      <Processor>SoundEffectProcessor</Processor>
+      <Options>None</Options>
+      <Output>C:\Users\élie\Documents\GitHub\SimulationVoiture\SimulationVéhicule\SimulationVéhicule\SimulationVéhicule\bin\x86\Debug\Content\Sounds\Gear3.xnb</Output>
+      <Time>2014-03-27T08:28:22-04:00</Time>
+    </Item>
+    <Item>
+      <Source>Sounds\BrakeCurveMajor.wav</Source>
+      <Name>Sounds\BrakeCurveMajor</Name>
+      <Importer>WavImporter</Importer>
+      <Processor>SoundEffectProcessor</Processor>
+      <Options>None</Options>
+      <Output>C:\Users\élie\Documents\GitHub\SimulationVoiture\SimulationVéhicule\SimulationVéhicule\SimulationVéhicule\bin\x86\Debug\Content\Sounds\BrakeCurveMajor.xnb</Output>
+      <Time>2014-03-27T08:28:22-04:00</Time>
+    </Item>
+    <Item>
+      <Source>Sounds\BornToBeWild.wav</Source>
+      <Name>Sounds\BornToBeWild</Name>
+      <Importer>WavImporter</Importer>
+      <Processor>SoundEffectProcessor</Processor>
+      <Options>None</Options>
+      <Output>C:\Users\élie\Documents\GitHub\SimulationVoiture\SimulationVéhicule\SimulationVéhicule\SimulationVéhicule\bin\x86\Debug\Content\Sounds\BornToBeWild.xnb</Output>
+      <Time>2016-03-24T16:25:59.6325471-04:00</Time>
+    </Item>
+    <Item>
+      <Source>Textures\décompte1.png</Source>
+      <Name>Textures\décompte1</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+      <Options>None</Options>
+      <Output>C:\Users\élie\Documents\GitHub\SimulationVoiture\SimulationVéhicule\SimulationVéhicule\SimulationVéhicule\bin\x86\Debug\Content\Textures\décompte1.xnb</Output>
+      <Time>2016-03-24T19:43:35.854572-04:00</Time>
+    </Item>
+    <Item>
+      <Source>Textures\décompte2.png</Source>
+      <Name>Textures\décompte2</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+      <Options>None</Options>
+      <Output>C:\Users\élie\Documents\GitHub\SimulationVoiture\SimulationVéhicule\SimulationVéhicule\SimulationVéhicule\bin\x86\Debug\Content\Textures\décompte2.xnb</Output>
+      <Time>2016-03-24T19:44:01.8753541-04:00</Time>
+    </Item>
+    <Item>
+      <Source>Textures\décompte3.png</Source>
+      <Name>Textures\décompte3</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+      <Options>None</Options>
+      <Output>C:\Users\élie\Documents\GitHub\SimulationVoiture\SimulationVéhicule\SimulationVéhicule\SimulationVéhicule\bin\x86\Debug\Content\Textures\décompte3.xnb</Output>
+      <Time>2016-03-24T19:44:44.0040137-04:00</Time>
+    </Item>
+    <Item>
+      <Source>Textures\décompte4.png</Source>
+      <Name>Textures\décompte4</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+      <Options>None</Options>
+      <Output>C:\Users\élie\Documents\GitHub\SimulationVoiture\SimulationVéhicule\SimulationVéhicule\SimulationVéhicule\bin\x86\Debug\Content\Textures\décompte4.xnb</Output>
+      <Time>2016-03-24T19:44:57.4137965-04:00</Time>
+    </Item>
+    <Item>
+      <Source>Sounds\beepAigu.wav</Source>
+      <Name>Sounds\beepAigu</Name>
+      <Importer>WavImporter</Importer>
+      <Processor>SoundEffectProcessor</Processor>
+      <Options>None</Options>
+      <Output>C:\Users\élie\Documents\GitHub\SimulationVoiture\SimulationVéhicule\SimulationVéhicule\SimulationVéhicule\bin\x86\Debug\Content\Sounds\beepAigu.xnb</Output>
+      <Time>2016-03-24T19:23:36.3493864-04:00</Time>
+    </Item>
+    <Item>
+      <Source>Sounds\beepGrave.wav</Source>
+      <Name>Sounds\beepGrave</Name>
+      <Importer>WavImporter</Importer>
+      <Processor>SoundEffectProcessor</Processor>
+      <Options>None</Options>
+      <Output>C:\Users\élie\Documents\GitHub\SimulationVoiture\SimulationVéhicule\SimulationVéhicule\SimulationVéhicule\bin\x86\Debug\Content\Sounds\beepGrave.xnb</Output>
+      <Time>2016-03-24T19:23:14.43676-04:00</Time>
+    </Item>
+    <Item>
+      <Source>Sounds\Defaite.wav</Source>
+      <Name>Sounds\Defaite</Name>
+      <Importer>WavImporter</Importer>
+      <Processor>SoundEffectProcessor</Processor>
+      <Options>None</Options>
+      <Output>C:\Users\élie\Documents\GitHub\SimulationVoiture\SimulationVéhicule\SimulationVéhicule\SimulationVéhicule\bin\x86\Debug\Content\Sounds\Defaite.xnb</Output>
+      <Time>2016-03-24T20:56:52.4440375-04:00</Time>
+    </Item>
+    <Item>
+      <Source>Sounds\Victoire.wav</Source>
+      <Name>Sounds\Victoire</Name>
+      <Importer>WavImporter</Importer>
+      <Processor>SoundEffectProcessor</Processor>
+      <Options>None</Options>
+      <Output>C:\Users\élie\Documents\GitHub\SimulationVoiture\SimulationVéhicule\SimulationVéhicule\SimulationVéhicule\bin\x86\Debug\Content\Sounds\Victoire.xnb</Output>
+      <Time>2016-03-24T20:51:15.4563497-04:00</Time>
+    </Item>
+    <Item>
+      <Source>Textures\ÉcranNoir.png</Source>
+      <Name>Textures\ÉcranNoir</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+      <Options>None</Options>
+      <Output>C:\Users\élie\Documents\GitHub\SimulationVoiture\SimulationVéhicule\SimulationVéhicule\SimulationVéhicule\bin\x86\Debug\Content\Textures\ÉcranNoir.xnb</Output>
+      <Time>2016-03-24T23:02:28.1356178-04:00</Time>
+    </Item>
+    <Item>
+      <Source>Textures\confettis.png</Source>
+      <Name>Textures\confettis</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+      <Options>None</Options>
+      <Output>C:\Users\élie\Documents\GitHub\SimulationVoiture\SimulationVéhicule\SimulationVéhicule\SimulationVéhicule\bin\x86\Debug\Content\Textures\confettis.xnb</Output>
+      <Time>2016-03-24T23:17:19.6867859-04:00</Time>
+    </Item>
+    <Item>
+      <Source>Textures\trophée.png</Source>
+      <Name>Textures\trophée</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+      <Options>None</Options>
+      <Output>C:\Users\élie\Documents\GitHub\SimulationVoiture\SimulationVéhicule\SimulationVéhicule\SimulationVéhicule\bin\x86\Debug\Content\Textures\trophée.xnb</Output>
+      <Time>2016-03-24T23:22:45.9821829-04:00</Time>
+    </Item>
+    <Item>
+      <Source>Models\Bridge.FBX</Source>
+      <Name>Models\Bridge</Name>
+      <Importer>FbxImporter</Importer>
+      <Processor>ModelProcessor</Processor>
+      <Options>None</Options>
+      <Output>C:\Users\élie\Documents\GitHub\SimulationVoiture\SimulationVéhicule\SimulationVéhicule\SimulationVéhicule\bin\x86\Debug\Content\Models\Bridge.xnb</Output>
+      <Time>2016-03-25T17:35:18.2816261-04:00</Time>
+      <Dependency>
+        <Key>obj\x86\Debug\Models\Bridge_0.xml</Key>
+        <Value>2016-03-25T17:40:19.2391036-04:00</Value>
+      </Dependency>
+    </Item>
+    <Item>
+      <Source>Models\Bridge.FBX</Source>
+      <Importer>FbxImporter</Importer>
+      <Options>IntermediateFile, DontCacheImportedData</Options>
+      <Output>obj\x86\Debug\Models\Bridge_0.xml</Output>
+      <Time>2016-03-25T17:35:18.2816261-04:00</Time>
+    </Item>
+    <Item>
+      <Source>Textures\routeDépart.jpg</Source>
+      <Name>Textures\routeDépart</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+      <Options>None</Options>
+      <Output>C:\Users\élie\Documents\GitHub\SimulationVoiture\SimulationVéhicule\SimulationVéhicule\SimulationVéhicule\bin\x86\Debug\Content\Textures\routeDépart.xnb</Output>
+      <Time>2016-03-28T00:20:22.5777173-04:00</Time>
     </Item>
     <BuildSuccessful>true</BuildSuccessful>
     <Settings>

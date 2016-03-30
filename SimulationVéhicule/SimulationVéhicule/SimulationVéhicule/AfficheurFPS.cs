@@ -41,7 +41,7 @@ namespace SimulationVéhicule
         protected override void LoadContent()
         {
             GestionSprites = Game.Services.GetService(typeof(SpriteBatch)) as SpriteBatch;
-            ArialFont = Game.Content.Load<SpriteFont>("Fonts/Arial");
+            ArialFont = Game.Content.Load<SpriteFont>("Fonts/Bebas");
             base.LoadContent();
         }
 

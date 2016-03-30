@@ -55,6 +55,10 @@ namespace SimulationVéhicule
         VertexPositionNormalTexture[] terrainVertices;
         int[] indices;
 
+        //Optimisation des performances
+        VertexBuffer myVertexBuffer;
+        IndexBuffer myIndexBuffer;
+
         public Terrain(Game jeu, float homothétieInitiale, Vector3 rotationInitiale, Vector3 positionInitiale,
                        Vector3 étendue, string nomCarteTerrain, string nomTextureTerrain, int nbNiveauxTexture, float intervalleMAJ, Caméra caméraJeu)
             : base(jeu, homothétieInitiale, rotationInitiale, positionInitiale, intervalleMAJ)
@@ -124,6 +128,7 @@ namespace SimulationVéhicule
             terrainVertices = SetUpTerrainVertices();
             SetUpIndices();
             CalculateNormals();
+            CopyToBuffers();
         }
 
         private void LoadHeightData(Texture2D heightMap)
@@ -323,7 +328,7 @@ namespace SimulationVéhicule
                 {
                     Effect.Projection = CaméraJeu.Projection;
                     Effect.View = CaméraJeu.Vue;
-                    Effect.World = TransformationsModèle[Mesh.ParentBone.Index] * Matrix.CreateScale(10000/2) * Matrix.CreateTranslation(CaméraJeu.Position);
+                    Effect.World = TransformationsModèle[Mesh.ParentBone.Index] * Matrix.CreateScale(10000/2) * Matrix.CreateTranslation(new Vector3(CaméraJeu.Position.X, -600, CaméraJeu.Position.Z));
                 }
                 Mesh.Draw();
             }
@@ -352,8 +357,20 @@ namespace SimulationVéhicule
             {
                 pass.Apply();
 
-                GraphicsDevice.DrawUserIndexedPrimitives(PrimitiveType.TriangleList, terrainVertices, 0, terrainVertices.Length, indices, 0, indices.Length / 3, VertexPositionNormalTexture.VertexDeclaration);
+                GraphicsDevice.Indices = myIndexBuffer;
+                GraphicsDevice.SetVertexBuffer(myVertexBuffer);
+                GraphicsDevice.DrawIndexedPrimitives(PrimitiveType.TriangleList, 0, 0, terrainVertices.Length, 0, indices.Length / 3);
+               // GraphicsDevice.DrawUserIndexedPrimitives(PrimitiveType.TriangleList, terrainVertices, 0, terrainVertices.Length, indices, 0, indices.Length / 3, VertexPositionNormalTexture.VertexDeclaration);
             }
+        }
+
+        void CopyToBuffers()
+        {
+            myVertexBuffer = new VertexBuffer(GraphicsDevice, VertexPositionNormalTexture.VertexDeclaration, terrainVertices.Length, BufferUsage.WriteOnly);
+            myVertexBuffer.SetData(terrainVertices);
+
+            myIndexBuffer = new IndexBuffer(GraphicsDevice, typeof(int), indices.Length, BufferUsage.WriteOnly);
+            myIndexBuffer.SetData(indices);
         }
 
     }

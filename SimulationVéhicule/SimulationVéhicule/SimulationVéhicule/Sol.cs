@@ -9,6 +9,7 @@ using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using Microsoft.Xna.Framework.Media;
 
+//Enlever BoundingBox pour les courbe!
 
 namespace SimulationVéhicule
 {
@@ -36,6 +37,8 @@ namespace SimulationVéhicule
         Vector3[] PointBoxLatéralGauche { get; set; }
         Vector3[] PointBoxLatéralDroit { get; set; }
         Vector3[] PointsBoxComplet { get; set; }
+
+        public Vector3 Position { get; set; }
 
         public Color CouleurCheckPoint { get; set; }
 
@@ -113,6 +116,7 @@ namespace SimulationVéhicule
             Courbe = courbe;
             RotationCourbe = rotationCourbe;
             NbVoiture = nbVoiture;
+            Position = positionInitiale;
         }
 
 
@@ -275,7 +279,7 @@ namespace SimulationVéhicule
                 GraphicsDevice.DrawUserPrimitives<VertexPositionTexture>(PrimitiveType.TriangleList, Sommets, 0, NbTriangles);
 
             }
-            DebugShapeRenderer.AddBoundingBox(Box, Color.Wheat);
+            //DebugShapeRenderer.AddBoundingBox(Box, Color.Wheat);
             foreach (BoundingBox x in BoxÉtape)
             {
                 DebugShapeRenderer.AddBoundingBox(x, CouleurCheckPoint);
@@ -283,7 +287,7 @@ namespace SimulationVéhicule
             //DebugShapeRenderer.AddBoundingBox(BoxComplet, Color.Black);
             //DebugShapeRenderer.AddBoundingBox(BoxDroite, Color.YellowGreen);
             //DebugShapeRenderer.AddBoundingBox(BoxGauche, Color.YellowGreen);
-            //DebugShapeRenderer.AddBoundingBox(Box, Color.Wheat);
+           //DebugShapeRenderer.AddBoundingBox(Box, Color.Wheat);
             //DebugShapeRenderer.AddBoundingBox(Box, Color.Blue);
             //DebugShapeRenderer.AddBoundingSphere(Sphere, Color.Yellow);
             //DebugShapeRenderer.AddBoundingSphere(new BoundingSphere(new Vector3(Position.X, Position.Y, Position.Z), (Étendue.X / 2)), Color.Green);
@@ -302,11 +306,11 @@ namespace SimulationVéhicule
 
                 if (RotationInitiale.Y == 0 || RotationInitiale.Y == MathHelper.Pi)
                 {
-                    profondeur = Math.Abs(positionVoiture.Z) - Math.Abs(PositionInitiale.Z);
+                    profondeur = Math.Abs(positionVoiture.Z - PositionInitiale.Z);
                 }
                 else
                 {
-                    profondeur = Math.Abs(positionVoiture.X) - Math.Abs(PositionInitiale.X);
+                    profondeur = Math.Abs(positionVoiture.X - PositionInitiale.X);
                 }
 
                 if (profondeur >= Hauteur)
@@ -352,7 +356,8 @@ namespace SimulationVéhicule
                     PointsBoxComplet[i + (i * j)] = PtsSommets[i, j];
                 }
             }
-            PointsBoxComplet[0] = new Vector3(PointsBoxComplet[0].X, PointsBoxComplet[0].Y + 100, PointsBoxComplet[0].Z);
+            PointsBoxComplet[0] = new Vector3(PointsBoxComplet[0].X- 50, PointsBoxComplet[0].Y, PointsBoxComplet[0].Z);
+            PointsBoxComplet[1] = new Vector3(PointsBoxComplet[1].X + 50, PointsBoxComplet[1].Y + 500, PointsBoxComplet[1].Z);
             transformation = Matrix.CreateFromYawPitchRoll(RotationInitiale.Y, RotationInitiale.X, 0) * Matrix.CreateTranslation(PositionInitiale);
             for (int i = 0; i < PointsBoxComplet.Length; i++)
             {
@@ -365,8 +370,16 @@ namespace SimulationVéhicule
             for (int k = 0; k < NB_CHECK_POINT; k++)
             {
                 PointsÉtape = new Vector3[2];
-                PointsÉtape[0] = new Vector3(PtsSommets[0, NbRangées - 1].X, PtsSommets[0, NbRangées - 1].Y, PtsSommets[0, NbRangées - 1].Z / (k + 1));
-                PointsÉtape[1] = new Vector3(PtsSommets[NbColonnes - 1, NbRangées - 1].X, PtsSommets[NbColonnes - 1, NbRangées - 1].Y + 100, PtsSommets[NbColonnes - 1, NbRangées - 1].Z / (k + 1));
+                if (!Courbe)
+                {
+                    PointsÉtape[0] = new Vector3(PtsSommets[0, NbRangées - 1].X - 50, PtsSommets[0, NbRangées - 1].Y, PtsSommets[0, NbRangées - 1].Z / (k + 1));
+                    PointsÉtape[1] = new Vector3(PtsSommets[NbColonnes - 1, NbRangées - 1].X + 50, PtsSommets[NbColonnes - 1, NbRangées - 1].Y + 100, PtsSommets[NbColonnes - 1, NbRangées - 1].Z / (k + 1));   
+                }
+                else
+                {
+                    PointsÉtape[0] = new Vector3(PtsSommets[0, NbRangées - 1].X, PtsSommets[0, NbRangées - 1].Y, PtsSommets[0, NbRangées - 1].Z / (k + 1));
+                    PointsÉtape[1] = new Vector3(PtsSommets[NbColonnes - 1, NbRangées - 1].X, PtsSommets[NbColonnes - 1, NbRangées - 1].Y + 100, PtsSommets[NbColonnes - 1, NbRangées - 1].Z / (k + 1));
+                }
 
                 for (int i = 0; i < PointsÉtape.Length; i++)
                 {

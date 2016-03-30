@@ -76,7 +76,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AfficheurFPS.cs" />
-    <Compile Include="CaméraQuaternion.cs" />
+    <Compile Include="CaméraCinématique.cs" />
     <Compile Include="Course.cs" />
     <Compile Include="DebugShapeRenderer.cs" />
     <Compile Include="GUI.cs" />
@@ -85,7 +85,6 @@
     <Compile Include="Game1.cs" />
     <Compile Include="Sol.cs" />
     <Compile Include="Terrain.cs" />
-    <Compile Include="TerrainShaders.cs" />
     <Compile Include="Voiture.cs" />
   </ItemGroup>
   <ItemGroup>

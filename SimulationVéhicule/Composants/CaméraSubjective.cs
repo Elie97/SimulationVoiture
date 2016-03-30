@@ -8,7 +8,7 @@ namespace SimulationVéhicule
         const float INTERVALLE_MAJ_STANDARD = 1f / 60f;
         const float ACCÉLÉRATION = 0.001f;
         const float VITESSE_INITIALE_ROTATION = 5f;
-        const float VITESSE_INITIALE_TRANSLATION = 0.1f;
+        const float VITESSE_INITIALE_TRANSLATION = 10f;
         const float DELTA_LACET = MathHelper.Pi / 180; // 1 degré à la fois
         const float DELTA_TANGAGE = MathHelper.Pi / 180; // 1 degré à la fois
         const float DELTA_ROULIS = MathHelper.Pi / 180; // 1 degré à la fois
@@ -21,6 +21,8 @@ namespace SimulationVéhicule
         float IntervalleMAJ { get; set; }
         float TempsÉcouléDepuisMAJ { get; set; }
         InputManager GestionInput { get; set; }
+
+        public bool CaméraMobile { get; set; }
 
         bool estEnZoom;
         bool EstEnZoom
@@ -41,13 +43,14 @@ namespace SimulationVéhicule
             }
         }
 
-        public CaméraSubjective(Game jeu, Vector3 positionCaméra, Vector3 cible, Vector3 orientation, float intervalleMAJ)
+        public CaméraSubjective(Game jeu, Vector3 positionCaméra, Vector3 cible, Vector3 orientation, float intervalleMAJ, bool caméraMobile)
             : base(jeu)
         {
             IntervalleMAJ = intervalleMAJ;
             CréerVolumeDeVisualisation(OUVERTURE_OBJECTIF, DISTANCE_PLAN_RAPPROCHÉ, DISTANCE_PLAN_ÉLOIGNÉ);
             CréerPointDeVue(positionCaméra, cible, orientation);
             EstEnZoom = false;
+            CaméraMobile = caméraMobile;
         }
 
         public override void Initialize()
@@ -83,17 +86,19 @@ namespace SimulationVéhicule
             float TempsÉcoulé = (float)gameTime.ElapsedGameTime.TotalSeconds;
             TempsÉcouléDepuisMAJ += TempsÉcoulé;
             GestionClavier();
-            //CréerPointDeVue();
             if (TempsÉcouléDepuisMAJ >= IntervalleMAJ)
             {
-                //if (GestionInput.EstEnfoncée(Keys.LeftShift) || GestionInput.EstEnfoncée(Keys.RightShift))
-                //{
-                //    GérerAccélération();
-                //    GérerDéplacement();
-                //    GérerRotation();
-                //    CréerPointDeVue();
-                //}
-                //CréerPointDeVue();
+                if (CaméraMobile)
+                {
+                    if (GestionInput.EstEnfoncée(Keys.LeftShift) || GestionInput.EstEnfoncée(Keys.RightShift))
+                    {
+                        GérerAccélération();
+                        GérerDéplacement();
+                        GérerRotation();
+                        CréerPointDeVue();
+                    }
+                    CréerPointDeVue();   
+                }
                 TempsÉcouléDepuisMAJ = 0;
             }
             base.Update(gameTime);
@@ -207,6 +212,16 @@ namespace SimulationVéhicule
             {
                 EstEnZoom = !EstEnZoom;
             }
+        }
+
+        public void ChangerTypeCaméra()
+        {
+            CaméraMobile = !CaméraMobile;
+        }
+
+        public void ChangerTypeCaméra(bool type)
+        {
+            CaméraMobile = type;
         }
     }
 }
