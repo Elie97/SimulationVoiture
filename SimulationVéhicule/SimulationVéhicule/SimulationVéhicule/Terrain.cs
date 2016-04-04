@@ -318,9 +318,11 @@ namespace SimulationVéhicule
         //
         public override void Draw(GameTime gameTime)
         {
-            EffetDeBase.World = monde;
+            GestionMatriceMonde();
+            EffetDeBase.World = GetMonde();
             EffetDeBase.View = CaméraJeu.Vue;
             EffetDeBase.Projection = CaméraJeu.Projection;
+            EffetDeBase.LightingEnabled = true;
 
             foreach (ModelMesh Mesh in Ciel.Meshes)
             {
@@ -328,7 +330,7 @@ namespace SimulationVéhicule
                 {
                     Effect.Projection = CaméraJeu.Projection;
                     Effect.View = CaméraJeu.Vue;
-                    Effect.World = TransformationsModèle[Mesh.ParentBone.Index] * Matrix.CreateScale(10000/2) * Matrix.CreateTranslation(new Vector3(CaméraJeu.Position.X, -600, CaméraJeu.Position.Z));
+                    Effect.World = TransformationsModèle[Mesh.ParentBone.Index] * Matrix.CreateScale(40000) * Matrix.CreateTranslation(new Vector3(CaméraJeu.Position.X, -9500, CaméraJeu.Position.Z));
                 }
                 Mesh.Draw();
             }
@@ -339,38 +341,47 @@ namespace SimulationVéhicule
             //    GraphicsDevice.DrawUserPrimitives<VertexPositionTexture>(PrimitiveType.TriangleList, TabSommets, 0, NbTriangles);
             //}
 
-            effect.CurrentTechnique = effect.Techniques["Textured"];
-            effect.Parameters["xTexture"].SetValue(grassTexture);
+            //effect.CurrentTechnique = effect.Techniques["Textured"];
+            //effect.Parameters["xTexture"].SetValue(grassTexture);
 
-            effect.Parameters["Monde"].SetValue(monde);
-            effect.Parameters["MatriceVue"].SetValue(CaméraJeu.Vue);
-            effect.Parameters["MatriceProjection"].SetValue(CaméraJeu.Projection);
+            //effect.Parameters["Monde"].SetValue(monde);
+            //effect.Parameters["MatriceVue"].SetValue(CaméraJeu.Vue);
+            //effect.Parameters["MatriceProjection"].SetValue(CaméraJeu.Projection);
 
-            Vector3 lightDirection = new Vector3(1.0f, -1.0f, -1.0f);
-            lightDirection.Normalize();
+            //Vector3 lightDirection = new Vector3(1.0f, -1.0f, -1.0f);
+            //lightDirection.Normalize();
 
-            effect.Parameters["DirectionLumiere"].SetValue(lightDirection);
-            effect.Parameters["LumiereAmbiante"].SetValue(0.4f);
-            effect.Parameters["LumiereActive"].SetValue(true);
+            //effect.Parameters["DirectionLumiere"].SetValue(lightDirection);
+            //effect.Parameters["LumiereAmbiante"].SetValue(0.4f);
+            //effect.Parameters["LumiereActive"].SetValue(true);
+            //EffetDeBase.LightingEnabled = true;
 
-            foreach (EffectPass pass in effect.CurrentTechnique.Passes)
+            foreach (EffectPass pass in EffetDeBase.CurrentTechnique.Passes)
             {
                 pass.Apply();
-
-                GraphicsDevice.Indices = myIndexBuffer;
-                GraphicsDevice.SetVertexBuffer(myVertexBuffer);
-                GraphicsDevice.DrawIndexedPrimitives(PrimitiveType.TriangleList, 0, 0, terrainVertices.Length, 0, indices.Length / 3);
+                //GraphicsDevice.Indices = myIndexBuffer;
+                //GraphicsDevice.SetVertexBuffer(myVertexBuffer);
+                GraphicsDevice.DrawUserIndexedPrimitives(PrimitiveType.TriangleList, terrainVertices, 0, terrainVertices.Length, indices, 0, indices.Length / 3);
+                //GraphicsDevice.DrawIndexedPrimitives(PrimitiveType.TriangleList, 0, 0, terrainVertices.Length, 0, indices.Length / 3);
                // GraphicsDevice.DrawUserIndexedPrimitives(PrimitiveType.TriangleList, terrainVertices, 0, terrainVertices.Length, indices, 0, indices.Length / 3, VertexPositionNormalTexture.VertexDeclaration);
             }
         }
 
         void CopyToBuffers()
         {
-            myVertexBuffer = new VertexBuffer(GraphicsDevice, VertexPositionNormalTexture.VertexDeclaration, terrainVertices.Length, BufferUsage.WriteOnly);
-            myVertexBuffer.SetData(terrainVertices);
+            //myVertexBuffer = new VertexBuffer(GraphicsDevice, VertexPositionNormalTexture.VertexDeclaration, terrainVertices.Length, BufferUsage.WriteOnly);
+            //myVertexBuffer.SetData(terrainVertices);
 
-            myIndexBuffer = new IndexBuffer(GraphicsDevice, typeof(int), indices.Length, BufferUsage.WriteOnly);
-            myIndexBuffer.SetData(indices);
+            //myIndexBuffer = new IndexBuffer(GraphicsDevice, typeof(int), indices.Length, BufferUsage.WriteOnly);
+            //myIndexBuffer.SetData(indices);
+        }
+
+        public void GestionMatriceMonde()
+        {
+            Monde = Matrix.Identity *
+                        Matrix.CreateScale(HomothétieInitiale) *
+                        Matrix.CreateFromYawPitchRoll(RotationInitiale.Y - (float)Math.PI / 2, RotationInitiale.X, RotationInitiale.Z) *
+                        Matrix.CreateTranslation(PositionInitiale);
         }
 
     }

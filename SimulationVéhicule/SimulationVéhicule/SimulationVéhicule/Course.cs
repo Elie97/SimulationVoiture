@@ -102,9 +102,14 @@ namespace SimulationVéhicule
         public Vector3[] TableauPositionCaméra { get; set; }
         public int IndexPositionCaméra { get; set; }
 
+        int ModeDeJeu { get; set; }//Couse Contre Montre
+        float TempsAdversaire { get; set; }
+        float TempsParCheckPointAdversaire { get; set; }
+        int Difficulté { get; set; }
 
 
-        public Course(Game game, int nbTours, int nbVoiture, List<Sol> laPiste, List<Voiture> listeVoiture, CaméraSubjective caméra, float intervalle, int piste)
+
+        public Course(Game game, int nbTours, int nbVoiture, List<Sol> laPiste, List<Voiture> listeVoiture, CaméraSubjective caméra, float intervalle, int piste, int modeDeJeu)
             : base(game)
         {
             NbTours = nbTours;
@@ -114,6 +119,7 @@ namespace SimulationVéhicule
             CaméraJeu = caméra;
             IntervalleMAJ = intervalle;
             Piste = piste;
+            ModeDeJeu = modeDeJeu;
         }
 
         protected override void LoadContent()
@@ -143,10 +149,6 @@ namespace SimulationVéhicule
             ÉcranNoir = GestionnaireDeTextures.Find("ÉcranNoir");
             Confettis = GestionnaireDeTextures.Find("confettis");
             Trophée = GestionnaireDeTextures.Find("trophée");
-
-            Pont = GestionnaireDeModèles.Find("Bridge");//mash pas?
-            TransformationsModèle = new Matrix[Pont.Bones.Count];
-
         }
 
         public override void Initialize()
@@ -222,6 +224,24 @@ namespace SimulationVéhicule
             IndexPositionCaméra = 0;
             PositionCaméra = new Vector3(-80, 20, -80);
 
+            if (ModeDeJeu == 0)
+            {
+                Difficulté = 2;//plus facile
+                if (Difficulté == 0)
+                {
+                    TempsAdversaire = 5000;
+                }
+                else if(Difficulté == 1)
+                {
+                    TempsAdversaire = 3000;
+                }
+                else if(Difficulté == 2)
+                {
+                    TempsAdversaire = 1000;
+                }
+                TempsParCheckPointAdversaire = TempsAdversaire / (LaPiste.Count() * NbTours * 2);
+            }
+
             base.Initialize();
         }
 
@@ -241,13 +261,15 @@ namespace SimulationVéhicule
 
                     if (DépartCourse)
                     {
-                        ListeVoiture[IDVoitureUtilisateur].Controle = true;    
+                        ListeVoiture[IDVoitureUtilisateur].Controle = true;
+                        //ListeVoiture[1].AI();
+
                     }
                     else
                     {
                         AfficherDécompte = true;
                         TempsDécompte++;
-                        TempsÉcouléDepuisMAJ = 0;
+                        //TempsÉcouléDepuisMAJ = 0;
                         if (TempsDécompte >= 450)
                         {
                             DépartCourse = true;
@@ -261,11 +283,13 @@ namespace SimulationVéhicule
                         AfficherDécompte = false;
                     }
 
+
                     //Gestion Des Collision
-                    for (int i = 1; i < ListeVoiture.Count(); i++)
-                    {
-                        ListeVoiture[IDVoitureUtilisateur].GestionCollisionVoiture(ListeVoiture[i]);
-                    }
+                    //for (int i = 1; i < ListeVoiture.Count(); i++)
+                    //{
+                    //    //ListeVoiture[IDVoitureUtilisateur].GestionCollisionVoiture(ListeVoiture[i]);
+                    //}
+                    //ListeVoiture[IDVoitureUtilisateur].GestionCollisionVoiture(ListeVoiture[1]);
 
                     //Gestion de la caméra
                     //GestionOrientationCaméra(); //Dans un counter
@@ -304,21 +328,25 @@ namespace SimulationVéhicule
                     ListeVoiture[IDVoitureUtilisateur].Controle = false;
                     Interface.Afficher = false;
                     AfficherTexte = true;
-                    PositionNomCarte = AnimationTexteVersHaut(Game.Window.ClientBounds.Height - 100, PositionNomCarte, 0.5f);
-                    if (GestionInput.EstNouvelleTouche(Keys.Space))
-                    {
-                        ForcerArrêt = true;
-                        CaméraJeu.Direction = new Vector3(0, 0, 0) - CaméraJeu.Position;
-                    }
+                    PositionNomCarte = AnimationTexteVersHaut(Game.Window.ClientBounds.Height - 100, PositionNomCarte, 2f);
                 }
 
 
                 GestionCollisionAvecPiste();
 
+                GestionCourseContreLaMontre();
 
                 Interface.UpdateGUI((int)ListeVoiture[IDVoitureUtilisateur].PixelToKMH(ListeVoiture[IDVoitureUtilisateur].Vitesse),
                         PositionUtilisateur, CheckPointParVoiture[IDVoitureUtilisateur],
                         ToursFait[IDVoitureUtilisateur]);
+
+                TempsÉcouléDepuisMAJ = 0;
+            }
+
+            if (GestionInput.EstNouvelleTouche(Keys.Space) && !DépartCourse)
+            {
+                ForcerArrêt = true;
+                CaméraJeu.Direction = new Vector3(0, 0, 0) - CaméraJeu.Position;
             }
 
 
@@ -332,7 +360,7 @@ namespace SimulationVéhicule
                 GestionSprites.DrawString(Bebas, GetMessage(0), PositionNomCarte, Color.White, 0, new Vector2(0, 0), 1.0f, SpriteEffects.None, 0);
                 GestionSprites.DrawString(Bebas, GetMessage(1), PositionNomCarte + new Vector2(0, 50), Color.White, 0, new Vector2(0, 0), 0.3f, SpriteEffects.None, 0);
             }
-
+            //afficher différence temps pour course contre la montre
             if (AfficherDécompte)
             {
                 Décompte();
@@ -357,18 +385,6 @@ namespace SimulationVéhicule
                 {
                     GestionSprites.DrawString(Bebas120, "DÉFAITE!", new Vector2(Game.Window.ClientBounds.Width / 2, Game.Window.ClientBounds.Height / 4), Color.White, 0, Bebas120.MeasureString("VICTOIRE!") / 2f, 1.0f, SpriteEffects.None, 0);
                 }
-
-                foreach (ModelMesh Mesh in Pont.Meshes)
-                {
-                    foreach (BasicEffect Effect in Mesh.Effects)
-                    {
-                        Effect.Projection = CaméraJeu.Projection;
-                        Effect.View = CaméraJeu.Vue;
-                        Effect.World = TransformationsModèle[Mesh.ParentBone.Index] * Matrix.CreateScale(10);
-                    }
-                    Mesh.Draw();
-                }
-
             }
             base.Draw(gameTime);
         }
@@ -460,17 +476,17 @@ namespace SimulationVéhicule
 
             if (!ÉtapeDirectionComplet[0])
             {
-                DéplacementDirection(0.005f, ÉtapeDirection[1], 0, terminé);
+                DéplacementDirection(0.010f, ÉtapeDirection[1], 0, terminé);
             }
             else if (ÉtapeDirectionComplet[0] && (!ÉtapePositionComplet[0] || !ÉtapeDirectionComplet[1]))
             {
-                DéplacementPosition(0.004f, ÉtapePosition[1], 0, terminé);
-                DéplacementDirection(0.005f, ÉtapeDirection[2], 1, terminé);
+                DéplacementPosition(0.008f, ÉtapePosition[1], 0, terminé);//selon fps
+                DéplacementDirection(0.010f, ÉtapeDirection[2], 1, terminé);
             }
             else if (ÉtapeDirectionComplet[1] && ÉtapePositionComplet[0] && (!ÉtapePositionComplet[1] || !ÉtapeDirectionComplet[2]))
             {
-                DéplacementPosition(0.004f, ÉtapePosition[2], 1, terminé);
-                DéplacementDirection(0.005f, ÉtapeDirection[3], 2, terminé);
+                DéplacementPosition(0.008f, ÉtapePosition[2], 1, terminé);
+                DéplacementDirection(0.01f, ÉtapeDirection[3], 2, terminé);
             }
             else if (ÉtapePositionComplet[1] && ÉtapeDirectionComplet[2] && (!ÉtapePositionComplet[2]))
             {
@@ -480,7 +496,7 @@ namespace SimulationVéhicule
                     CaméraJeu.Direction = ÉtapeDirection[4];
                     InitializationCourseCinématique = false;
                 }
-                DéplacementPosition(0.001f, ÉtapePosition[4], 3, terminé);
+                DéplacementPosition(0.002f, ÉtapePosition[4], 3, terminé);
             }
            
             return terminé;
@@ -692,11 +708,26 @@ namespace SimulationVéhicule
             }
         }
 
+        void GestionCourseContreLaMontre()
+        {
+            if (ModeDeJeu == 0)
+            {
+                Game.Window.Title = (NbFranchis[IDVoitureUtilisateur] * TempsParCheckPointAdversaire).ToString() + " - " + Interface.TempsMilliSeconde.ToString() + " - " + (TempsAdversaire/(LaPiste.Count() * 1)).ToString();
+                if (Interface.TempsMilliSeconde > NbFranchis[IDVoitureUtilisateur] * TempsParCheckPointAdversaire)
+                {
+                    PositionUtilisateur = 2;
+                }
+                else
+                {
+                    PositionUtilisateur = 1;
+                }
+            }
+        }
+
         void GestionCheckPoints()
         {
             for (int v = 0; v < NbVoiture; v++)
             {
-
                 //ini liste de tous les checks points
                 ListeCheckPoint[v] = new List<bool>();
                 for (int i = 0; i < LaPiste.Count(); i++)

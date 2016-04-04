@@ -80,6 +80,8 @@
     <Compile Include="Course.cs" />
     <Compile Include="DebugShapeRenderer.cs" />
     <Compile Include="GUI.cs" />
+    <Compile Include="LeTerrain.cs" />
+    <Compile Include="LeTerrain2.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Game1.cs" />

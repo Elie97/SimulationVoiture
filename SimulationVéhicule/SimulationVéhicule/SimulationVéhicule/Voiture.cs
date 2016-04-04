@@ -64,7 +64,8 @@ namespace SimulationVéhicule
         SoundEffectInstance SoundChangementVitesse { get; set; }
         SoundEffectInstance SoundCourbe { get; set; }
         SoundEffectInstance BornToBeWild { get; set; }
-        Song Queen { get; set; }
+        SoundEffectInstance ChaseAndStatus { get; set; }
+        List<SoundEffectInstance> ListeChanson { get; set; }
 
         bool User { get; set; }
 
@@ -131,7 +132,7 @@ namespace SimulationVéhicule
             DernièreCollisionEstAvant = false;
             Translation = false;
             ChuteLibrePossible = true;
-            AvancePossible = false;
+            AvancePossible = true;
             Collision = 0;
             RotationEnCollision = 0;
             VitesseRotation = 0;
@@ -186,6 +187,11 @@ namespace SimulationVéhicule
             SoundBrake = GestionnaireDeSon.Find("brakeEffect").CreateInstance();
             SoundCourbe = GestionnaireDeSon.Find("BrakeCurveMajor").CreateInstance();
             BornToBeWild = GestionnaireDeSon.Find("BornToBeWild").CreateInstance();
+            ChaseAndStatus = GestionnaireDeSon.Find("ChaseAndStatus").CreateInstance();
+
+            ListeChanson = new List<SoundEffectInstance>();
+            ListeChanson.Add(BornToBeWild);
+            ListeChanson.Add(ChaseAndStatus);
         }
 
         public override void Draw(GameTime gameTime)
@@ -250,7 +256,7 @@ namespace SimulationVéhicule
 
                 if (User)
                 {
-                    Game.Window.Title = Rotation.ToString();
+                    //Game.Window.Title = Rotation.ToString();
                     if (Controle)
                     {
                         if (GestionInput.EstEnfoncée(Keys.W) && Vitesse >= 0 && AvancePossible && AvancePossiblePiste)
@@ -302,7 +308,6 @@ namespace SimulationVéhicule
                         //}
 
                         PitchAndSound();
-                        Radio();
                     }
                 }
 
@@ -310,6 +315,7 @@ namespace SimulationVéhicule
                 CreateBoundingBox();
                 TempsÉcouléDepuisMAJ = 0;
             }
+            Radio();
             base.Update(gameTime);
         }
 
@@ -662,7 +668,7 @@ namespace SimulationVéhicule
             //}
             if (GestionInput.EstEnfoncée(Keys.S))
             {
-                AvancePossible = true;
+                AvancePossible = true;//?
             }
 
             return enCollision;
@@ -733,9 +739,32 @@ namespace SimulationVéhicule
         {
             if (GestionInput.EstNouvelleTouche(Keys.D1))
             {
-                BornToBeWild.Play();
-                BornToBeWild.Volume = 1.0f;
+                foreach (SoundEffectInstance x in ListeChanson)
+                {
+                    x.Stop();
+                }
+                ListeChanson[0].Play();
+                ListeChanson[0].Volume = 1.0f;
             }
+            else if (GestionInput.EstNouvelleTouche(Keys.D2))
+            {
+                foreach (SoundEffectInstance x in ListeChanson)
+                {
+                    x.Stop();
+                }
+                ListeChanson[1].Play();
+                ListeChanson[1].Volume = 1.0f;
+            }
+        }
+
+        public void AI()
+        {
+            if (Vitesse <= KMHtoPixel(50))
+            {
+                Accélération(EnAvant);
+            }
+            Avance();
+            //Vitesse = 1.5f;
         }
     }
 }

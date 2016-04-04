@@ -43,11 +43,14 @@ namespace SimulationVéhicule
         Vector2 PositionDePosition { get; set; }
         Vector2 DimensionPosition { get; set; }
 
+        public int ModeDeJeu { get; set; }
+
         int Temps { get; set; }
         int[] TableauTemps { get; set; }
         Vector2 PositionTemps { get; set; }
         Vector2 DimensionTemps { get; set; }
         bool AfficherTemps { get; set; }
+        public int TempsMilliSeconde { get; set; }
 
         string ÉtatDépart { get; set; }
         Vector2 PositionDépart { get; set; }
@@ -88,7 +91,7 @@ namespace SimulationVéhicule
         public bool Afficher { get; set; }
         public bool DébuterTemps { get; set; }
 
-        public GUI(Game game, float intervalleMAJ, string aiguille, string accéléromètre, int nbVoiture, int nbTours, int idVoitureUtilisateur, Vector2 dimensionÉcran)
+        public GUI(Game game, float intervalleMAJ, string aiguille, string accéléromètre, int nbVoiture, int nbTours, int idVoitureUtilisateur, Vector2 dimensionÉcran, int modeDeJeu)
             : base(game)
         {
             IntervalleMAJ = intervalleMAJ;
@@ -98,6 +101,7 @@ namespace SimulationVéhicule
             NbTours = nbTours;
             IDVoitureUtilisateur = idVoitureUtilisateur;
             DimensionÉcran = dimensionÉcran;
+            ModeDeJeu = modeDeJeu;
         }
 
 
@@ -159,6 +163,11 @@ namespace SimulationVéhicule
             PositionNotif = new Vector2(Game.Window.ClientBounds.Width / 2f - DimensionNotif.X, 25);
             TypeNotification = 0;
 
+            if (ModeDeJeu == 0)
+            {
+                NbVoiture++;
+            }
+
             base.Initialize();
         }
 
@@ -206,6 +215,7 @@ namespace SimulationVéhicule
                     {
                         GestionTemps();
                     }
+                    TempsMilliSeconde = TableauTemps[0] + TableauTemps[1] * 60 + TableauTemps[2] * 3600;
                     TempsÉcouléDepuisMAJ = 0;
                 }
 

@@ -34,7 +34,7 @@ namespace SimulationVéhicule
 
         Voiture Mustang { get; set; }
         Voiture AI { get; set; }
-        Terrain Carte { get; set; }
+        LeTerrain2 Carte { get; set; }
         public List<Sol> LaPiste { get; set; }
         List<Voiture> ListeVoiture { get; set; }
 
@@ -145,19 +145,23 @@ namespace SimulationVéhicule
 
             PositionUtilisateur = 1;
             IDVoitureUtilisateur = 0;
-            NbTours = nbTours;
+            NbTours = 1;
             Piste = piste;
             if (Piste == 0)
             {
-                Carte = new Terrain(this, 1f, Vector3.Zero, new Vector3(0, -1258 / 2f, 0), new Vector3(25600 / 2f, 1000 / 2f, 25600 / 2f), "CarteTest3", "DétailsTerrain2", 5, INTERVALLE_MAJ_STANDARD, CaméraJeu);
+                //Carte = new Terrain(this, 1f, Vector3.Zero, new Vector3(0, -1258 / 2f, 0), new Vector3(25600 / 2f, 1000 / 2f, 25600 / 2f), "CarteTest3", "grass", 5, INTERVALLE_MAJ_STANDARD, CaméraJeu);
+                //Carte = new LeTerrain(this, 1f, Vector3.Zero, new Vector3(0, -1285 / 2f, 0), new Vector3(25600 / 2f, 1000 / 2f, 25600 / 2f), "CarteTest3", "DétailsTerrain2", 5, INTERVALLE_MAJ_STANDARD);
+                Carte = new LeTerrain2(this, 1f, Vector3.Zero, new Vector3(0, -1285 / 2f, 0), new Vector3(25600 / 2f, 1000 / 2f, 25600 / 2f), "CarteTest3", "DétailsTerrain2", 7, INTERVALLE_MAJ_STANDARD);
+
             }
             LaPiste = new List<Sol>();
 
+            int modeDeJeu = 0;
             ListeVoiture = new List<Voiture>();
             Mustang = new Voiture(this, "MustangGT500SansRoue", 0.0088f, new Vector3(0, 0, 0), new Vector3(-1875, 0, 1100), INTERVALLE_MAJ_STANDARD, true);
             AI = new Voiture(this, "MustangGT500SansRoue", 0.0088f, new Vector3(0, 0, 0), new Vector3(-1875, 0, 1200), INTERVALLE_MAJ_STANDARD, false);
             ListeVoiture.Add(Mustang);
-            ListeVoiture.Add(AI);
+            //ListeVoiture.Add(AI);
             NbVoiture = ListeVoiture.Count();
 
             TempsÉcouléDepuisMAJ = 0;
@@ -178,7 +182,7 @@ namespace SimulationVéhicule
             Components.Add(new AfficheurFPS(this, INTERVALLE_CALCUL_FPS));
             Components.Add(Carte);
 
-            LaCourse = new Course(this, NbTours, NbVoiture, LaPiste, ListeVoiture, CaméraJeu, INTERVALLE_MAJ_STANDARD, Piste);
+            LaCourse = new Course(this, NbTours, NbVoiture, LaPiste, ListeVoiture, CaméraJeu, INTERVALLE_MAJ_STANDARD, Piste, modeDeJeu);
             LaCourse.CréationPiste();
             foreach (Sol x in LaCourse.LaPiste)
             {
@@ -192,7 +196,7 @@ namespace SimulationVéhicule
 
             Components.Add(LaCourse);
 
-            Interface = new GUI(this, INTERVALLE_MAJ_STANDARD, "aiguille2", "speedometer3", LaCourse.NbVoiture, LaCourse.NbTours, IDVoitureUtilisateur, new Vector2(Window.ClientBounds.Width, Window.ClientBounds.Height));
+            Interface = new GUI(this, INTERVALLE_MAJ_STANDARD, "aiguille2", "speedometer3", LaCourse.NbVoiture, LaCourse.NbTours, IDVoitureUtilisateur, new Vector2(Window.ClientBounds.Width, Window.ClientBounds.Height), modeDeJeu);
             Components.Add(Interface);
 
             Services.AddService(typeof(Caméra), CaméraJeu);

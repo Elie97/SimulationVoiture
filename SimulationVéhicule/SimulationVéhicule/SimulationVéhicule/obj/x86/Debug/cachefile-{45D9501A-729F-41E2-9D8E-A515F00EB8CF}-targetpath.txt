@@ -63,5 +63,15 @@ Content\Textures\confettis.xnb
 Content\Textures\trophée.xnb
 Content\Models\Bridge.xnb
 Content\Textures\routeDépart.xnb
+Content\Textures\grass.xnb
+Content\Textures\snow.xnb
+Content\Textures\rock.xnb
+Content\Textures\sand.xnb
+Content\Textures\map.xnb
+Content\Textures\CarteTest4.xnb
+Content\Models\testCarte.xnb
+Content\Models\testterraintexture.xnb
+Content\testterraintexture_0.xnb
+Content\Sounds\ChaseAndStatus.xnb
 Content\Fonts\Bebas.xnb
 Content\Fonts\Bebas120.xnb
